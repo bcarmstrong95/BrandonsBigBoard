@@ -18,8 +18,8 @@ select, input {
   padding: 8px;
   margin-bottom: 15px;
   font-size: 16px;
-  background-color: #111;
-  color: #fff;
+  background: #111;
+  color: white;
   border: 1px solid #444;
 }
 
@@ -27,7 +27,7 @@ table {
   border-collapse: collapse;
   width: 100%;
   background: #111;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.6);
 }
 
 th, td {
@@ -38,28 +38,24 @@ th, td {
 
 th {
   background-color: #000;
-  color: #fff;
+  color: white;
   position: sticky;
   top: 0;
   cursor: pointer;
   white-space: nowrap;
 }
 
+tr:hover { background-color: #1a1a1a; }
+
 .arrow {
   margin-left: 6px;
   font-size: 12px;
-  color: #aaa;
 }
 
-tr:hover {
-  background-color: #1c1c1c;
+/* column highlight */
+.sorted-col {
+  background-color: rgba(255,255,255,0.08);
 }
-
-/* highlight sorted column */
-.sorted-column {
-  background-color: #1a1a1a !important;
-}
-
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -132,7 +128,6 @@ function createHeaders() {
     th.onclick = () => {
       sortTable(i);
       updateArrows();
-      highlightColumn();
     };
 
     row.appendChild(th);
@@ -150,20 +145,38 @@ function sortTable(col) {
   }
 
   tableData.sort((a,b)=>{
-    let A = a[col];
-    let B = b[col];
+    let A = a[col].trim();
+    let B = b[col].trim();
 
-    let numA = parseFloat(A);
-    let numB = parseFloat(B);
+    // HEIGHT SORT (6'5 format)
+    function parseHeight(h) {
+      const match = h.match(/(\d+)[\'\-](\d+)/);
+      if (!match) return null;
+      return parseInt(match[1]) * 12 + parseInt(match[2]);
+    }
+
+    const hA = parseHeight(A);
+    const hB = parseHeight(B);
+
+    if (hA !== null && hB !== null) {
+      return sortAscending ? hA - hB : hB - hA;
+    }
+
+    // numeric sort
+    const numA = parseFloat(A);
+    const numB = parseFloat(B);
 
     if(!isNaN(numA) && !isNaN(numB)){
       return sortAscending ? numA-numB : numB-numA;
     }
+
+    // text sort
     return sortAscending
       ? A.localeCompare(B)
       : B.localeCompare(A);
   });
 
+  highlightColumn(col);
   displayRows();
 }
 
@@ -175,18 +188,19 @@ function updateArrows(){
   });
 }
 
-function highlightColumn(){
-  document.querySelectorAll("#data-table td, #data-table th").forEach(el =>
-    el.classList.remove("sorted-column")
-  );
+function highlightColumn(colIndex){
+  document.querySelectorAll(".sorted-col")
+    .forEach(el=>el.classList.remove("sorted-col"));
 
-  if(currentSortColumn === -1) return;
+  document.querySelectorAll("#data-table th")[colIndex]
+    .classList.add("sorted-col");
 
-  document.querySelectorAll(`#data-table tr`).forEach(row => {
-    if(row.children[currentSortColumn]){
-      row.children[currentSortColumn].classList.add("sorted-column");
-    }
-  });
+  document.querySelectorAll("#data-table tbody tr")
+    .forEach(row=>{
+      if(row.children[colIndex]){
+        row.children[colIndex].classList.add("sorted-col");
+      }
+    });
 }
 
 function populateFilter(){
@@ -221,15 +235,20 @@ function displayRows(){
     if(search && !r.join(" ").toLowerCase().includes(search)) return;
 
     const tr=document.createElement("tr");
-    r.forEach(c=>{
+
+    r.forEach((c,i)=>{
       const td=document.createElement("td");
       td.textContent=c;
+
+      if(i === currentSortColumn){
+        td.classList.add("sorted-col");
+      }
+
       tr.appendChild(td);
     });
+
     tbody.appendChild(tr);
   });
-
-  highlightColumn();
 }
 </script>
 
