@@ -1,153 +1,70 @@
 <script>
-const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
+document.addEventListener("DOMContentLoaded", () => {
+  const table = document.querySelector("table");
+  const headers = table.querySelectorAll("th");
+  const tbody = table.querySelector("tbody");
+  const searchInput = document.getElementById("search");
 
-let tableData = [];
-let headers = [];
-let currentSortColumn = -1;
-let sortAscending = true;
-let posIndex = -1;
+  let currentSortCol = -1;
+  let sortAsc = true;
 
-Papa.parse(csvUrl, {
-  download: true,
-  complete: function(results) {
+  // SORTING
+  headers.forEach((header, index) => {
+    header.addEventListener("click", () => {
+      const rows = Array.from(tbody.querySelectorAll("tr"));
 
-    headers = results.data[1];
-    tableData = results.data.slice(2).filter(r => r.length > 1);
+      sortAsc = currentSortCol === index ? !sortAsc : true;
+      currentSortCol = index;
 
-    posIndex = headers.findIndex(h =>
-      h.toLowerCase().includes("pos")
+      rows.sort((a, b) => {
+        let A = a.children[index].innerText.trim().toLowerCase();
+        let B = b.children[index].innerText.trim().toLowerCase();
+
+        const numA = parseFloat(A);
+        const numB = parseFloat(B);
+
+        if (!isNaN(numA) && !isNaN(numB)) return sortAsc ? numA - numB : numB - numA;
+        return sortAsc ? A.localeCompare(B) : B.localeCompare(A);
+      });
+
+      tbody.innerHTML = "";
+      rows.forEach(row => tbody.appendChild(row));
+
+      highlightSortedColumn();
+    });
+  });
+
+  function highlightSortedColumn() {
+    // remove existing highlights
+    document.querySelectorAll(".sorted-col").forEach(el =>
+      el.classList.remove("sorted-col")
     );
 
-    createHeaders();
-    populateFilter();
-    displayRows();
-  }
-});
+    if (currentSortCol === -1) return;
 
-function createHeaders() {
-  const thead = document.querySelector("#data-table thead");
-  thead.innerHTML = "";
-  const row = document.createElement("tr");
+    // highlight header
+    headers[currentSortCol].classList.add("sorted-col");
 
-  headers.forEach((h, i) => {
-    const th = document.createElement("th");
-
-    const label = document.createElement("span");
-    label.textContent = h;
-
-    const arrow = document.createElement("span");
-    arrow.className = "arrow";
-
-    th.appendChild(label);
-    th.appendChild(arrow);
-
-    th.onclick = () => {
-      sortTable(i);
-      updateArrows();
-      highlightColumn(); // highlight immediately
-    };
-
-    row.appendChild(th);
-  });
-
-  thead.appendChild(row);
-}
-
-function sortTable(col) {
-  if (currentSortColumn === col) {
-    sortAscending = !sortAscending;
-  } else {
-    currentSortColumn = col;
-    sortAscending = true;
-  }
-
-  tableData.sort((a,b)=>{
-    let A = a[col];
-    let B = b[col];
-
-    let numA = parseFloat(A);
-    let numB = parseFloat(B);
-
-    if(!isNaN(numA) && !isNaN(numB)){
-      return sortAscending ? numA-numB : numB-numA;
-    }
-    return sortAscending
-      ? A.localeCompare(B)
-      : B.localeCompare(A);
-  });
-
-  displayRows();
-}
-
-function updateArrows(){
-  document.querySelectorAll(".arrow").forEach((a,i)=>{
-    a.textContent = i===currentSortColumn
-      ? (sortAscending ? "▲" : "▼")
-      : "";
-  });
-}
-
-function highlightColumn() {
-
-  // remove old highlights
-  document.querySelectorAll(".sorted-column")
-    .forEach(el => el.classList.remove("sorted-column"));
-
-  if(currentSortColumn === -1) return;
-
-  // highlight header
-  const headerCells = document.querySelectorAll("#data-table th");
-  headerCells[currentSortColumn].classList.add("sorted-column");
-
-  // highlight all body cells in column
-  document.querySelectorAll("#data-table tbody tr").forEach(row => {
-    const cell = row.children[currentSortColumn];
-    if (cell) cell.classList.add("sorted-column");
-  });
-}
-
-function populateFilter(){
-  if(posIndex === -1) return;
-
-  const set = new Set();
-  tableData.forEach(r=>set.add(r[posIndex]));
-
-  const filter = document.getElementById("positionFilter");
-
-  set.forEach(p=>{
-    const opt = document.createElement("option");
-    opt.value = p;
-    opt.textContent = p;
-    filter.appendChild(opt);
-  });
-
-  filter.onchange = displayRows;
-}
-
-document.getElementById("searchBox").addEventListener("input", displayRows);
-
-function displayRows(){
-  const tbody = document.querySelector("#data-table tbody");
-  tbody.innerHTML="";
-
-  const pos = document.getElementById("positionFilter").value;
-  const search = document.getElementById("searchBox").value.toLowerCase();
-
-  tableData.forEach(r=>{
-    if(posIndex !== -1 && pos !== "ALL" && r[posIndex] !== pos) return;
-    if(search && !r.join(" ").toLowerCase().includes(search)) return;
-
-    const tr=document.createElement("tr");
-
-    r.forEach(c=>{
-      const td=document.createElement("td");
-      td.textContent=c;
-      tr.appendChild(td);
+    // highlight cells
+    tbody.querySelectorAll("tr").forEach(row => {
+      row.children[currentSortCol].classList.add("sorted-col");
     });
+  }
 
-    tbody.appendChild(tr);
+  // SEARCH FILTER
+  searchInput.addEventListener("keyup", () => {
+    const term = searchInput.value.toLowerCase();
+
+    tbody.querySelectorAll("tr").forEach(row => {
+      const text = row.innerText.toLowerCase();
+      if (text.includes(term)) {
+        row.style.display = "";
+        row.classList.add("filtered-highlight");
+      } else {
+        row.style.display = "none";
+        row.classList.remove("filtered-highlight");
+      }
+    });
   });
-
-  highlightColumn(); // keep highlight after redraw
-}
+});
 </script>
