@@ -1,83 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Table Sort & Search</title>
-
-<style>
-body {
-    font-family: Arial, sans-serif;
-}
-
-/* search box */
-#searchBox {
-    margin-bottom: 10px;
-    padding: 6px;
-    width: 250px;
-    font-size: 14px;
-}
-
-/* table */
-table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
-}
-
-th {
-    cursor: pointer;
-    background-color: #f2f2f2;
-    position: relative;
-}
-
-/* arrow beside header text */
-th .arrow {
-    margin-left: 6px;
-    font-size: 12px;
-}
-
-/* highlight sorted column */
-.sorted-column {
-    background-color: #e8f3ff;
-}
-
-/* highlight matching rows */
-.match {
-    background-color: #fff3cd;
-}
-
-/* optional hover */
-tr:hover {
-    background-color: #f5f5f5;
-}
-</style>
-</head>
-<body>
-
-<input type="text" id="searchBox" placeholder="Search...">
-
-<table id="dataTable">
-<thead>
-<tr>
-    <th onclick="sortTable(0)">Name<span class="arrow"></span></th>
-    <th onclick="sortTable(1)">City<span class="arrow"></span></th>
-    <th onclick="sortTable(2)">Age<span class="arrow"></span></th>
-</tr>
-</thead>
-<tbody>
-<tr><td>John</td><td>Detroit</td><td>28</td></tr>
-<tr><td>Lisa</td><td>Chicago</td><td>34</td></tr>
-<tr><td>Mike</td><td>Warren</td><td>22</td></tr>
-<tr><td>Sara</td><td>Dallas</td><td>41</td></tr>
-<tr><td>David</td><td>Miami</td><td>30</td></tr>
-</tbody>
-</table>
-
 <script>
 let sortDirection = 1;
 let currentSortedColumn = -1;
@@ -107,6 +27,9 @@ function sortTable(columnIndex) {
 
     updateArrows(columnIndex);
     highlightSortedColumn(columnIndex);
+
+    // reapply search highlighting after sort
+    applySearchHighlight();
 }
 
 function updateArrows(columnIndex) {
@@ -116,7 +39,8 @@ function updateArrows(columnIndex) {
 }
 
 function highlightSortedColumn(columnIndex) {
-    document.querySelectorAll("#dataTable td, #dataTable th")
+    // remove column highlight only
+    document.querySelectorAll(".sorted-column")
         .forEach(cell => cell.classList.remove("sorted-column"));
 
     document.querySelectorAll("#dataTable tr").forEach(row => {
@@ -126,9 +50,11 @@ function highlightSortedColumn(columnIndex) {
     });
 }
 
-/* 🔎 SEARCH + ROW HIGHLIGHT */
-document.getElementById("searchBox").addEventListener("keyup", function() {
-    const filter = this.value.toLowerCase();
+/* SEARCH FUNCTION */
+document.getElementById("searchBox").addEventListener("keyup", applySearchHighlight);
+
+function applySearchHighlight() {
+    const filter = document.getElementById("searchBox").value.toLowerCase();
     const rows = document.querySelectorAll("#dataTable tbody tr");
 
     rows.forEach(row => {
@@ -137,15 +63,11 @@ document.getElementById("searchBox").addEventListener("keyup", function() {
 
         row.style.display = match ? "" : "none";
 
-        // highlight matching rows
         if (filter !== "" && match) {
             row.classList.add("match");
         } else {
             row.classList.remove("match");
         }
     });
-});
+}
 </script>
-
-</body>
-</html>
