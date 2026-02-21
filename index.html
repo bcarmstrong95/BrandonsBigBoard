@@ -5,68 +5,40 @@
 <title>Brandon's Big Board 2026</title>
 
 <style>
-:root {
-  --bg: #f4f6f8;
-  --text: #111;
-  --table-bg: white;
-  --header-bg: #111;
-  --header-text: white;
-  --row-hover: #f1f1f1;
-  --highlight: #e8eef7;
-}
-
-body.dark {
-  --bg: #121212;
-  --text: #e4e4e4;
-  --table-bg: #1e1e1e;
-  --header-bg: #000;
-  --header-text: #fff;
-  --row-hover: #2a2a2a;
-  --highlight: #2c3e55;
-}
-
 body {
   font-family: Arial, sans-serif;
   margin: 40px;
-  background-color: var(--bg);
-  color: var(--text);
-  transition: background 0.25s, color 0.25s;
+  background-color: #000;
+  color: #fff;
 }
 
 h1 { text-align: center; }
 
-.controls {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-select, input, button {
+select, input {
   padding: 8px;
-  margin: 6px;
+  margin-bottom: 15px;
   font-size: 16px;
-}
-
-button {
-  cursor: pointer;
-  border-radius: 6px;
-  border: none;
+  background-color: #111;
+  color: #fff;
+  border: 1px solid #444;
 }
 
 table {
   border-collapse: collapse;
   width: 100%;
-  background: var(--table-bg);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  background: #111;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
 }
 
 th, td {
   padding: 10px;
-  border-bottom: 1px solid #4442;
+  border-bottom: 1px solid #333;
+  text-align: left;
 }
 
 th {
-  background-color: var(--header-bg);
-  color: var(--header-text);
+  background-color: #000;
+  color: #fff;
   position: sticky;
   top: 0;
   cursor: pointer;
@@ -76,13 +48,18 @@ th {
 .arrow {
   margin-left: 6px;
   font-size: 12px;
+  color: #aaa;
 }
 
-tr:hover { background-color: var(--row-hover); }
-
-.highlight-col {
-  background-color: var(--highlight) !important;
+tr:hover {
+  background-color: #1c1c1c;
 }
+
+/* highlight sorted column */
+.sorted-column {
+  background-color: #1a1a1a !important;
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -92,19 +69,17 @@ tr:hover { background-color: var(--row-hover); }
 
 <h1>Brandon's Big Board 2026</h1>
 
-<div class="controls">
+<label><strong>Search:</strong></label><br>
+<input type="text" id="searchBox" placeholder="Type to search players..." />
 
-<button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
+<br><br>
 
-<br>
-
-<input type="text" id="searchBox" placeholder="Search players..." />
-
+<label><strong>Filter by Position:</strong></label><br>
 <select id="positionFilter">
   <option value="ALL">All Positions</option>
 </select>
 
-</div>
+<br><br>
 
 <table id="data-table">
   <thead></thead>
@@ -119,17 +94,6 @@ let headers = [];
 let currentSortColumn = -1;
 let sortAscending = true;
 let posIndex = -1;
-
-/* DARK MODE */
-function toggleDarkMode(){
-  document.body.classList.toggle("dark");
-  localStorage.setItem("darkMode",
-    document.body.classList.contains("dark"));
-}
-
-if(localStorage.getItem("darkMode")==="true"){
-  document.body.classList.add("dark");
-}
 
 Papa.parse(csvUrl, {
   download: true,
@@ -150,6 +114,7 @@ Papa.parse(csvUrl, {
 
 function createHeaders() {
   const thead = document.querySelector("#data-table thead");
+  thead.innerHTML = "";
   const row = document.createElement("tr");
 
   headers.forEach((h, i) => {
@@ -167,6 +132,7 @@ function createHeaders() {
     th.onclick = () => {
       sortTable(i);
       updateArrows();
+      highlightColumn();
     };
 
     row.appendChild(th);
@@ -199,7 +165,6 @@ function sortTable(col) {
   });
 
   displayRows();
-  highlightColumn(col);
 }
 
 function updateArrows(){
@@ -207,6 +172,20 @@ function updateArrows(){
     a.textContent = i===currentSortColumn
       ? (sortAscending ? "▲" : "▼")
       : "";
+  });
+}
+
+function highlightColumn(){
+  document.querySelectorAll("#data-table td, #data-table th").forEach(el =>
+    el.classList.remove("sorted-column")
+  );
+
+  if(currentSortColumn === -1) return;
+
+  document.querySelectorAll(`#data-table tr`).forEach(row => {
+    if(row.children[currentSortColumn]){
+      row.children[currentSortColumn].classList.add("sorted-column");
+    }
   });
 }
 
@@ -250,23 +229,7 @@ function displayRows(){
     tbody.appendChild(tr);
   });
 
-  if(currentSortColumn !== -1){
-    highlightColumn(currentSortColumn);
-  }
-}
-
-function highlightColumn(colIndex) {
-  document.querySelectorAll(".highlight-col").forEach(cell =>
-    cell.classList.remove("highlight-col")
-  );
-
-  const header = document.querySelectorAll("#data-table th")[colIndex];
-  if (header) header.classList.add("highlight-col");
-
-  document.querySelectorAll("#data-table tbody tr").forEach(row => {
-    const cell = row.children[colIndex];
-    if (cell) cell.classList.add("highlight-col");
-  });
+  highlightColumn();
 }
 </script>
 
