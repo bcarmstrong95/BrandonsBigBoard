@@ -5,36 +5,68 @@
 <title>Brandon's Big Board 2026</title>
 
 <style>
+:root {
+  --bg: #f4f6f8;
+  --text: #111;
+  --table-bg: white;
+  --header-bg: #111;
+  --header-text: white;
+  --row-hover: #f1f1f1;
+  --highlight: #e8eef7;
+}
+
+body.dark {
+  --bg: #121212;
+  --text: #e4e4e4;
+  --table-bg: #1e1e1e;
+  --header-bg: #000;
+  --header-text: #fff;
+  --row-hover: #2a2a2a;
+  --highlight: #2c3e55;
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 40px;
-  background-color: #f4f6f8;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background 0.25s, color 0.25s;
 }
 
 h1 { text-align: center; }
 
-select, input {
+.controls {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+select, input, button {
   padding: 8px;
-  margin-bottom: 15px;
+  margin: 6px;
   font-size: 16px;
+}
+
+button {
+  cursor: pointer;
+  border-radius: 6px;
+  border: none;
 }
 
 table {
   border-collapse: collapse;
   width: 100%;
-  background: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background: var(--table-bg);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 th, td {
   padding: 10px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
+  border-bottom: 1px solid #4442;
 }
 
 th {
-  background-color: #111;
-  color: white;
+  background-color: var(--header-bg);
+  color: var(--header-text);
   position: sticky;
   top: 0;
   cursor: pointer;
@@ -46,11 +78,10 @@ th {
   font-size: 12px;
 }
 
-tr:hover { background-color: #f1f1f1; }
+tr:hover { background-color: var(--row-hover); }
 
-/* highlight sorted column */
 .highlight-col {
-  background-color: #e8eef7 !important;
+  background-color: var(--highlight) !important;
 }
 </style>
 
@@ -61,17 +92,19 @@ tr:hover { background-color: #f1f1f1; }
 
 <h1>Brandon's Big Board 2026</h1>
 
-<label><strong>Search:</strong></label><br>
-<input type="text" id="searchBox" placeholder="Type to search players..." />
+<div class="controls">
 
-<br><br>
+<button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
 
-<label><strong>Filter by Position:</strong></label><br>
+<br>
+
+<input type="text" id="searchBox" placeholder="Search players..." />
+
 <select id="positionFilter">
   <option value="ALL">All Positions</option>
 </select>
 
-<br><br>
+</div>
 
 <table id="data-table">
   <thead></thead>
@@ -87,11 +120,21 @@ let currentSortColumn = -1;
 let sortAscending = true;
 let posIndex = -1;
 
+/* DARK MODE */
+function toggleDarkMode(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem("darkMode",
+    document.body.classList.contains("dark"));
+}
+
+if(localStorage.getItem("darkMode")==="true"){
+  document.body.classList.add("dark");
+}
+
 Papa.parse(csvUrl, {
   download: true,
   complete: function(results) {
 
-    // Use row 2 as headers, remove title row
     headers = results.data[1];
     tableData = results.data.slice(2).filter(r => r.length > 1);
 
@@ -107,7 +150,6 @@ Papa.parse(csvUrl, {
 
 function createHeaders() {
   const thead = document.querySelector("#data-table thead");
-  thead.innerHTML = "";
   const row = document.createElement("tr");
 
   headers.forEach((h, i) => {
@@ -208,7 +250,6 @@ function displayRows(){
     tbody.appendChild(tr);
   });
 
-  // keep highlight after redraw
   if(currentSortColumn !== -1){
     highlightColumn(currentSortColumn);
   }
