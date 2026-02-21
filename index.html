@@ -2,206 +2,149 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Brandon's Big Board 2026</title>
+<title>Table Sort & Search</title>
 
 <style>
 body {
-  font-family: Arial, sans-serif;
-  margin: 40px;
-  background-color: #f4f6f8;
+    font-family: Arial, sans-serif;
 }
 
-h1 { text-align: center; }
-
-select, input {
-  padding: 8px;
-  margin-bottom: 15px;
-  font-size: 16px;
+/* search box */
+#searchBox {
+    margin-bottom: 10px;
+    padding: 6px;
+    width: 250px;
+    font-size: 14px;
 }
 
+/* table */
 table {
-  border-collapse: collapse;
-  width: 100%;
-  background: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-collapse: collapse;
+    width: 100%;
 }
 
 th, td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
 }
 
 th {
-  background-color: #111;
-  color: white;
-  position: sticky;
-  top: 0;
-  cursor: pointer;
-  white-space: nowrap;
+    cursor: pointer;
+    background-color: #f2f2f2;
+    position: relative;
 }
 
-.arrow {
-  margin-left: 6px;
-  font-size: 12px;
+/* arrow beside header text */
+th .arrow {
+    margin-left: 6px;
+    font-size: 12px;
 }
 
-tr:hover { background-color: #f1f1f1; }
+/* highlight sorted column */
+.sorted-column {
+    background-color: #e8f3ff;
+}
+
+/* highlight matching rows */
+.match {
+    background-color: #fff3cd;
+}
+
+/* optional hover */
+tr:hover {
+    background-color: #f5f5f5;
+}
 </style>
-
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
-
 <body>
 
-<h1>Brandon's Big Board 2026</h1>
+<input type="text" id="searchBox" placeholder="Search...">
 
-<label><strong>Search:</strong></label><br>
-<input type="text" id="searchBox" placeholder="Type to search players..." />
-
-<br><br>
-
-<label><strong>Filter by Position:</strong></label><br>
-<select id="positionFilter">
-  <option value="ALL">All Positions</option>
-</select>
-
-<br><br>
-
-<table id="data-table">
-  <thead></thead>
-  <tbody></tbody>
+<table id="dataTable">
+<thead>
+<tr>
+    <th onclick="sortTable(0)">Name<span class="arrow"></span></th>
+    <th onclick="sortTable(1)">City<span class="arrow"></span></th>
+    <th onclick="sortTable(2)">Age<span class="arrow"></span></th>
+</tr>
+</thead>
+<tbody>
+<tr><td>John</td><td>Detroit</td><td>28</td></tr>
+<tr><td>Lisa</td><td>Chicago</td><td>34</td></tr>
+<tr><td>Mike</td><td>Warren</td><td>22</td></tr>
+<tr><td>Sara</td><td>Dallas</td><td>41</td></tr>
+<tr><td>David</td><td>Miami</td><td>30</td></tr>
+</tbody>
 </table>
 
 <script>
-const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
+let sortDirection = 1;
+let currentSortedColumn = -1;
 
-let tableData = [];
-let headers = [];
-let currentSortColumn = -1;
-let sortAscending = true;
-let posIndex = -1;
+function sortTable(columnIndex) {
+    const table = document.getElementById("dataTable");
+    const tbody = table.tBodies[0];
+    const rows = Array.from(tbody.rows);
 
-Papa.parse(csvUrl, {
-  download: true,
-  complete: function(results) {
+    sortDirection = (currentSortedColumn === columnIndex) ? -sortDirection : 1;
+    currentSortedColumn = columnIndex;
 
-    headers = results.data[1];
-    tableData = results.data.slice(2).filter(r => r.length > 1);
+    rows.sort((a, b) => {
+        let x = a.cells[columnIndex].innerText.trim();
+        let y = b.cells[columnIndex].innerText.trim();
 
-    posIndex = headers.findIndex(h =>
-      h.toLowerCase().includes("pos")
-    );
+        let numX = parseFloat(x);
+        let numY = parseFloat(y);
 
-    createHeaders();
-    populateFilter();
-    displayRows();
-  }
-});
-
-function createHeaders() {
-  const thead = document.querySelector("#data-table thead");
-  thead.innerHTML = "";
-  const row = document.createElement("tr");
-
-  headers.forEach((h, i) => {
-    const th = document.createElement("th");
-
-    const label = document.createElement("span");
-    label.textContent = h;
-
-    const arrow = document.createElement("span");
-    arrow.className = "arrow";
-
-    th.appendChild(label);
-    th.appendChild(arrow);
-
-    th.onclick = () => {
-      sortTable(i);
-      updateArrows();
-    };
-
-    row.appendChild(th);
-  });
-
-  thead.appendChild(row);
-}
-
-function sortTable(col) {
-  if (currentSortColumn === col) {
-    sortAscending = !sortAscending;
-  } else {
-    currentSortColumn = col;
-    sortAscending = true;
-  }
-
-  tableData.sort((a,b)=>{
-    let A = a[col];
-    let B = b[col];
-
-    let numA = parseFloat(A);
-    let numB = parseFloat(B);
-
-    if(!isNaN(numA) && !isNaN(numB)){
-      return sortAscending ? numA-numB : numB-numA;
-    }
-    return sortAscending
-      ? A.localeCompare(B)
-      : B.localeCompare(A);
-  });
-
-  displayRows();
-}
-
-function updateArrows(){
-  document.querySelectorAll(".arrow").forEach((a,i)=>{
-    a.textContent = i===currentSortColumn
-      ? (sortAscending ? "▲" : "▼")
-      : "";
-  });
-}
-
-function populateFilter(){
-  if(posIndex === -1) return;
-
-  const set = new Set();
-  tableData.forEach(r=>set.add(r[posIndex]));
-
-  const filter = document.getElementById("positionFilter");
-
-  set.forEach(p=>{
-    const opt = document.createElement("option");
-    opt.value = p;
-    opt.textContent = p;
-    filter.appendChild(opt);
-  });
-
-  filter.onchange = displayRows;
-}
-
-document.getElementById("searchBox").addEventListener("input", displayRows);
-
-function displayRows(){
-  const tbody = document.querySelector("#data-table tbody");
-  tbody.innerHTML="";
-
-  const pos = document.getElementById("positionFilter").value;
-  const search = document.getElementById("searchBox").value.toLowerCase();
-
-  tableData.forEach(r=>{
-    if(posIndex !== -1 && pos !== "ALL" && r[posIndex] !== pos) return;
-
-    if(search && !r.join(" ").toLowerCase().includes(search)) return;
-
-    const tr=document.createElement("tr");
-    r.forEach(c=>{
-      const td=document.createElement("td");
-      td.textContent=c;
-      tr.appendChild(td);
+        if (!isNaN(numX) && !isNaN(numY)) {
+            return (numX - numY) * sortDirection;
+        }
+        return x.localeCompare(y) * sortDirection;
     });
-    tbody.appendChild(tr);
-  });
+
+    rows.forEach(row => tbody.appendChild(row));
+
+    updateArrows(columnIndex);
+    highlightSortedColumn(columnIndex);
 }
+
+function updateArrows(columnIndex) {
+    const arrows = document.querySelectorAll("th .arrow");
+    arrows.forEach(a => a.textContent = "");
+    arrows[columnIndex].textContent = sortDirection === 1 ? "▲" : "▼";
+}
+
+function highlightSortedColumn(columnIndex) {
+    document.querySelectorAll("#dataTable td, #dataTable th")
+        .forEach(cell => cell.classList.remove("sorted-column"));
+
+    document.querySelectorAll("#dataTable tr").forEach(row => {
+        if (row.cells[columnIndex]) {
+            row.cells[columnIndex].classList.add("sorted-column");
+        }
+    });
+}
+
+/* 🔎 SEARCH + ROW HIGHLIGHT */
+document.getElementById("searchBox").addEventListener("keyup", function() {
+    const filter = this.value.toLowerCase();
+    const rows = document.querySelectorAll("#dataTable tbody tr");
+
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const match = text.includes(filter);
+
+        row.style.display = match ? "" : "none";
+
+        // highlight matching rows
+        if (filter !== "" && match) {
+            row.classList.add("match");
+        } else {
+            row.classList.remove("match");
+        }
+    });
+});
 </script>
 
 </body>
