@@ -8,26 +8,34 @@
 body {
   font-family: Arial, sans-serif;
   margin: 40px;
-  background-color: #000;
-  color: #fff;
+  background-color: black;
+  color: white;
 }
 
-h1 { text-align: center; }
+h1 {
+  text-align: center;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo-container img {
+  width: 140px;
+}
 
 select, input {
   padding: 8px;
   margin-bottom: 15px;
   font-size: 16px;
-  background: #111;
-  color: white;
-  border: 1px solid #444;
 }
 
 table {
   border-collapse: collapse;
   width: 100%;
   background: #111;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
 }
 
 th, td {
@@ -45,16 +53,18 @@ th {
   white-space: nowrap;
 }
 
-tr:hover { background-color: #1a1a1a; }
-
 .arrow {
   margin-left: 6px;
   font-size: 12px;
 }
 
-/* column highlight */
-.sorted-col {
+/* highlight sorted column */
+.sorted-column {
   background-color: rgba(255,255,255,0.08);
+}
+
+tr:hover {
+  background-color: rgba(255,255,255,0.05);
 }
 </style>
 
@@ -64,6 +74,11 @@ tr:hover { background-color: #1a1a1a; }
 <body>
 
 <h1>Brandon's Big Board 2026</h1>
+
+<div class="logo-container">
+  <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg"
+       alt="NFL Logo">
+</div>
 
 <label><strong>Search:</strong></label><br>
 <input type="text" id="searchBox" placeholder="Type to search players..." />
@@ -128,12 +143,19 @@ function createHeaders() {
     th.onclick = () => {
       sortTable(i);
       updateArrows();
+      highlightColumn();
     };
 
     row.appendChild(th);
   });
 
   thead.appendChild(row);
+}
+
+function parseHeight(h) {
+  const match = h.match(/(\d+)[^\d]+(\d+)/);
+  if (!match) return 0;
+  return parseInt(match[1]) * 12 + parseInt(match[2]);
 }
 
 function sortTable(col) {
@@ -145,38 +167,27 @@ function sortTable(col) {
   }
 
   tableData.sort((a,b)=>{
-    let A = a[col].trim();
-    let B = b[col].trim();
+    let A = a[col];
+    let B = b[col];
 
-    // HEIGHT SORT (6'5 format)
-    function parseHeight(h) {
-      const match = h.match(/(\d+)[\'\-](\d+)/);
-      if (!match) return null;
-      return parseInt(match[1]) * 12 + parseInt(match[2]);
+    if(headers[col].toLowerCase().includes("height")){
+      return sortAscending
+        ? parseHeight(A) - parseHeight(B)
+        : parseHeight(B) - parseHeight(A);
     }
 
-    const hA = parseHeight(A);
-    const hB = parseHeight(B);
-
-    if (hA !== null && hB !== null) {
-      return sortAscending ? hA - hB : hB - hA;
-    }
-
-    // numeric sort
-    const numA = parseFloat(A);
-    const numB = parseFloat(B);
+    let numA = parseFloat(A);
+    let numB = parseFloat(B);
 
     if(!isNaN(numA) && !isNaN(numB)){
       return sortAscending ? numA-numB : numB-numA;
     }
 
-    // text sort
     return sortAscending
       ? A.localeCompare(B)
       : B.localeCompare(A);
   });
 
-  highlightColumn(col);
   displayRows();
 }
 
@@ -188,19 +199,18 @@ function updateArrows(){
   });
 }
 
-function highlightColumn(colIndex){
-  document.querySelectorAll(".sorted-col")
-    .forEach(el=>el.classList.remove("sorted-col"));
+function highlightColumn(){
+  document.querySelectorAll("td, th").forEach(cell=>{
+    cell.classList.remove("sorted-column");
+  });
 
-  document.querySelectorAll("#data-table th")[colIndex]
-    .classList.add("sorted-col");
+  if(currentSortColumn === -1) return;
 
-  document.querySelectorAll("#data-table tbody tr")
-    .forEach(row=>{
-      if(row.children[colIndex]){
-        row.children[colIndex].classList.add("sorted-col");
-      }
-    });
+  document.querySelectorAll("#data-table tr").forEach(row=>{
+    if(row.children[currentSortColumn]){
+      row.children[currentSortColumn].classList.add("sorted-column");
+    }
+  });
 }
 
 function populateFilter(){
@@ -235,20 +245,15 @@ function displayRows(){
     if(search && !r.join(" ").toLowerCase().includes(search)) return;
 
     const tr=document.createElement("tr");
-
-    r.forEach((c,i)=>{
+    r.forEach(c=>{
       const td=document.createElement("td");
       td.textContent=c;
-
-      if(i === currentSortColumn){
-        td.classList.add("sorted-col");
-      }
-
       tr.appendChild(td);
     });
-
     tbody.appendChild(tr);
   });
+
+  highlightColumn();
 }
 </script>
 
