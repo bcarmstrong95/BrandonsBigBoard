@@ -8,21 +8,25 @@
 body {
   font-family: Arial, sans-serif;
   margin: 40px;
-  background-color: black;
-  color: white;
+  background-color: #000;
+  color: #fff;
 }
 
-h1 {
-  text-align: center;
+h1 { text-align: center; }
+
+/* LOGOS */
+.logo-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin: 15px 0 25px 0;
+  flex-wrap: wrap;
 }
 
-.logo-container {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.logo-container img {
-  width: 140px;
+.logo-row img {
+  height: 90px;
+  max-width: 100%;
 }
 
 select, input {
@@ -35,7 +39,7 @@ table {
   border-collapse: collapse;
   width: 100%;
   background: #111;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 6px rgba(255,255,255,0.1);
 }
 
 th, td {
@@ -46,7 +50,7 @@ th, td {
 
 th {
   background-color: #000;
-  color: white;
+  color: #fff;
   position: sticky;
   top: 0;
   cursor: pointer;
@@ -58,13 +62,11 @@ th {
   font-size: 12px;
 }
 
-/* highlight sorted column */
-.sorted-column {
-  background-color: rgba(255,255,255,0.08);
-}
+tr:hover { background-color: #222; }
 
-tr:hover {
-  background-color: rgba(255,255,255,0.05);
+/* highlight sorted column */
+.sorted-col {
+  background-color: #1f2937 !important;
 }
 </style>
 
@@ -75,9 +77,9 @@ tr:hover {
 
 <h1>Brandon's Big Board 2026</h1>
 
-<div class="logo-container">
-  <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg"
-       alt="NFL Logo">
+<div class="logo-row">
+  <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg" alt="NFL Logo">
+  <img src="Screenshot 2026-02-21 at 5.49.19 PM.png" alt="NFL Draft 2026 Pittsburgh">
 </div>
 
 <label><strong>Search:</strong></label><br>
@@ -152,10 +154,13 @@ function createHeaders() {
   thead.appendChild(row);
 }
 
-function parseHeight(h) {
-  const match = h.match(/(\d+)[^\d]+(\d+)/);
-  if (!match) return 0;
-  return parseInt(match[1]) * 12 + parseInt(match[2]);
+function parseHeight(val){
+  if(!val) return 0;
+  const match = val.match(/(\d+)[^\d]+(\d+)/);
+  if(match){
+    return parseInt(match[1])*12 + parseInt(match[2]);
+  }
+  return parseFloat(val) || 0;
 }
 
 function sortTable(col) {
@@ -200,15 +205,13 @@ function updateArrows(){
 }
 
 function highlightColumn(){
-  document.querySelectorAll("td, th").forEach(cell=>{
-    cell.classList.remove("sorted-column");
-  });
+  document.querySelectorAll("th, td").forEach(el => el.classList.remove("sorted-col"));
 
   if(currentSortColumn === -1) return;
 
-  document.querySelectorAll("#data-table tr").forEach(row=>{
+  document.querySelectorAll(`#data-table tr`).forEach(row=>{
     if(row.children[currentSortColumn]){
-      row.children[currentSortColumn].classList.add("sorted-column");
+      row.children[currentSortColumn].classList.add("sorted-col");
     }
   });
 }
