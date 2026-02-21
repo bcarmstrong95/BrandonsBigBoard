@@ -12,34 +12,44 @@ body {
   color: #fff;
 }
 
-h1 { text-align: center; }
+h1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
 
-/* LOGOS */
+/* LOGO ROW */
 .logo-row {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 30px;
-  margin: 15px 0 25px 0;
+  margin-bottom: 25px;
   flex-wrap: wrap;
 }
 
 .logo-row img {
-  height: 90px;
-  max-width: 100%;
+  max-height: 110px;
+  width: auto;
 }
 
+/* controls */
 select, input {
   padding: 8px;
   margin-bottom: 15px;
   font-size: 16px;
+  border-radius: 6px;
+  border: none;
+}
+
+label {
+  font-weight: bold;
 }
 
 table {
   border-collapse: collapse;
   width: 100%;
   background: #111;
-  box-shadow: 0 2px 6px rgba(255,255,255,0.1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
 }
 
 th, td {
@@ -62,11 +72,17 @@ th {
   font-size: 12px;
 }
 
-tr:hover { background-color: #222; }
-
 /* highlight sorted column */
-.sorted-col {
-  background-color: #1f2937 !important;
+.sorted-column {
+  background-color: #1f3a5f !important;
+}
+
+tr:hover {
+  background-color: #222;
+}
+
+.highlight-row {
+  background-color: #333 !important;
 }
 </style>
 
@@ -78,16 +94,19 @@ tr:hover { background-color: #222; }
 <h1>Brandon's Big Board 2026</h1>
 
 <div class="logo-row">
+  <!-- NFL Shield -->
   <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg" alt="NFL Logo">
-  <img src="Screenshot 2026-02-21 at 5.49.19 PM.png" alt="NFL Draft 2026 Pittsburgh">
+
+  <!-- Draft 2026 Logo -->
+  <img src="Draft26.jpg" alt="NFL Draft 2026 Pittsburgh">
 </div>
 
-<label><strong>Search:</strong></label><br>
+<label>Search:</label><br>
 <input type="text" id="searchBox" placeholder="Type to search players..." />
 
-<br><br>
+<br>
 
-<label><strong>Filter by Position:</strong></label><br>
+<label>Filter by Position:</label><br>
 <select id="positionFilter">
   <option value="ALL">All Positions</option>
 </select>
@@ -145,7 +164,7 @@ function createHeaders() {
     th.onclick = () => {
       sortTable(i);
       updateArrows();
-      highlightColumn();
+      highlightSortedColumn();
     };
 
     row.appendChild(th);
@@ -155,12 +174,13 @@ function createHeaders() {
 }
 
 function parseHeight(val){
-  if(!val) return 0;
-  const match = val.match(/(\d+)[^\d]+(\d+)/);
-  if(match){
-    return parseInt(match[1])*12 + parseInt(match[2]);
+  if(val.includes("'")){
+    const parts = val.split("'");
+    const feet = parseInt(parts[0]);
+    const inches = parseInt(parts[1]);
+    return feet*12 + inches;
   }
-  return parseFloat(val) || 0;
+  return parseFloat(val);
 }
 
 function sortTable(col) {
@@ -204,14 +224,16 @@ function updateArrows(){
   });
 }
 
-function highlightColumn(){
-  document.querySelectorAll("th, td").forEach(el => el.classList.remove("sorted-col"));
+function highlightSortedColumn(){
+  document.querySelectorAll("th, td").forEach(cell =>
+    cell.classList.remove("sorted-column")
+  );
 
   if(currentSortColumn === -1) return;
 
-  document.querySelectorAll(`#data-table tr`).forEach(row=>{
+  document.querySelectorAll("#data-table tr").forEach(row=>{
     if(row.children[currentSortColumn]){
-      row.children[currentSortColumn].classList.add("sorted-col");
+      row.children[currentSortColumn].classList.add("sorted-column");
     }
   });
 }
@@ -248,15 +270,18 @@ function displayRows(){
     if(search && !r.join(" ").toLowerCase().includes(search)) return;
 
     const tr=document.createElement("tr");
-    r.forEach(c=>{
+
+    r.forEach((c,i)=>{
       const td=document.createElement("td");
       td.textContent=c;
+      if(i === currentSortColumn){
+        td.classList.add("sorted-column");
+      }
       tr.appendChild(td);
     });
+
     tbody.appendChild(tr);
   });
-
-  highlightColumn();
 }
 </script>
 
