@@ -1,70 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Brandon's Big Board 2026</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 40px;
+  background-color: #f4f6f8;
+}
+
+h1 { text-align: center; }
+
+select, input {
+  padding: 8px;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background-color: #111;
+  color: white;
+  position: sticky;
+  top: 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.arrow {
+  margin-left: 6px;
+  font-size: 12px;
+}
+
+tr:hover { background-color: #f1f1f1; }
+
+/* highlight sorted column */
+.highlight-col {
+  background-color: #e8eef7 !important;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+
+<body>
+
+<h1>Brandon's Big Board 2026</h1>
+
+<label><strong>Search:</strong></label><br>
+<input type="text" id="searchBox" placeholder="Type to search players..." />
+
+<br><br>
+
+<label><strong>Filter by Position:</strong></label><br>
+<select id="positionFilter">
+  <option value="ALL">All Positions</option>
+</select>
+
+<br><br>
+
+<table id="data-table">
+  <thead></thead>
+  <tbody></tbody>
+</table>
+
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const table = document.querySelector("table");
-  const headers = table.querySelectorAll("th");
-  const tbody = table.querySelector("tbody");
-  const searchInput = document.getElementById("search");
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
-  let currentSortCol = -1;
-  let sortAsc = true;
+let tableData = [];
+let headers = [];
+let currentSortColumn = -1;
+let sortAscending = true;
+let posIndex = -1;
 
-  // SORTING
-  headers.forEach((header, index) => {
-    header.addEventListener("click", () => {
-      const rows = Array.from(tbody.querySelectorAll("tr"));
+Papa.parse(csvUrl, {
+  download: true,
+  complete: function(results) {
 
-      sortAsc = currentSortCol === index ? !sortAsc : true;
-      currentSortCol = index;
+    // Use row 2 as headers, remove title row
+    headers = results.data[1];
+    tableData = results.data.slice(2).filter(r => r.length > 1);
 
-      rows.sort((a, b) => {
-        let A = a.children[index].innerText.trim().toLowerCase();
-        let B = b.children[index].innerText.trim().toLowerCase();
-
-        const numA = parseFloat(A);
-        const numB = parseFloat(B);
-
-        if (!isNaN(numA) && !isNaN(numB)) return sortAsc ? numA - numB : numB - numA;
-        return sortAsc ? A.localeCompare(B) : B.localeCompare(A);
-      });
-
-      tbody.innerHTML = "";
-      rows.forEach(row => tbody.appendChild(row));
-
-      highlightSortedColumn();
-    });
-  });
-
-  function highlightSortedColumn() {
-    // remove existing highlights
-    document.querySelectorAll(".sorted-col").forEach(el =>
-      el.classList.remove("sorted-col")
+    posIndex = headers.findIndex(h =>
+      h.toLowerCase().includes("pos")
     );
 
-    if (currentSortCol === -1) return;
+    createHeaders();
+    populateFilter();
+    displayRows();
+  }
+});
 
-    // highlight header
-    headers[currentSortCol].classList.add("sorted-col");
+function createHeaders() {
+  const thead = document.querySelector("#data-table thead");
+  thead.innerHTML = "";
+  const row = document.createElement("tr");
 
-    // highlight cells
-    tbody.querySelectorAll("tr").forEach(row => {
-      row.children[currentSortCol].classList.add("sorted-col");
-    });
+  headers.forEach((h, i) => {
+    const th = document.createElement("th");
+
+    const label = document.createElement("span");
+    label.textContent = h;
+
+    const arrow = document.createElement("span");
+    arrow.className = "arrow";
+
+    th.appendChild(label);
+    th.appendChild(arrow);
+
+    th.onclick = () => {
+      sortTable(i);
+      updateArrows();
+    };
+
+    row.appendChild(th);
+  });
+
+  thead.appendChild(row);
+}
+
+function sortTable(col) {
+  if (currentSortColumn === col) {
+    sortAscending = !sortAscending;
+  } else {
+    currentSortColumn = col;
+    sortAscending = true;
   }
 
-  // SEARCH FILTER
-  searchInput.addEventListener("keyup", () => {
-    const term = searchInput.value.toLowerCase();
+  tableData.sort((a,b)=>{
+    let A = a[col];
+    let B = b[col];
 
-    tbody.querySelectorAll("tr").forEach(row => {
-      const text = row.innerText.toLowerCase();
-      if (text.includes(term)) {
-        row.style.display = "";
-        row.classList.add("filtered-highlight");
-      } else {
-        row.style.display = "none";
-        row.classList.remove("filtered-highlight");
-      }
-    });
+    let numA = parseFloat(A);
+    let numB = parseFloat(B);
+
+    if(!isNaN(numA) && !isNaN(numB)){
+      return sortAscending ? numA-numB : numB-numA;
+    }
+    return sortAscending
+      ? A.localeCompare(B)
+      : B.localeCompare(A);
   });
-});
+
+  displayRows();
+  highlightColumn(col);
+}
+
+function updateArrows(){
+  document.querySelectorAll(".arrow").forEach((a,i)=>{
+    a.textContent = i===currentSortColumn
+      ? (sortAscending ? "▲" : "▼")
+      : "";
+  });
+}
+
+function populateFilter(){
+  if(posIndex === -1) return;
+
+  const set = new Set();
+  tableData.forEach(r=>set.add(r[posIndex]));
+
+  const filter = document.getElementById("positionFilter");
+
+  set.forEach(p=>{
+    const opt = document.createElement("option");
+    opt.value = p;
+    opt.textContent = p;
+    filter.appendChild(opt);
+  });
+
+  filter.onchange = displayRows;
+}
+
+document.getElementById("searchBox").addEventListener("input", displayRows);
+
+function displayRows(){
+  const tbody = document.querySelector("#data-table tbody");
+  tbody.innerHTML="";
+
+  const pos = document.getElementById("positionFilter").value;
+  const search = document.getElementById("searchBox").value.toLowerCase();
+
+  tableData.forEach(r=>{
+    if(posIndex !== -1 && pos !== "ALL" && r[posIndex] !== pos) return;
+    if(search && !r.join(" ").toLowerCase().includes(search)) return;
+
+    const tr=document.createElement("tr");
+    r.forEach(c=>{
+      const td=document.createElement("td");
+      td.textContent=c;
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  // keep highlight after redraw
+  if(currentSortColumn !== -1){
+    highlightColumn(currentSortColumn);
+  }
+}
+
+function highlightColumn(colIndex) {
+  document.querySelectorAll(".highlight-col").forEach(cell =>
+    cell.classList.remove("highlight-col")
+  );
+
+  const header = document.querySelectorAll("#data-table th")[colIndex];
+  if (header) header.classList.add("highlight-col");
+
+  document.querySelectorAll("#data-table tbody tr").forEach(row => {
+    const cell = row.children[colIndex];
+    if (cell) cell.classList.add("highlight-col");
+  });
+}
 </script>
+
+</body>
+</html>
