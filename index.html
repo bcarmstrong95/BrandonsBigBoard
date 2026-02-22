@@ -156,7 +156,20 @@ const columnDescriptions = {
   "PFN": "Impact Score according to ProFootballNetwork.com",
   "PFF": "Grade for most recently played season according to ProFootballFocus.com",
   "NFLDB": "Draft Prospect Grade according to NFLDraftBuzz.com",
-  "AVG": "The average of all 3 scores from PFN, PFF, & NFLDB (if available). For players where all 3 scores are not available, the average is recorded using only columns where a score is present"
+  "AVG": "The average of all 3 scores from PFN, PFF, & NFLDB (if available). For players where all 3 scores are not available, the average is recorded using only columns where a score is present",
+  "GP": "Games played. For offensive linemen, this is the total number of games played at the collegiate level. For all other positions, GP indicates the number of games played starting from the season in which he began playing consistently enough to be graded from the major sites (PFN, PFF, etc.)",
+  "Sacks": "Total Sacks (solo + assisted)",
+  "S/G": "Sacks per Game",
+  "TFL": "Tackles for Loss",
+  "TFL/G": "Tackles for Loss per Game",
+  "Tackles": "Combined Tackles (solo + assisted)",
+  "T/G": "Combined Tackles per Game",
+  "PDe": "Passes Defended (Includes pass break ups, passes batted down, and interceptions)",
+  "INTs": "Interceptions",
+  "INT/G": "Interceptions per Game",
+  "FF": "Forced Fumbles",
+  "FF/G": "Forced Fumbles per Game"
+  
 };
 
 Papa.parse(csvUrl, {
