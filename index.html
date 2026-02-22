@@ -47,12 +47,18 @@ th, td {
 
 /* ⭐ ROYAL BLUE HEADERS */
 th {
-  background-color: #4169E1;
+  background-color: #4169E1;  /* Royal Blue */
   color: white;
   position: sticky;
   top: 0;
   cursor: pointer;
   white-space: nowrap;
+}
+
+/* ⭐ First column background royal blue */
+td:first-child {
+  background-color: #4169E1;  /* Royal Blue */
+  color: white;
 }
 
 /* ⭐ darker hover */
@@ -247,7 +253,7 @@ function displayRows(){
 
     const tr=document.createElement("tr");
 
-    r.forEach(c=>{
+    r.forEach((c, i)=>{
       const td=document.createElement("td");
       td.textContent=c;
       tr.appendChild(td);
