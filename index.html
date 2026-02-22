@@ -81,6 +81,28 @@ tr:hover { background-color: #222; }
 .highlight-row {
   background-color: rgba(255,255,255,0.06);
 }
+
+/* Tooltips style */
+th[title]:hover {
+  background-color: #355acb;
+  cursor: pointer;
+  position: relative;
+}
+
+th[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -30px;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  width: auto;
+  white-space: nowrap;
+  z-index: 1000;
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -121,6 +143,20 @@ let currentSortColumn = -1;
 let sortAscending = true;
 let posIndex = -1;
 
+// Column descriptions for tooltips
+const columnDescriptions = {
+  "B#": "NFL Expert Brandon Armstrong's Big Board Ranking",
+  "Player": "Player's Name",
+  "POS": "Player's Primary Position",
+  "School": "The university out of which the player is being drafted",
+  "Height": "Player height",
+  "Weight": "Player weight",
+  "Age": "Age at draft time",
+  "RAS": "Relative Athletic Score",
+  "Grade": "Overall scouting grade",
+  "Projection": "Expected draft range"
+};
+
 Papa.parse(csvUrl, {
   download: true,
   complete: function(results) {
@@ -156,6 +192,11 @@ function createHeaders() {
 
     th.appendChild(label);
     th.appendChild(arrow);
+
+    // Tooltip text for columns
+    if (columnDescriptions[h]) {
+      th.title = columnDescriptions[h];
+    }
 
     th.onclick = () => {
       sortTable(i);
