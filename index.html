@@ -126,6 +126,8 @@ Papa.parse(csvUrl, {
   complete: function(results) {
 
     headers = results.data[1];
+    // Change the first header to B#
+    headers[0] = "B#";
     tableData = results.data.slice(2).filter(r => r.length > 1);
 
     posIndex = headers.findIndex(h =>
@@ -199,8 +201,9 @@ function sortTable(col) {
 }
 
 function updateArrows(){
-  document.querySelectorAll(".arrow").forEach((a,i)=>{
-    a.textContent = i===currentSortColumn
+  document.querySelectorAll("#data-table th").forEach((th,i)=>{
+    const arrow = th.querySelector(".arrow");
+    arrow.textContent = i===currentSortColumn
       ? (sortAscending ? "▲" : "▼")
       : "";
   });
