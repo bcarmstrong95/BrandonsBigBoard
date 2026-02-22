@@ -95,7 +95,7 @@ th {
 }
 
 /* highlight sorted column */
-.sorted-col {
+.sorted-column {
   background-color: rgba(255,255,255,0.08);
 }
 
@@ -117,7 +117,10 @@ tr:hover {
 <h1>Brandon's Big Board 2026</h1>
 
 <div class="logo-row">
-  <img src="NFLlogo.png" alt="NFL Logo">
+  <!-- NFL Shield -->
+  <img src="NFLLogo.png" alt="NFL Logo">
+  
+  <!-- Draft 2026 Logo -->
   <img src="Draft26.jpg" alt="NFL Draft 2026">
 </div>
 
@@ -194,11 +197,14 @@ function createHeaders() {
   thead.appendChild(row);
 }
 
-function parseHeight(value) {
-  if (!value) return 0;
-  const parts = value.split("-");
-  if (parts.length !== 2) return parseFloat(value) || 0;
-  return parseInt(parts[0]) * 12 + parseInt(parts[1]);
+function parseHeight(value){
+  if(value.includes("'")){
+    const parts = value.split("'");
+    const feet = parseInt(parts[0]);
+    const inches = parseInt(parts[1]);
+    return feet*12 + inches;
+  }
+  return parseFloat(value);
 }
 
 function sortTable(col) {
@@ -215,9 +221,9 @@ function sortTable(col) {
     let B = b[col];
 
     if(headers[col].toLowerCase().includes("height")){
-      A = parseHeight(A);
-      B = parseHeight(B);
-      return sortAscending ? A-B : B-A;
+      return sortAscending
+        ? parseHeight(A) - parseHeight(B)
+        : parseHeight(B) - parseHeight(A);
     }
 
     let numA = parseFloat(A);
@@ -241,6 +247,20 @@ function updateArrows(){
     arrow.textContent = i===currentSortColumn
       ? (sortAscending ? "▲" : "▼")
       : "";
+  });
+}
+
+function highlightSortedColumn(){
+  document.querySelectorAll("th, td").forEach(cell =>
+    cell.classList.remove("sorted-column")
+  );
+
+  if(currentSortColumn === -1) return;
+
+  document.querySelectorAll("#data-table tr").forEach(row=>{
+    if(row.children[currentSortColumn]){
+      row.children[currentSortColumn].classList.add("sorted-column");
+    }
   });
 }
 
@@ -284,17 +304,13 @@ function displayRows(){
       td.textContent=c;
 
       if(i === currentSortColumn){
-        td.classList.add("sorted-col");
+        td.classList.add("sorted-column");
       }
 
       tr.appendChild(td);
     });
 
     tbody.appendChild(tr);
-  });
-
-  document.querySelectorAll("#data-table th").forEach((th,i)=>{
-    th.classList.toggle("sorted-col", i === currentSortColumn);
   });
 }
 </script>
