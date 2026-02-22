@@ -146,15 +146,17 @@ let posIndex = -1;
 // Column descriptions for tooltips
 const columnDescriptions = {
   "B#": "NFL Expert Brandon Armstrong's Big Board Ranking",
-  "Player": "Player's Name",
+  "C#": Consensus Ranking according to NFLMockDraftDatabase.com
+  "Name": "Player's Name",
   "POS": "Player's Primary Position",
   "School": "The university out of which the player is being drafted",
   "Height": "Player's Height",
   "Weight": "Player's Weight in pounds",
   "Age": "Player's Draft Age",
-  "RAS": "Relative Athletic Score",
-  "Grade": "Overall scouting grade",
-  "Projection": "Expected draft range"
+  "PFN": "Impact Score according to ProFootballNetwork.com",
+  "PFF": "Grade for most recently played season according to ProFootballFocus.com"
+  "NFLDB": "Draft Prospect Grade according to NFLDraftBuzz.com"
+  "AVG": "The average of all 3 scores from PFN, PFF, & NFLDB (if available). For players where all 3 scores are not available, the average is recorded using only columns where a score is present"
 };
 
 Papa.parse(csvUrl, {
