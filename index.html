@@ -9,69 +9,34 @@ body {
   font-family: Arial, sans-serif;
   margin: 40px;
   background-color: #000;
-  color: #fff;
+  color: white;
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 10px;
-}
+h1 { text-align: center; }
 
-/* LOGO ROW */
 .logo-row {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 40px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .logo-row img {
-  max-height: 165px;
-  width: auto;
-  filter: drop-shadow(0 0 6px rgba(255,255,255,0.35));
-  transition: transform 0.25s ease, filter 0.25s ease;
-}
-
-.logo-row img:hover {
-  transform: scale(1.08);
-  filter: drop-shadow(0 0 14px rgba(255,255,255,0.6));
-}
-
-/* Divider under logos */
-.logo-divider {
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(to right, transparent, #444, transparent);
-  margin: 10px 0 25px 0;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 600px) {
-  .logo-row {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .logo-row img {
-    max-height: 110px;
-  }
+  height: 150px;
 }
 
 select, input {
   padding: 8px;
   margin-bottom: 15px;
   font-size: 16px;
-  background: #111;
-  color: #fff;
-  border: 1px solid #333;
 }
 
 table {
   border-collapse: collapse;
   width: 100%;
   background: #111;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
 }
 
 th, td {
@@ -80,13 +45,19 @@ th, td {
   text-align: left;
 }
 
+/* ⭐ ROYAL BLUE HEADERS */
 th {
-  background-color: #000;
-  color: #fff;
+  background-color: #4169E1;
+  color: white;
   position: sticky;
   top: 0;
   cursor: pointer;
   white-space: nowrap;
+}
+
+/* ⭐ darker hover */
+th:hover {
+  background-color: #355acb;
 }
 
 .arrow {
@@ -96,15 +67,12 @@ th {
 
 /* highlight sorted column */
 .sorted-column {
-  background-color: rgba(255,255,255,0.08);
+  background-color: rgba(65,105,225,0.25);
 }
 
-/* highlight filtered rows */
-.filtered-row {
-  background-color: rgba(0, 140, 255, 0.15);
-}
+tr:hover { background-color: #222; }
 
-tr:hover {
+.highlight-row {
   background-color: rgba(255,255,255,0.06);
 }
 </style>
@@ -117,19 +85,14 @@ tr:hover {
 <h1>Brandon's Big Board 2026</h1>
 
 <div class="logo-row">
-  <!-- NFL Shield -->
   <img src="NFLLogo.png" alt="NFL Logo">
-  
-  <!-- Draft 2026 Logo -->
   <img src="Draft26.jpg" alt="NFL Draft 2026">
 </div>
-
-<div class="logo-divider"></div>
 
 <label><strong>Search:</strong></label><br>
 <input type="text" id="searchBox" placeholder="Type to search players..." />
 
-<br>
+<br><br>
 
 <label><strong>Filter by Position:</strong></label><br>
 <select id="positionFilter">
@@ -189,6 +152,7 @@ function createHeaders() {
     th.onclick = () => {
       sortTable(i);
       updateArrows();
+      highlightColumn();
     };
 
     row.appendChild(th);
@@ -197,14 +161,12 @@ function createHeaders() {
   thead.appendChild(row);
 }
 
-function parseHeight(value){
-  if(value.includes("'")){
-    const parts = value.split("'");
-    const feet = parseInt(parts[0]);
-    const inches = parseInt(parts[1]);
-    return feet*12 + inches;
+function parseHeight(val){
+  const match = val.match(/(\d+)[-'](\d+)/);
+  if(match){
+    return parseInt(match[1])*12 + parseInt(match[2]);
   }
-  return parseFloat(value);
+  return parseFloat(val) || val;
 }
 
 function sortTable(col) {
@@ -216,44 +178,32 @@ function sortTable(col) {
   }
 
   tableData.sort((a,b)=>{
+    let A = parseHeight(a[col]);
+    let B = parseHeight(b[col]);
 
-    let A = a[col];
-    let B = b[col];
-
-    if(headers[col].toLowerCase().includes("height")){
-      return sortAscending
-        ? parseHeight(A) - parseHeight(B)
-        : parseHeight(B) - parseHeight(A);
+    if(typeof A === "number" && typeof B === "number"){
+      return sortAscending ? A-B : B-A;
     }
-
-    let numA = parseFloat(A);
-    let numB = parseFloat(B);
-
-    if(!isNaN(numA) && !isNaN(numB)){
-      return sortAscending ? numA-numB : numB-numA;
-    }
-
     return sortAscending
-      ? A.localeCompare(B)
-      : B.localeCompare(A);
+      ? A.toString().localeCompare(B)
+      : B.toString().localeCompare(A);
   });
 
   displayRows();
 }
 
 function updateArrows(){
-  document.querySelectorAll("#data-table th").forEach((th,i)=>{
-    const arrow = th.querySelector(".arrow");
-    arrow.textContent = i===currentSortColumn
+  document.querySelectorAll(".arrow").forEach((a,i)=>{
+    a.textContent = i===currentSortColumn
       ? (sortAscending ? "▲" : "▼")
       : "";
   });
 }
 
-function highlightSortedColumn(){
-  document.querySelectorAll("th, td").forEach(cell =>
-    cell.classList.remove("sorted-column")
-  );
+function highlightColumn(){
+  document.querySelectorAll("td, th").forEach(cell=>{
+    cell.classList.remove("sorted-column");
+  });
 
   if(currentSortColumn === -1) return;
 
@@ -297,21 +247,16 @@ function displayRows(){
 
     const tr=document.createElement("tr");
 
-    if(pos !== "ALL") tr.classList.add("filtered-row");
-
-    r.forEach((c, i)=>{
+    r.forEach(c=>{
       const td=document.createElement("td");
       td.textContent=c;
-
-      if(i === currentSortColumn){
-        td.classList.add("sorted-column");
-      }
-
       tr.appendChild(td);
     });
 
     tbody.appendChild(tr);
   });
+
+  highlightColumn();
 }
 </script>
 
