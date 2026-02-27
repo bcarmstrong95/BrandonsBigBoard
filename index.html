@@ -117,6 +117,11 @@ th .arrow{
 th.sorted .arrow{ opacity:1; }
 th.sorted.desc .arrow{ transform:rotate(180deg); }
 
+/* Active Sorted Column Highlight */
+td.sorted-column{
+  background:#162b55 !important;
+}
+
 /* Column widths */
 th:nth-child(1), td:nth-child(1){ width:140px; min-width:140px; }
 th:nth-child(2), td:nth-child(2){ width:90px; min-width:90px; }
@@ -141,7 +146,7 @@ tbody tr:nth-child(even) td:nth-child(-n+3){ background:#111; }
 tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
 
 /* POSITION COLORS */
-.edge-row td { color:#ff8c00; font-weight:600; }
+.edge-row td { color:#ff4500; font-weight:600; } /* HOT ORANGE */
 .dt-row td { color:#40e0d0; font-weight:600; }
 .cb-row td { color:#ff0000; font-weight:600; }
 .s-row td { color:#ff1493; font-weight:600; }
@@ -161,107 +166,11 @@ tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
 
 <body>
 
-<div class="hero-banner">
-  <div class="hero-content">
-    <h1>Brandon's Big Board 2026</h1>
-    <h2>2026 NFL Draft Database</h2>
-    <div class="meta-info">
-      <span id="prospectCount">Prospects: --</span>
-    </div>
-  </div>
-</div>
-
-<div class="logo-container">
-  <img src="comby.png">
-  <img src="NFLLogo.png">
-  <img src="Draft26.jpg">
-</div>
-
-<div class="controls">
-  <input type="text" id="searchBox" placeholder="Search players...">
-  <select id="positionFilter">
-    <option value="ALL">All Positions</option>
-  </select>
-</div>
-
-<div class="table-wrapper">
-<table id="data-table">
-  <thead></thead>
-  <tbody></tbody>
-</table>
-</div>
+<!-- EVERYTHING ELSE REMAINS SAME UNTIL SCRIPT -->
 
 <script>
 
-const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
-
-let originalData=[];
-let filteredData=[];
-let headers=[];
-let posIndex=-1;
-let schoolIndex=-1;
-let currentSort=-1;
-let sortAsc=true;
-
-Papa.parse(csvUrl,{
-  download:true,
-  skipEmptyLines:true,
-  complete:function(results){
-    headers=results.data[1].map(h=>h.trim());
-    originalData=results.data.slice(2)
-      .filter(r=>r.length===headers.length);
-
-    posIndex=headers.findIndex(h=>h.toLowerCase().includes("pos"));
-    schoolIndex=headers.findIndex(h=>h.toLowerCase().includes("school"));
-
-    filteredData=[...originalData];
-
-    createHeaders();
-    populateFilter();
-    applyFilters();
-  }
-});
-
-function createHeaders(){
-  const thead=document.querySelector("#data-table thead");
-  thead.innerHTML="";
-  const row=document.createElement("tr");
-
-  headers.forEach((h,i)=>{
-    const th=document.createElement("th");
-    th.innerHTML = h + '<span class="arrow">▲</span>';
-    th.onclick=()=>sortTable(i);
-    row.appendChild(th);
-  });
-
-  thead.appendChild(row);
-}
-
-function populateFilter(){
-  if(posIndex===-1) return;
-  const select=document.getElementById("positionFilter");
-  const positions=[...new Set(originalData.map(r=>r[posIndex]))];
-  positions.sort().forEach(p=>{
-    const option=document.createElement("option");
-    option.value=p;
-    option.textContent=p;
-    select.appendChild(option);
-  });
-}
-
-function applyFilters(){
-  const search=document.getElementById("searchBox").value.toLowerCase();
-  const position=document.getElementById("positionFilter").value;
-
-  filteredData=originalData.filter(row=>{
-    const matchesSearch=row.some(cell=>cell.toLowerCase().includes(search));
-    const matchesPosition=(position==="ALL" || row[posIndex]===position);
-    return matchesSearch && matchesPosition;
-  });
-
-  if(currentSort!==-1) sortTable(currentSort, true);
-  else displayRows();
-}
+/* Keep all your existing JS above sortTable the same */
 
 function sortTable(index, preserve=false){
 
@@ -296,56 +205,22 @@ function sortTable(index, preserve=false){
     th.classList.remove("sorted","desc");
   });
 
+  document.querySelectorAll("td").forEach(td=>{
+    td.classList.remove("sorted-column");
+  });
+
   if(currentSort!==-1){
     const active=document.querySelectorAll("th")[currentSort];
     active.classList.add("sorted");
     if(!sortAsc) active.classList.add("desc");
+
+    document.querySelectorAll(`#data-table tbody tr`).forEach(row=>{
+      row.children[currentSort].classList.add("sorted-column");
+    });
   }
 
   displayRows();
 }
-
-function displayRows(){
-  const tbody=document.querySelector("#data-table tbody");
-  tbody.innerHTML="";
-  let count=0;
-
-  filteredData.forEach(r=>{
-    count++;
-    const tr=document.createElement("tr");
-
-    if(posIndex!==-1){
-      const p=r[posIndex];
-      if(p==="EDGE") tr.classList.add("edge-row");
-      if(p==="DT") tr.classList.add("dt-row");
-      if(p==="CB") tr.classList.add("cb-row");
-      if(p==="S") tr.classList.add("s-row");
-      if(p==="TE") tr.classList.add("te-row");
-      if(p==="RB") tr.classList.add("rb-row");
-      if(p==="WR") tr.classList.add("wr-row");
-      if(p==="LB") tr.classList.add("lb-row");
-      if(p==="OT") tr.classList.add("ot-row");
-      if(p==="IOL") tr.classList.add("iol-row");
-    }
-
-    r.forEach((c,i)=>{
-      const td=document.createElement("td");
-      if(i===schoolIndex && c==="Alabama"){
-        td.innerHTML='<img src="bama.svg" class="school-logo">';
-      } else {
-        td.textContent=c;
-      }
-      tr.appendChild(td);
-    });
-
-    tbody.appendChild(tr);
-  });
-
-  document.getElementById("prospectCount").textContent="Prospects: "+count;
-}
-
-document.getElementById("searchBox").addEventListener("input", applyFilters);
-document.getElementById("positionFilter").addEventListener("change", applyFilters);
 
 </script>
 
