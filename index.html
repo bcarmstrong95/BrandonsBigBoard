@@ -96,24 +96,33 @@ th, td{
   white-space:nowrap;
 }
 
+/* HEADER */
 th{
   background:#4169E1;
   cursor:pointer;
   position:sticky;
   top:0;
   z-index:1000;
+  transition:background .2s ease;
+}
+
+th:hover{
+  background:#3157c7;
 }
 
 th .arrow{
   margin-left:6px;
-  opacity:0;
+  font-weight:bold;
 }
 
-th.sorted .arrow{ opacity:1; }
-th.sorted.desc .arrow{ transform:rotate(180deg); }
-
-.sorted-column{
+/* Active header */
+th.sorted{
   background:#162b55 !important;
+}
+
+/* Active column highlight */
+.active-col{
+  background:#1c1c1c !important;
 }
 
 /* COLUMN WIDTHS */
@@ -153,7 +162,6 @@ tbody tr:nth-child(even){ background:#111; }
 
 <body>
 
-<!-- HERO -->
 <div class="hero-banner">
   <div class="hero-content">
     <h1>Brandon's Big Board 2026</h1>
@@ -164,14 +172,12 @@ tbody tr:nth-child(even){ background:#111; }
   </div>
 </div>
 
-<!-- LOGOS -->
 <div class="top-logos">
   <img src="comby.png">
   <img src="NFLLogo.png">
   <img src="Draft26.jpg">
 </div>
 
-<!-- FILTERS -->
 <div class="filter-bar">
   <input type="text" id="searchInput" placeholder="Search players...">
   <select id="positionFilter">
@@ -237,7 +243,7 @@ function createHeaders(){
 
   headers.forEach((h,i)=>{
     const th=document.createElement("th");
-    th.innerHTML=h+' <span class="arrow">▲</span>';
+    th.innerHTML=h+' <span class="arrow"></span>';
     th.onclick=()=>sortTable(i);
     row.appendChild(th);
   });
@@ -253,19 +259,13 @@ function displayRows(){
     const tr=document.createElement("tr");
 
     if(posIndex>=0){
-      const p=r[posIndex];
-      tr.classList.add(p.toLowerCase()+"-row");
+      tr.classList.add(r[posIndex].toLowerCase()+"-row");
     }
 
     r.forEach((c,i)=>{
       const td=document.createElement("td");
-
-      if(i===schoolIndex && c==="Alabama"){
-        td.innerHTML='<img src="bama.svg" class="school-logo">';
-      } else {
-        td.textContent=c;
-      }
-
+      td.textContent=c;
+      if(currentSort===i) td.classList.add("active-col");
       tr.appendChild(td);
     });
 
@@ -280,16 +280,12 @@ function applyFilters(){
   const pos=document.getElementById("positionFilter").value;
 
   filteredData=originalData.filter(r=>{
-    const matchesSearch=r.join(" ").toLowerCase().includes(search);
-    const matchesPos=!pos || r[posIndex]===pos;
-    return matchesSearch && matchesPos;
+    return r.join(" ").toLowerCase().includes(search) &&
+           (!pos || r[posIndex]===pos);
   });
 
-  if(currentSort!==-1){
-    sortTable(currentSort,false);
-  } else {
-    displayRows();
-  }
+  if(currentSort!==-1) sortTable(currentSort,false);
+  else displayRows();
 }
 
 function parseValue(val){
@@ -304,9 +300,13 @@ function parseValue(val){
 }
 
 function sortTable(col,toggle=true){
+
   if(toggle){
-    if(currentSort===col){ sortAsc=!sortAsc; }
-    else{ sortAsc=true; currentSort=col; }
+    if(currentSort===col) sortAsc=!sortAsc;
+    else{
+      sortAsc=true;
+      currentSort=col;
+    }
   }
 
   filteredData.sort((a,b)=>{
@@ -317,13 +317,14 @@ function sortTable(col,toggle=true){
     return 0;
   });
 
-  document.querySelectorAll("th").forEach(th=>{
-    th.classList.remove("sorted","desc","sorted-column");
+  document.querySelectorAll("th").forEach((th,i)=>{
+    th.classList.remove("sorted");
+    th.querySelector(".arrow").textContent="";
   });
 
-  const th=document.querySelectorAll("th")[col];
-  th.classList.add("sorted","sorted-column");
-  if(!sortAsc) th.classList.add("desc");
+  const activeTh=document.querySelectorAll("th")[col];
+  activeTh.classList.add("sorted");
+  activeTh.querySelector(".arrow").textContent=sortAsc?"▲":"▼";
 
   displayRows();
 }
