@@ -14,7 +14,6 @@ body{
   margin:20px;
 }
 
-/* TABLE WRAPPER */
 .table-wrapper{
   overflow:auto;
   max-height:75vh;
@@ -63,22 +62,29 @@ th.sorted.desc .arrow{ transform:rotate(180deg); }
   background:#162b55 !important;
 }
 
-/* COLUMN WIDTHS */
+/* ===== COLUMN WIDTHS ===== */
+
+/* Column 1 */
 th:nth-child(1), td:nth-child(1){
-  width:260px;
-  min-width:260px;
+  width:90px;
+  min-width:90px;
+}
+
+/* Column 2 */
+th:nth-child(2), td:nth-child(2){
+  width:90px;
+  min-width:90px;
+}
+
+/* Column 3 (NAME COLUMN WIDE) */
+th:nth-child(3), td:nth-child(3){
+  width:300px;
+  min-width:300px;
   text-align:left;
 }
 
-th:nth-child(2), td:nth-child(2){
-  width:90px;
-}
+/* ===== STICKY BODY COLUMNS ===== */
 
-th:nth-child(3), td:nth-child(3){
-  width:110px;
-}
-
-/* Sticky body columns */
 td:nth-child(1){
   position:sticky;
   left:0;
@@ -88,23 +94,24 @@ td:nth-child(1){
 
 td:nth-child(2){
   position:sticky;
-  left:260px;
+  left:90px;
   background:#000;
   z-index:901;
 }
 
 td:nth-child(3){
   position:sticky;
-  left:350px; /* 260 + 90 */
+  left:180px; /* 90 + 90 */
   background:#000;
   z-index:902;
   box-shadow:6px 0 10px rgba(0,0,0,.7);
 }
 
-/* Sticky header columns */
+/* ===== STICKY HEADER COLUMNS ===== */
+
 th:nth-child(1){ left:0; z-index:1100; }
-th:nth-child(2){ left:260px; z-index:1099; }
-th:nth-child(3){ left:350px; z-index:1098; }
+th:nth-child(2){ left:90px; z-index:1099; }
+th:nth-child(3){ left:180px; z-index:1098; }
 
 /* Row striping */
 tbody tr:nth-child(odd){ background:#000; }
