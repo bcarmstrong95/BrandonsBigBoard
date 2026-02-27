@@ -107,6 +107,7 @@ tbody tr:hover{ background:#1a1a1a; }
 .sticky-col{
   position:sticky;
   background-clip:padding-box;
+  border-right:1px solid #222; /* <-- UX Enhancement Added */
 }
 
 tbody tr:nth-child(odd) .sticky-col{ background:#000; }
@@ -219,11 +220,10 @@ function sortTable(col){
     let A=a[col]||"";
     let B=b[col]||"";
 
-    /* Special Height Sorting */
     if(isHeightColumn){
 
       const convertHeight = (h)=>{
-        const match = h.match(/(\d+)'(\d+(\.\d+)?)/);
+        const match = h.match(/(\d+)'(\d+(\.\d+)?)"?/);
         if(!match) return 0;
 
         const feet = parseFloat(match[1]);
@@ -237,13 +237,11 @@ function sortTable(col){
       return sortAsc ? A-B : B-A;
     }
 
-    /* Numeric Sort */
     if(!isNaN(parseFloat(A)) && !isNaN(parseFloat(B))){
       return sortAsc ? parseFloat(A)-parseFloat(B)
                      : parseFloat(B)-parseFloat(A);
     }
 
-    /* Text Sort */
     return sortAsc ? A.localeCompare(B)
                    : B.localeCompare(A);
   });
