@@ -68,7 +68,7 @@ th{
   cursor:pointer;
   position:sticky;
   top:0;
-  z-index:20;
+  z-index:50;
 }
 
 th:hover{
@@ -79,8 +79,8 @@ th .arrow{
   margin-left:5px;
 }
 
-/* ROW STYLING */
-tbody tr{
+/* ROW COLORS */
+tbody tr:nth-child(odd){
   background-color:#000;
 }
 
@@ -92,42 +92,51 @@ tbody tr:hover{
   background-color:#1a1a1a;
 }
 
+/* Make sticky cells inherit row color */
+tbody td{
+  background-color:inherit;
+}
+
 /* SORTED COLUMN */
 .sorted-column{
   background-color:#1f1f1f !important;
 }
 
 /* =============================== */
-/* SMOOTH STICKY FIRST 3 COLUMNS */
+/* PERFECT STICKY FIRST 3 COLUMNS */
 /* =============================== */
 
-th:nth-child(-n+3),
-td:nth-child(-n+3){
-  position:sticky;
-  background-color:#0a0a0a;
-  z-index:10;
-}
-
-/* Column offsets (adjust if needed) */
+/* Base sticky */
 th:nth-child(1),
-td:nth-child(1){ left:0; }
+td:nth-child(1){
+  position:sticky;
+  left:0;
+  z-index:30;
+}
 
 th:nth-child(2),
-td:nth-child(2){ left:80px; }
-
-th:nth-child(3),
-td:nth-child(3){ left:160px; }
-
-/* Keep header cells above body cells */
-thead th:nth-child(-n+3){
-  z-index:30;
-  background-color:#4169E1;
+td:nth-child(2){
+  position:sticky;
+  left:80px;
+  z-index:31;
 }
 
-/* Smooth divider shadow */
+th:nth-child(3),
+td:nth-child(3){
+  position:sticky;
+  left:160px;
+  z-index:32;
+}
+
+/* Header layering */
+thead th:nth-child(1){ z-index:60; }
+thead th:nth-child(2){ z-index:61; }
+thead th:nth-child(3){ z-index:62; }
+
+/* Subtle divider shadow */
 td:nth-child(3),
 th:nth-child(3){
-  box-shadow:4px 0 8px rgba(0,0,0,0.6);
+  box-shadow: 4px 0 6px rgba(0,0,0,0.5);
 }
 
 /* First column bold */
@@ -139,7 +148,7 @@ td:first-child{
 
 <body>
 
-<h1>Brandon's Big Board 2026</h1>
+<h1>Brandon Armstrong's 2026 NFL Big Board</h1>
 
 <div class="logo-container">
   <img src="NFLLogo.png" alt="NFL Logo">
@@ -175,15 +184,15 @@ const columnDescriptions = {
   "C#": "Consensus Ranking according to NFLMockDraftDatabase.com",
   "Name": "Player's Name",
   "POS": "Player's Primary Position",
-  "School": "The university the player is being drafted from",
-  "Height": "Player height (converted to total inches for sorting)",
-  "Weight": "Player weight in pounds",
-  "Age": "Player age at time of draft",
-  "Hand": "Hand measurement in inches",
+  "School": "University player is drafted from",
+  "Height": "Height converted to inches for sorting",
+  "Weight": "Weight in pounds",
+  "Age": "Age at time of draft",
+  "Hand": "Hand size in inches",
   "Arm": "Arm length in inches",
-  "PFN": "Impact Score from ProFootballNetwork.com",
-  "PFF": "Most recent season grade from ProFootballFocus.com",
-  "NFLDB": "Prospect grade from NFLDraftBuzz.com",
+  "PFN": "Pro Football Network impact score",
+  "PFF": "Pro Football Focus grade",
+  "NFLDB": "NFL Draft Buzz grade",
   "AVG": "Average of PFN, PFF & NFLDB"
 };
 
