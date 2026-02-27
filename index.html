@@ -100,7 +100,7 @@ thead .sticky-1{ z-index:150; }
 thead .sticky-2{ z-index:151; }
 thead .sticky-3{ z-index:152; }
 
-/* Clean divider */
+/* Divider */
 .sticky-3{
   box-shadow:4px 0 6px rgba(0,0,0,0.6);
 }
@@ -108,11 +108,6 @@ thead .sticky-3{ z-index:152; }
 /* Bold first column */
 td:first-child{
   font-weight:bold;
-}
-
-/* Sorted highlight */
-.sorted-column{
-  background:#1f1f1f !important;
 }
 </style>
 </head>
@@ -142,12 +137,10 @@ td:first-child{
 
 <script>
 
-const csvUrl = "YOUR_CSV_LINK_HERE";
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
 let tableData = [];
 let headers = [];
-let currentSortColumn = -1;
-let sortAscending = true;
 let posIndex = -1;
 
 Papa.parse(csvUrl,{
@@ -182,7 +175,6 @@ function createHeaders(){
       th.classList.add("sticky-col","sticky-"+(i+1));
     }
 
-    th.onclick=()=>sortTable(i);
     row.appendChild(th);
   });
 
@@ -206,32 +198,6 @@ function applyStickyOffsets(){
 
     leftOffset += width;
   }
-}
-
-function sortTable(col){
-  if(currentSortColumn===col){
-    sortAscending=!sortAscending;
-  } else{
-    currentSortColumn=col;
-    sortAscending=true;
-  }
-
-  tableData.sort((a,b)=>{
-    let A=a[col]||"";
-    let B=b[col]||"";
-
-    if(!isNaN(parseFloat(A)) && !isNaN(parseFloat(B))){
-      return sortAscending
-        ? parseFloat(A)-parseFloat(B)
-        : parseFloat(B)-parseFloat(A);
-    }
-
-    return sortAscending
-      ? A.localeCompare(B)
-      : B.localeCompare(A);
-  });
-
-  displayRows();
 }
 
 function populateFilter(){
