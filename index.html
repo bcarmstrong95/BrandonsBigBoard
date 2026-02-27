@@ -14,6 +14,36 @@ body{
   margin:20px;
 }
 
+/* ===== HERO BANNER ===== */
+.hero-banner{
+  background:linear-gradient(135deg,#0a0a0a,#1a1a1a);
+  border:1px solid #222;
+  padding:40px 20px;
+  margin-bottom:30px;
+  text-align:center;
+}
+
+.hero-content h1{
+  font-size:36px;
+  margin:0;
+  letter-spacing:2px;
+  font-weight:700;
+}
+
+.hero-content h2{
+  font-size:22px;
+  margin:10px 0;
+  color:#4169E1;
+  font-weight:600;
+}
+
+.meta-info{
+  margin-top:12px;
+  font-size:13px;
+  color:#ccc;
+}
+
+/* ===== TABLE WRAPPER ===== */
 .table-wrapper{
   overflow:auto;
   max-height:75vh;
@@ -101,7 +131,7 @@ td:nth-child(2){
 
 td:nth-child(3){
   position:sticky;
-  left:180px; /* 90 + 90 */
+  left:180px;
   background:#000;
   z-index:902;
   box-shadow:6px 0 10px rgba(0,0,0,.7);
@@ -142,7 +172,16 @@ tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
 
 <body>
 
-<h1>Brandon's Big Board 2026</h1>
+<!-- HERO BANNER -->
+<div class="hero-banner">
+  <div class="hero-content">
+    <h1>Brandon's Big Board 2026</h1>
+    <h2>2026 NFL Draft Database</h2>
+    <div class="meta-info">
+      Live Combine Tracker • Updated Daily
+    </div>
+  </div>
+</div>
 
 <div class="table-wrapper">
 <table id="data-table">
