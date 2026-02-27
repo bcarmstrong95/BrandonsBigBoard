@@ -132,7 +132,7 @@ tbody tr:nth-child(even) td:nth-child(-n+3){ background:#111; }
 tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
 
 /* POSITION COLORS */
-.edge-row td { color:#cc5500; font-weight:600; } /* BURNT ORANGE */
+.edge-row td { color:#ff8c00; font-weight:600; } /* CLEAN ORANGE */
 .dt-row td { color:#40e0d0; font-weight:600; }
 .cb-row td { color:#ff0000; font-weight:600; }
 .s-row td { color:#ff1493; font-weight:600; }
@@ -144,8 +144,9 @@ tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
 .iol-row td { color:#00ff00; font-weight:600; }
 
 .school-logo{
-  height:26px;
+  height:24px;
   vertical-align:middle;
+  margin-right:6px;
 }
 </style>
 </head>
@@ -249,7 +250,7 @@ function sortTable(index){
   if(currentSort===index){ sortAsc=!sortAsc; }
   else{
     currentSort=index;
-    sortAsc=true; // lowest first (good for 40)
+    sortAsc=true;
   }
 
   filteredData.sort((a,b)=>{
@@ -259,7 +260,7 @@ function sortTable(index){
 
     if(header.includes("height")){
       const convert=h=>{
-        const m=h.match(/(\d+)'(\d+(\.\d+)?)"/);
+        const m=h.match(/(\\d+)'(\\d+(\\.\\d+)?)"/);
         return m ? parseFloat(m[1])*12+parseFloat(m[2]) : 0;
       };
       valA=convert(valA);
@@ -276,7 +277,7 @@ function sortTable(index){
       header.includes("broad")
     ){
       const clean = v => {
-        const num = parseFloat(v.replace(/[^\d.]/g,""));
+        const num = parseFloat(v.replace(/[^\\d.]/g,""));
         return isNaN(num) ? -9999 : num;
       };
       valA=clean(valA);
