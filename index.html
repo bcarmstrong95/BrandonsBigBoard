@@ -52,12 +52,15 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:40px;
-  margin-bottom:20px;
+  gap:30px; /* tighter spacing */
+  margin:10px 0 25px 0;
+  padding:0 20px;
 }
 
 .logo-container img{
   height:150px;
+  object-fit:contain;
+  display:block;
 }
 
 /* ===== CONTROLS ===== */
@@ -173,9 +176,11 @@ td:first-child{
   </div>
 </div>
 
+<!-- LOGOS -->
 <div class="logo-container">
-  <img src="NFLLogo.png">
-  <img src="Draft26.jpg">
+  <img src="comby.png" alt="NFL Combine 2026 Logo">
+  <img src="NFLLogo.png" alt="NFL Logo">
+  <img src="Draft26.jpg" alt="2026 Draft Logo">
 </div>
 
 <div class="controls">
