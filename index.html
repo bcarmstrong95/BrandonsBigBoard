@@ -14,51 +14,7 @@ body{
   margin:20px;
 }
 
-/* HERO */
-.hero-banner{
-  background:linear-gradient(135deg,#0a0a0a,#1a1a1a);
-  border:1px solid #222;
-  padding:40px 20px;
-  margin-bottom:30px;
-  text-align:center;
-}
-
-.hero-content h1{
-  font-size:36px;
-  margin:0;
-  letter-spacing:2px;
-  font-weight:700;
-}
-
-.hero-content h2{
-  font-size:22px;
-  margin:10px 0;
-  color:#4169E1;
-  font-weight:600;
-}
-
-.meta-info{
-  margin-top:12px;
-  font-size:13px;
-  color:#ccc;
-}
-
-/* CONTROLS */
-.controls{
-  text-align:center;
-  margin-bottom:15px;
-}
-
-input, select{
-  padding:6px;
-  margin:5px;
-  font-size:14px;
-  background:#111;
-  color:white;
-  border:1px solid #444;
-}
-
-/* TABLE */
+/* TABLE WRAPPER */
 .table-wrapper{
   overflow:auto;
   max-height:75vh;
@@ -107,61 +63,48 @@ th.sorted.desc .arrow{ transform:rotate(180deg); }
   background:#162b55 !important;
 }
 
-/* ===== UPDATED COLUMN WIDTHS ===== */
-
+/* COLUMN WIDTHS */
 th:nth-child(1), td:nth-child(1){
-  width:182px; 
+  width:182px;
   min-width:182px;
+  text-align:left;
 }
 
 th:nth-child(2), td:nth-child(2){
   width:90px;
-  min-width:90px;
 }
 
 th:nth-child(3), td:nth-child(3){
   width:110px;
-  min-width:110px;
 }
 
-/* Sticky BODY columns */
+/* Sticky body columns */
 td:nth-child(1){
   position:sticky;
   left:0;
-  z-index:900;
   background:#000;
+  z-index:900;
 }
 
 td:nth-child(2){
   position:sticky;
   left:182px;
-  z-index:901;
   background:#000;
+  z-index:901;
 }
 
 td:nth-child(3){
   position:sticky;
-  left:272px; /* 182 + 90 */
-  z-index:902;
+  left:272px;
   background:#000;
+  z-index:902;
   box-shadow:6px 0 10px rgba(0,0,0,.7);
 }
 
-/* Sticky HEADER columns */
-th:nth-child(1){
-  left:0;
-  z-index:1100;
-}
-
-th:nth-child(2){
-  left:182px;
-  z-index:1099;
-}
-
-th:nth-child(3){
-  left:272px;
-  z-index:1098;
-}
+/* Sticky header columns */
+th:nth-child(1){ left:0; z-index:1100; }
+th:nth-child(2){ left:182px; z-index:1099; }
+th:nth-child(3){ left:272px; z-index:1098; }
 
 /* Row striping */
 tbody tr:nth-child(odd){ background:#000; }
@@ -172,43 +115,27 @@ tbody tr:nth-child(even) td:nth-child(-n+3){ background:#111; }
 tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
 
 /* POSITION COLORS */
-.edge-row td { color:#ff8c00; font-weight:600; }
+.edge-row td { color:orange; font-weight:600; }
 .dt-row td { color:#40e0d0; font-weight:600; }
-.cb-row td { color:#ff0000; font-weight:600; }
+.cb-row td { color:red; font-weight:600; }
 .s-row td { color:#ff1493; font-weight:600; }
-.te-row td { color:#800080; font-weight:600; }
+.te-row td { color:purple; font-weight:600; }
 .rb-row td { color:#006400; font-weight:600; }
 .wr-row td { color:#b8860b; font-weight:600; }
 .lb-row td { color:#4169E1; font-weight:600; }
-.ot-row td { color:#ffff00; font-weight:600; }
+.ot-row td { color:yellow; font-weight:600; }
 .iol-row td { color:#00ff00; font-weight:600; }
 
 .school-logo{
-  height:24px;
+  height:22px;
   vertical-align:middle;
-  margin-right:6px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="hero-banner">
-  <div class="hero-content">
-    <h1>Brandon's Big Board 2026</h1>
-    <h2>2026 NFL Draft Database</h2>
-    <div class="meta-info">
-      <span id="prospectCount">Prospects: --</span>
-    </div>
-  </div>
-</div>
-
-<div class="controls">
-  <input type="text" id="searchBox" placeholder="Search players...">
-  <select id="positionFilter">
-    <option value="ALL">All Positions</option>
-  </select>
-</div>
+<h1>Brandon's Big Board 2026</h1>
 
 <div class="table-wrapper">
 <table id="data-table">
@@ -220,8 +147,6 @@ tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
 <script>
 
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
-
-/* --- All JS below unchanged from your working version --- */
 
 let originalData=[];
 let filteredData=[];
@@ -244,17 +169,111 @@ Papa.parse(csvUrl,{
     schoolIndex = headers.findIndex(h=>h.toLowerCase().includes("school"));
 
     createHeaders();
-    populateFilter();
     displayRows();
 
+    // Auto sort 40 lowest first
     const fortyIndex = headers.findIndex(h => h.toLowerCase().includes("40"));
     if(fortyIndex !== -1){
+      sortAsc = true;
       sortTable(fortyIndex);
     }
   }
 });
 
-/* Sorting + rendering functions unchanged */
+function createHeaders(){
+  const thead=document.querySelector("#data-table thead");
+  thead.innerHTML="";
+  const row=document.createElement("tr");
+
+  headers.forEach((h,i)=>{
+    const th=document.createElement("th");
+    th.innerHTML=h+' <span class="arrow">▲</span>';
+    th.onclick=()=>sortTable(i);
+    row.appendChild(th);
+  });
+
+  thead.appendChild(row);
+}
+
+function displayRows(){
+  const tbody=document.querySelector("#data-table tbody");
+  tbody.innerHTML="";
+
+  filteredData.forEach(r=>{
+    const tr=document.createElement("tr");
+
+    if(posIndex>=0){
+      const p=r[posIndex];
+      if(p==="EDGE") tr.classList.add("edge-row");
+      if(p==="DT") tr.classList.add("dt-row");
+      if(p==="CB") tr.classList.add("cb-row");
+      if(p==="S") tr.classList.add("s-row");
+      if(p==="TE") tr.classList.add("te-row");
+      if(p==="RB") tr.classList.add("rb-row");
+      if(p==="WR") tr.classList.add("wr-row");
+      if(p==="LB") tr.classList.add("lb-row");
+      if(p==="OT") tr.classList.add("ot-row");
+      if(p==="IOL") tr.classList.add("iol-row");
+    }
+
+    r.forEach((c,i)=>{
+      const td=document.createElement("td");
+
+      if(i===schoolIndex && c==="Alabama"){
+        td.innerHTML='<img src="bama.svg" class="school-logo">';
+      } else {
+        td.textContent=c;
+      }
+
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+}
+
+function parseValue(val){
+  if(!val) return 0;
+
+  // Height like 6'2"
+  if(val.includes("'")){
+    const parts=val.split("'");
+    return parseInt(parts[0])*12+parseInt(parts[1]);
+  }
+
+  const num=parseFloat(val);
+  if(!isNaN(num)) return num;
+
+  return val.toString().toLowerCase();
+}
+
+function sortTable(col){
+  if(currentSort===col){
+    sortAsc=!sortAsc;
+  } else {
+    sortAsc=true;
+    currentSort=col;
+  }
+
+  filteredData.sort((a,b)=>{
+    const v1=parseValue(a[col]);
+    const v2=parseValue(b[col]);
+
+    if(v1<v2) return sortAsc?-1:1;
+    if(v1>v2) return sortAsc?1:-1;
+    return 0;
+  });
+
+  document.querySelectorAll("th").forEach(th=>{
+    th.classList.remove("sorted","desc","sorted-column");
+  });
+
+  const th=document.querySelectorAll("th")[col];
+  th.classList.add("sorted","sorted-column");
+  if(!sortAsc) th.classList.add("desc");
+
+  displayRows();
+}
 
 </script>
 
