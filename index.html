@@ -65,8 +65,8 @@ th.sorted.desc .arrow{ transform:rotate(180deg); }
 
 /* COLUMN WIDTHS */
 th:nth-child(1), td:nth-child(1){
-  width:182px;
-  min-width:182px;
+  width:260px;
+  min-width:260px;
   text-align:left;
 }
 
@@ -88,14 +88,14 @@ td:nth-child(1){
 
 td:nth-child(2){
   position:sticky;
-  left:182px;
+  left:260px;
   background:#000;
   z-index:901;
 }
 
 td:nth-child(3){
   position:sticky;
-  left:272px;
+  left:350px; /* 260 + 90 */
   background:#000;
   z-index:902;
   box-shadow:6px 0 10px rgba(0,0,0,.7);
@@ -103,8 +103,8 @@ td:nth-child(3){
 
 /* Sticky header columns */
 th:nth-child(1){ left:0; z-index:1100; }
-th:nth-child(2){ left:182px; z-index:1099; }
-th:nth-child(3){ left:272px; z-index:1098; }
+th:nth-child(2){ left:260px; z-index:1099; }
+th:nth-child(3){ left:350px; z-index:1098; }
 
 /* Row striping */
 tbody tr:nth-child(odd){ background:#000; }
@@ -171,7 +171,6 @@ Papa.parse(csvUrl,{
     createHeaders();
     displayRows();
 
-    // Auto sort 40 lowest first
     const fortyIndex = headers.findIndex(h => h.toLowerCase().includes("40"));
     if(fortyIndex !== -1){
       sortAsc = true;
@@ -235,7 +234,6 @@ function displayRows(){
 function parseValue(val){
   if(!val) return 0;
 
-  // Height like 6'2"
   if(val.includes("'")){
     const parts=val.split("'");
     return parseInt(parts[0])*12+parseInt(parts[1]);
