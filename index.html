@@ -68,7 +68,7 @@ th{
   cursor:pointer;
   position:sticky;
   top:0;
-  z-index:10;
+  z-index:20;
 }
 
 th:hover{
@@ -79,7 +79,7 @@ th .arrow{
   margin-left:5px;
 }
 
-/* ROWS */
+/* ROW STYLING */
 tbody tr{
   background-color:#000;
 }
@@ -101,33 +101,26 @@ tbody tr:hover{
 /* SMOOTH STICKY FIRST 3 COLUMNS */
 /* =============================== */
 
-/* Base sticky styling */
 th:nth-child(-n+3),
 td:nth-child(-n+3){
   position:sticky;
   background-color:#0a0a0a;
-  z-index:5;
+  z-index:10;
 }
 
-/* Individual column offsets */
+/* Column offsets (adjust if needed) */
 th:nth-child(1),
-td:nth-child(1){
-  left:0;
-}
+td:nth-child(1){ left:0; }
 
 th:nth-child(2),
-td:nth-child(2){
-  left:80px;
-}
+td:nth-child(2){ left:80px; }
 
 th:nth-child(3),
-td:nth-child(3){
-  left:160px;
-}
+td:nth-child(3){ left:160px; }
 
-/* Make header cells stack properly */
+/* Keep header cells above body cells */
 thead th:nth-child(-n+3){
-  z-index:15;
+  z-index:30;
   background-color:#4169E1;
 }
 
@@ -137,7 +130,7 @@ th:nth-child(3){
   box-shadow:4px 0 8px rgba(0,0,0,0.6);
 }
 
-/* First column special look */
+/* First column bold */
 td:first-child{
   font-weight:bold;
 }
@@ -169,7 +162,7 @@ td:first-child{
 
 <script>
 
-const csvUrl = "YOUR_CSV_URL_HERE";
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
 let tableData = [];
 let headers = [];
@@ -200,6 +193,7 @@ Papa.parse(csvUrl,{
   complete:function(results){
 
     headers = results.data[1].map(h => h.trim());
+
     tableData = results.data.slice(2)
       .filter(r => r.length === headers.length);
 
@@ -270,6 +264,7 @@ function sortTable(col){
   });
 
   displayRows();
+  updateArrows();
 }
 
 function updateArrows(){
