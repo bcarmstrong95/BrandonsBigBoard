@@ -92,38 +92,37 @@ tbody tr:hover{
   background-color:#1a1a1a;
 }
 
-/* Make sticky cells inherit row color */
-tbody td{
-  background-color:inherit;
-}
-
-/* SORTED COLUMN */
-.sorted-column{
-  background-color:#1f1f1f !important;
-}
-
 /* =============================== */
-/* PERFECT STICKY FIRST 3 COLUMNS */
+/* SOLID STICKY FIRST 3 COLUMNS */
 /* =============================== */
 
-/* Base sticky */
+th:nth-child(1),
+td:nth-child(1),
+th:nth-child(2),
+td:nth-child(2),
+th:nth-child(3),
+td:nth-child(3){
+  position:sticky;
+  background-clip:padding-box;
+}
+
+/* Column 1 */
 th:nth-child(1),
 td:nth-child(1){
-  position:sticky;
   left:0;
   z-index:30;
 }
 
+/* Column 2 */
 th:nth-child(2),
 td:nth-child(2){
-  position:sticky;
   left:80px;
   z-index:31;
 }
 
+/* Column 3 */
 th:nth-child(3),
 td:nth-child(3){
-  position:sticky;
   left:160px;
   z-index:32;
 }
@@ -133,15 +132,34 @@ thead th:nth-child(1){ z-index:60; }
 thead th:nth-child(2){ z-index:61; }
 thead th:nth-child(3){ z-index:62; }
 
-/* Subtle divider shadow */
+/* Force row color onto sticky cells */
+tbody tr:nth-child(odd) td:nth-child(-n+3){
+  background-color:#000;
+}
+
+tbody tr:nth-child(even) td:nth-child(-n+3){
+  background-color:#111;
+}
+
+/* Hover state override */
+tbody tr:hover td:nth-child(-n+3){
+  background-color:#1a1a1a;
+}
+
+/* Divider shadow */
 td:nth-child(3),
 th:nth-child(3){
-  box-shadow: 4px 0 6px rgba(0,0,0,0.5);
+  box-shadow:4px 0 6px rgba(0,0,0,0.5);
 }
 
 /* First column bold */
 td:first-child{
   font-weight:bold;
+}
+
+/* SORTED COLUMN */
+.sorted-column{
+  background-color:#1f1f1f !important;
 }
 </style>
 </head>
