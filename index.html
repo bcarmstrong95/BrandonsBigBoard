@@ -40,7 +40,17 @@ body{
 .hero-content p{
   font-size:14px;
   color:#aaa;
-  margin-top:10px;
+  margin-top:6px;
+}
+
+.meta-info{
+  margin-top:12px;
+  font-size:13px;
+  color:#ccc;
+}
+
+.meta-info span{
+  margin:0 10px;
 }
 
 /* ===== LOGOS ===== */
@@ -71,7 +81,7 @@ input, select{
   border:1px solid #444;
 }
 
-/* ===== TABLE WRAPPER ===== */
+/* ===== TABLE ===== */
 .table-wrapper{
   overflow:auto;
   max-height:75vh;
@@ -91,7 +101,6 @@ th, td{
   white-space:nowrap;
 }
 
-/* ===== Sticky Header ===== */
 th{
   background:#4169E1;
   cursor:pointer;
@@ -105,7 +114,6 @@ th:hover{
   background:#3154b3;
 }
 
-/* Sort arrow animation */
 th .arrow{
   display:inline-block;
   margin-left:6px;
@@ -113,24 +121,14 @@ th .arrow{
   opacity:.4;
 }
 
-th.sorted .arrow{
-  opacity:1;
-}
+th.sorted .arrow{ opacity:1; }
+th.sorted.asc .arrow{ transform:rotate(0deg); }
+th.sorted.desc .arrow{ transform:rotate(180deg); }
 
-th.sorted.asc .arrow{
-  transform:rotate(0deg);
-}
-
-th.sorted.desc .arrow{
-  transform:rotate(180deg);
-}
-
-/* ===== Row Styling ===== */
 tbody tr:nth-child(odd){ background:#000; }
 tbody tr:nth-child(even){ background:#111; }
 tbody tr:hover{ background:#1a1a1a; }
 
-/* ===== Sticky Columns ===== */
 .sticky-col{
   position:sticky;
   background-clip:padding-box;
@@ -161,22 +159,23 @@ td:first-child{
 
 <body>
 
-<!-- ===== HERO SECTION ===== -->
+<!-- ===== HERO ===== -->
 <div class="hero-banner">
   <div class="hero-content">
-    <h1>Brandon Armstrong</h1>
-    <h2>2026 NFL Draft Big Board</h2>
-    <p>Updated: February 2026 • Prospect Rankings</p>
+    <h1>Brandon's Big Board 2026</h1>
+    <h2>2026 NFL Draft Database</h2>
+    <div class="meta-info">
+      <span id="prospectCount">Prospects: --</span>
+      <span id="lastUpdated">Last Updated: --</span>
+    </div>
   </div>
 </div>
 
-<!-- ===== LOGOS ===== -->
 <div class="logo-container">
   <img src="NFLLogo.png">
   <img src="Draft26.jpg">
 </div>
 
-<!-- ===== CONTROLS ===== -->
 <div class="controls">
   <input type="text" id="searchBox" placeholder="Search players...">
   <select id="positionFilter">
@@ -184,7 +183,6 @@ td:first-child{
   </select>
 </div>
 
-<!-- ===== TABLE ===== -->
 <div class="table-wrapper">
 <table id="data-table">
   <thead></thead>
@@ -201,6 +199,8 @@ let headers = [];
 let posIndex = -1;
 let currentSort = -1;
 let sortAsc = true;
+
+fetchLastUpdated();
 
 Papa.parse(csvUrl,{
   download:true,
@@ -221,6 +221,30 @@ Papa.parse(csvUrl,{
   }
 });
 
+/* ===== FETCH LAST UPDATED FROM GOOGLE ===== */
+function fetchLastUpdated(){
+  fetch(csvUrl,{ method:"HEAD" })
+    .then(res=>{
+      const lastMod = res.headers.get("Last-Modified");
+      if(lastMod){
+        const date = new Date(lastMod);
+        document.getElementById("lastUpdated").textContent =
+          "Last Updated: " + date.toLocaleString();
+      }
+    })
+    .catch(()=> {
+      document.getElementById("lastUpdated").textContent =
+        "Last Updated: Unavailable";
+    });
+}
+
+/* ===== LIVE PROSPECT COUNT ===== */
+function updateProspectCount(count){
+  document.getElementById("prospectCount").textContent =
+    "Prospects: " + count;
+}
+
+/* ===== HEADERS ===== */
 function createHeaders(){
   const thead = document.querySelector("#data-table thead");
   thead.innerHTML="";
@@ -241,7 +265,7 @@ function createHeaders(){
   thead.appendChild(row);
 }
 
-/* ===== HEIGHT-AWARE SORTING ===== */
+/* ===== SORTING ===== */
 function sortTable(col){
 
   if(currentSort===col){
@@ -258,20 +282,14 @@ function sortTable(col){
     let B=b[col]||"";
 
     if(isHeightColumn){
-
       const convertHeight = (h)=>{
         const match = h.match(/(\d+)'(\d+(\.\d+)?)"?/);
         if(!match) return 0;
-
-        const feet = parseFloat(match[1]);
-        const inches = parseFloat(match[2]);
-        return (feet*12)+inches;
+        return (parseFloat(match[1])*12)+parseFloat(match[2]);
       };
-
-      A = convertHeight(A);
-      B = convertHeight(B);
-
-      return sortAsc ? A-B : B-A;
+      return sortAsc
+        ? convertHeight(A)-convertHeight(B)
+        : convertHeight(B)-convertHeight(A);
     }
 
     if(!isNaN(parseFloat(A)) && !isNaN(parseFloat(B))){
@@ -337,6 +355,7 @@ function populateFilter(){
 document.getElementById("searchBox")
   .addEventListener("input",displayRows);
 
+/* ===== DISPLAY ===== */
 function displayRows(){
   const tbody=document.querySelector("#data-table tbody");
   tbody.innerHTML="";
@@ -344,9 +363,13 @@ function displayRows(){
   const pos=document.getElementById("positionFilter").value;
   const search=document.getElementById("searchBox").value.toLowerCase();
 
+  let visibleCount = 0;
+
   tableData.forEach(r=>{
     if(posIndex!==-1 && pos!=="ALL" && r[posIndex]!==pos) return;
     if(search && !r.join(" ").toLowerCase().includes(search)) return;
+
+    visibleCount++;
 
     const tr=document.createElement("tr");
 
@@ -364,6 +387,7 @@ function displayRows(){
     tbody.appendChild(tr);
   });
 
+  updateProspectCount(visibleCount);
   applyStickyOffsets();
 }
 
