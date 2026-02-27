@@ -144,13 +144,13 @@ Papa.parse(csvUrl,{
   skipEmptyLines:true,
   complete:function(results){
 
-    // Grab first row as headers safely
-    headers = results.data[0].map(h => h.trim());
+    // Your sheet uses row 1 as header
+    headers = results.data[1].map(h => h.trim());
 
-    tableData = results.data.slice(1)
-      .filter(r => r.length > 1);
+    tableData = results.data.slice(2)
+      .filter(r => r.length === headers.length);
 
-    posIndex = headers.findIndex(h => 
+    posIndex = headers.findIndex(h =>
       h.toLowerCase().includes("pos")
     );
 
