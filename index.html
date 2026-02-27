@@ -8,7 +8,7 @@
 
 <style>
 body{
-  background-color:black;
+  background:black;
   color:white;
   font-family:Arial, sans-serif;
   margin:20px;
@@ -64,102 +64,55 @@ th, td{
 
 /* HEADER */
 th{
-  background-color:#4169E1;
+  background:#4169E1;
   cursor:pointer;
   position:sticky;
   top:0;
-  z-index:50;
+  z-index:100;
 }
 
 th:hover{
-  background-color:#3154b3;
+  background:#3154b3;
 }
 
-th .arrow{
-  margin-left:5px;
-}
+/* ROW STRIPING */
+tbody tr:nth-child(odd){ background:#000; }
+tbody tr:nth-child(even){ background:#111; }
+tbody tr:hover{ background:#1a1a1a; }
 
-/* ROW COLORS */
-tbody tr:nth-child(odd){
-  background-color:#000;
-}
-
-tbody tr:nth-child(even){
-  background-color:#111;
-}
-
-tbody tr:hover{
-  background-color:#1a1a1a;
-}
-
-/* =============================== */
-/* SOLID STICKY FIRST 3 COLUMNS */
-/* =============================== */
-
-th:nth-child(1),
-td:nth-child(1),
-th:nth-child(2),
-td:nth-child(2),
-th:nth-child(3),
-td:nth-child(3){
+/* Sticky base */
+.sticky-col{
   position:sticky;
   background-clip:padding-box;
 }
 
-/* Column 1 */
-th:nth-child(1),
-td:nth-child(1){
-  left:0;
-  z-index:30;
+/* Ensure solid paint */
+tbody tr:nth-child(odd) .sticky-col{ background:#000; }
+tbody tr:nth-child(even) .sticky-col{ background:#111; }
+tbody tr:hover .sticky-col{ background:#1a1a1a; }
+
+/* Layering */
+.sticky-1{ z-index:50; }
+.sticky-2{ z-index:51; }
+.sticky-3{ z-index:52; }
+
+thead .sticky-1{ z-index:150; }
+thead .sticky-2{ z-index:151; }
+thead .sticky-3{ z-index:152; }
+
+/* Clean divider */
+.sticky-3{
+  box-shadow:4px 0 6px rgba(0,0,0,0.6);
 }
 
-/* Column 2 */
-th:nth-child(2),
-td:nth-child(2){
-  left:80px;
-  z-index:31;
-}
-
-/* Column 3 */
-th:nth-child(3),
-td:nth-child(3){
-  left:160px;
-  z-index:32;
-}
-
-/* Header layering */
-thead th:nth-child(1){ z-index:60; }
-thead th:nth-child(2){ z-index:61; }
-thead th:nth-child(3){ z-index:62; }
-
-/* Force row color onto sticky cells */
-tbody tr:nth-child(odd) td:nth-child(-n+3){
-  background-color:#000;
-}
-
-tbody tr:nth-child(even) td:nth-child(-n+3){
-  background-color:#111;
-}
-
-/* Hover state override */
-tbody tr:hover td:nth-child(-n+3){
-  background-color:#1a1a1a;
-}
-
-/* Divider shadow */
-td:nth-child(3),
-th:nth-child(3){
-  box-shadow:4px 0 6px rgba(0,0,0,0.5);
-}
-
-/* First column bold */
+/* Bold first column */
 td:first-child{
   font-weight:bold;
 }
 
-/* SORTED COLUMN */
+/* Sorted highlight */
 .sorted-column{
-  background-color:#1f1f1f !important;
+  background:#1f1f1f !important;
 }
 </style>
 </head>
@@ -169,8 +122,8 @@ td:first-child{
 <h1>Brandon Armstrong's 2026 NFL Big Board</h1>
 
 <div class="logo-container">
-  <img src="NFLLogo.png" alt="NFL Logo">
-  <img src="Draft26.jpg" alt="2026 Draft Logo">
+  <img src="NFLLogo.png">
+  <img src="Draft26.jpg">
 </div>
 
 <div class="controls">
@@ -189,7 +142,7 @@ td:first-child{
 
 <script>
 
-const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
+const csvUrl = "YOUR_CSV_LINK_HERE";
 
 let tableData = [];
 let headers = [];
@@ -197,30 +150,12 @@ let currentSortColumn = -1;
 let sortAscending = true;
 let posIndex = -1;
 
-const columnDescriptions = {
-  "B#": "NFL Expert Brandon Armstrong's Big Board Ranking",
-  "C#": "Consensus Ranking according to NFLMockDraftDatabase.com",
-  "Name": "Player's Name",
-  "POS": "Player's Primary Position",
-  "School": "University player is drafted from",
-  "Height": "Height converted to inches for sorting",
-  "Weight": "Weight in pounds",
-  "Age": "Age at time of draft",
-  "Hand": "Hand size in inches",
-  "Arm": "Arm length in inches",
-  "PFN": "Pro Football Network impact score",
-  "PFF": "Pro Football Focus grade",
-  "NFLDB": "NFL Draft Buzz grade",
-  "AVG": "Average of PFN, PFF & NFLDB"
-};
-
 Papa.parse(csvUrl,{
   download:true,
   skipEmptyLines:true,
   complete:function(results){
 
     headers = results.data[1].map(h => h.trim());
-
     tableData = results.data.slice(2)
       .filter(r => r.length === headers.length);
 
@@ -237,34 +172,40 @@ Papa.parse(csvUrl,{
 function createHeaders(){
   const thead = document.querySelector("#data-table thead");
   thead.innerHTML="";
-  const row = document.createElement("tr");
+  const row=document.createElement("tr");
 
   headers.forEach((h,i)=>{
     const th=document.createElement("th");
+    th.textContent=h;
 
-    const label=document.createElement("span");
-    label.textContent=h;
-
-    const arrow=document.createElement("span");
-    arrow.className="arrow";
-
-    th.appendChild(label);
-    th.appendChild(arrow);
-
-    if(columnDescriptions[h]){
-      th.title = columnDescriptions[h];
+    if(i<3){
+      th.classList.add("sticky-col","sticky-"+(i+1));
     }
 
-    th.onclick=()=>{
-      sortTable(i);
-      updateArrows();
-      highlightColumn();
-    };
-
+    th.onclick=()=>sortTable(i);
     row.appendChild(th);
   });
 
   thead.appendChild(row);
+}
+
+function applyStickyOffsets(){
+  const firstRow = document.querySelector("#data-table tbody tr");
+  if(!firstRow) return;
+
+  let leftOffset = 0;
+
+  for(let i=0;i<3;i++){
+    const width = firstRow.children[i].offsetWidth;
+
+    document.querySelectorAll(
+      `td:nth-child(${i+1}), th:nth-child(${i+1})`
+    ).forEach(cell=>{
+      cell.style.left = leftOffset + "px";
+    });
+
+    leftOffset += width;
+  }
 }
 
 function sortTable(col){
@@ -291,31 +232,6 @@ function sortTable(col){
   });
 
   displayRows();
-  updateArrows();
-}
-
-function updateArrows(){
-  document.querySelectorAll("#data-table th").forEach((th,i)=>{
-    const arrow=th.querySelector(".arrow");
-    arrow.textContent = i===currentSortColumn
-      ? (sortAscending?"▲":"▼")
-      : "";
-  });
-}
-
-function highlightColumn(){
-  document.querySelectorAll("td,th").forEach(cell=>{
-    cell.classList.remove("sorted-column");
-  });
-
-  if(currentSortColumn===-1) return;
-
-  document.querySelectorAll("#data-table tr").forEach(row=>{
-    if(row.children[currentSortColumn]){
-      row.children[currentSortColumn]
-         .classList.add("sorted-column");
-    }
-  });
 }
 
 function populateFilter(){
@@ -352,17 +268,24 @@ function displayRows(){
 
     const tr=document.createElement("tr");
 
-    r.forEach(c=>{
+    r.forEach((c,i)=>{
       const td=document.createElement("td");
       td.textContent=c;
+
+      if(i<3){
+        td.classList.add("sticky-col","sticky-"+(i+1));
+      }
+
       tr.appendChild(td);
     });
 
     tbody.appendChild(tr);
   });
 
-  highlightColumn();
+  applyStickyOffsets();
 }
+
+window.addEventListener("resize", applyStickyOffsets);
 
 </script>
 
