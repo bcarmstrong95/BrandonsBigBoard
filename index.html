@@ -28,7 +28,7 @@ h1{
 }
 
 .logo-container img{
-  height:150px; /* 50% larger */
+  height:150px;
 }
 
 .controls{
@@ -40,6 +40,9 @@ input, select{
   padding:6px;
   margin:5px;
   font-size:14px;
+  background:#111;
+  color:white;
+  border:1px solid #444;
 }
 
 table{
@@ -48,13 +51,13 @@ table{
 }
 
 th, td{
-  border:1px solid #555;
-  padding:6px;
+  padding:8px;
   text-align:center;
+  border:none; /* 🔥 removed grid lines */
 }
 
 th{
-  background-color:#4169E1; /* royal blue */
+  background-color:#4169E1;
   cursor:pointer;
   position:relative;
 }
@@ -74,6 +77,11 @@ td:first-child{
 
 .sorted-column{
   background-color:#222 !important;
+}
+
+/* Optional subtle row hover */
+tbody tr:hover{
+  background-color:#1a1a1a;
 }
 </style>
 </head>
@@ -175,7 +183,6 @@ function createHeaders(){
   thead.appendChild(row);
 }
 
-/* HEIGHT PARSER */
 function parseHeight(val){
   if(!val) return 0;
   val = val.toString().trim();
@@ -186,7 +193,6 @@ function parseHeight(val){
   return parseFloat(val) || 0;
 }
 
-/* HAND / ARM PARSER */
 function parseMeasurement(val){
   if(!val) return 0;
   val = val.toString().trim();
