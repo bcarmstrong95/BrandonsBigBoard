@@ -118,7 +118,7 @@ th.sorted .arrow{ opacity:1; }
 th.sorted.desc .arrow{ transform:rotate(180deg); }
 
 /* Active Sorted Column Highlight */
-td.sorted-column{
+.sorted-column{
   background:#162b55 !important;
 }
 
@@ -166,32 +166,117 @@ tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
 
 <body>
 
-<!-- EVERYTHING ELSE REMAINS SAME UNTIL SCRIPT -->
+<div class="hero-banner">
+  <div class="hero-content">
+    <h1>Brandon's Big Board 2026</h1>
+    <h2>2026 NFL Draft Database</h2>
+    <div class="meta-info">
+      <span id="prospectCount">Prospects: --</span>
+    </div>
+  </div>
+</div>
+
+<div class="logo-container">
+  <img src="comby.png">
+  <img src="NFLLogo.png">
+  <img src="Draft26.jpg">
+</div>
+
+<div class="controls">
+  <input type="text" id="searchBox" placeholder="Search players...">
+  <select id="positionFilter">
+    <option value="ALL">All Positions</option>
+  </select>
+</div>
+
+<div class="table-wrapper">
+<table id="data-table">
+  <thead></thead>
+  <tbody></tbody>
+</table>
+</div>
 
 <script>
 
-/* Keep all your existing JS above sortTable the same */
+const csvUrl = "YOUR_GOOGLE_SHEET_CSV_LINK_HERE";
 
-function sortTable(index, preserve=false){
+let originalData=[];
+let filteredData=[];
+let headers=[];
+let posIndex=-1;
+let schoolIndex=-1;
+let currentSort=-1;
+let sortAsc=true;
 
-  if(!preserve){
-    if(currentSort===index){ sortAsc=!sortAsc; }
-    else{ currentSort=index; sortAsc=true; }
+Papa.parse(csvUrl,{
+  download:true,
+  skipEmptyLines:true,
+  complete:function(results){
+    headers=results.data[1].map(h=>h.trim());
+    originalData=results.data.slice(2)
+      .filter(r=>r.length===headers.length);
+
+    posIndex=headers.findIndex(h=>h.toLowerCase().includes("pos"));
+    schoolIndex=headers.findIndex(h=>h.toLowerCase().includes("school"));
+
+    filteredData=[...originalData];
+
+    createHeaders();
+    populateFilter();
+    applyFilters();
   }
+});
+
+function createHeaders(){
+  const thead=document.querySelector("#data-table thead");
+  thead.innerHTML="";
+  const row=document.createElement("tr");
+
+  headers.forEach((h,i)=>{
+    const th=document.createElement("th");
+    th.innerHTML = h + '<span class="arrow">▲</span>';
+    th.onclick=()=>sortTable(i);
+    row.appendChild(th);
+  });
+
+  thead.appendChild(row);
+}
+
+function populateFilter(){
+  if(posIndex===-1) return;
+  const select=document.getElementById("positionFilter");
+  const positions=[...new Set(originalData.map(r=>r[posIndex]))];
+  positions.sort().forEach(p=>{
+    const option=document.createElement("option");
+    option.value=p;
+    option.textContent=p;
+    select.appendChild(option);
+  });
+}
+
+function applyFilters(){
+  const search=document.getElementById("searchBox").value.toLowerCase();
+  const position=document.getElementById("positionFilter").value;
+
+  filteredData=originalData.filter(row=>{
+    const matchesSearch=row.some(cell=>cell.toLowerCase().includes(search));
+    const matchesPosition=(position==="ALL" || row[posIndex]===position);
+    return matchesSearch && matchesPosition;
+  });
+
+  displayRows();
+}
+
+function sortTable(index){
+
+  if(currentSort===index){ sortAsc=!sortAsc; }
+  else{ currentSort=index; sortAsc=true; }
 
   filteredData.sort((a,b)=>{
     let valA=a[index];
     let valB=b[index];
 
-    if(headers[index].toLowerCase().includes("height")){
-      const convert=h=>{
-        const m=h.match(/(\d+)'(\d+(\.\d+)?)"/);
-        return m ? parseFloat(m[1])*12+parseFloat(m[2]) : 0;
-      };
-      valA=convert(valA);
-      valB=convert(valB);
-    }
-    else if(!isNaN(valA)&&!isNaN(valB)){
+    if(!isNaN(valA)&&!isNaN(valB)){
       valA=parseFloat(valA);
       valB=parseFloat(valB);
     }
@@ -209,18 +294,41 @@ function sortTable(index, preserve=false){
     td.classList.remove("sorted-column");
   });
 
-  if(currentSort!==-1){
-    const active=document.querySelectorAll("th")[currentSort];
-    active.classList.add("sorted");
-    if(!sortAsc) active.classList.add("desc");
-
-    document.querySelectorAll(`#data-table tbody tr`).forEach(row=>{
-      row.children[currentSort].classList.add("sorted-column");
-    });
-  }
+  const active=document.querySelectorAll("th")[currentSort];
+  active.classList.add("sorted");
+  if(!sortAsc) active.classList.add("desc");
 
   displayRows();
 }
+
+function displayRows(){
+  const tbody=document.querySelector("#data-table tbody");
+  tbody.innerHTML="";
+  let count=0;
+
+  filteredData.forEach(r=>{
+    count++;
+    const tr=document.createElement("tr");
+
+    if(posIndex!==-1){
+      if(r[posIndex]==="EDGE") tr.classList.add("edge-row");
+    }
+
+    r.forEach((c,i)=>{
+      const td=document.createElement("td");
+      td.textContent=c;
+      if(i===currentSort) td.classList.add("sorted-column");
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("prospectCount").textContent="Prospects: "+count;
+}
+
+document.getElementById("searchBox").addEventListener("input", applyFilters);
+document.getElementById("positionFilter").addEventListener("change", applyFilters);
 
 </script>
 
