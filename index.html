@@ -141,7 +141,7 @@ thead .sticky-3{ z-index:302; }
   vertical-align:middle;
 }
 
-/* POSITION COLOR CODING */
+/* POSITION COLORS */
 .edge-row td { color:#ff8c00; font-weight:600; }
 .dt-row td { color:#40e0d0; font-weight:600; }
 .cb-row td { color:#ff0000; font-weight:600; }
@@ -187,7 +187,8 @@ thead .sticky-3{ z-index:302; }
 
 <script>
 
-const csvUrl = "YOUR_CSV_LINK_HERE";  // keep your current link
+/* ✅ YOUR ACTUAL CSV LINK RESTORED */
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
 let tableData = [];
 let headers = [];
@@ -227,11 +228,7 @@ function createHeaders(){
   headers.forEach((h,i)=>{
     const th=document.createElement("th");
     th.innerHTML = h + '<span class="arrow">▲</span>';
-
-    if(i<3){
-      th.classList.add("sticky-col","sticky-"+(i+1));
-    }
-
+    if(i<3) th.classList.add("sticky-col","sticky-"+(i+1));
     th.onclick=()=>sortTable(i);
     row.appendChild(th);
   });
@@ -241,34 +238,28 @@ function createHeaders(){
 
 function sortTable(index){
 
-  if(currentSort === index){
-    sortAsc = !sortAsc;
-  } else {
-    currentSort = index;
-    sortAsc = true;
-  }
+  if(currentSort === index){ sortAsc=!sortAsc; }
+  else{ currentSort=index; sortAsc=true; }
 
   tableData.sort((a,b)=>{
-
-    let valA = a[index];
-    let valB = b[index];
+    let valA=a[index], valB=b[index];
 
     if(headers[index].toLowerCase().includes("height")){
       function heightToInches(h){
         const match = h.match(/(\d+)'(\d+(\.\d+)?)"/);
         if(!match) return 0;
-        return parseFloat(match[1]) * 12 + parseFloat(match[2]);
+        return parseFloat(match[1])*12 + parseFloat(match[2]);
       }
-      valA = heightToInches(valA);
-      valB = heightToInches(valB);
+      valA=heightToInches(valA);
+      valB=heightToInches(valB);
     }
     else if(!isNaN(valA) && !isNaN(valB)){
-      valA = parseFloat(valA);
-      valB = parseFloat(valB);
+      valA=parseFloat(valA);
+      valB=parseFloat(valB);
     }
 
-    if(valA < valB) return sortAsc ? -1 : 1;
-    if(valA > valB) return sortAsc ? 1 : -1;
+    if(valA<valB) return sortAsc?-1:1;
+    if(valA>valB) return sortAsc?1:-1;
     return 0;
   });
 
@@ -276,17 +267,17 @@ function sortTable(index){
     th.classList.remove("sorted","asc","desc");
   });
 
-  const active = document.querySelectorAll("th")[index];
-  active.classList.add("sorted", sortAsc ? "asc" : "desc");
+  const active=document.querySelectorAll("th")[index];
+  active.classList.add("sorted", sortAsc?"asc":"desc");
 
   displayRows();
 }
 
 function populateFilter(){
-  if(posIndex === -1) return;
+  if(posIndex===-1) return;
 
-  const select = document.getElementById("positionFilter");
-  const positions = [...new Set(tableData.map(r => r[posIndex]))];
+  const select=document.getElementById("positionFilter");
+  const positions=[...new Set(tableData.map(r=>r[posIndex]))];
 
   positions.sort().forEach(p=>{
     const option=document.createElement("option");
@@ -304,41 +295,34 @@ function displayRows(){
 
   const pos=document.getElementById("positionFilter").value;
   const search=document.getElementById("searchBox").value.toLowerCase();
-
-  let visibleCount = 0;
+  let visibleCount=0;
 
   tableData.forEach(r=>{
     if(posIndex!==-1 && pos!=="ALL" && r[posIndex]!==pos) return;
     if(search && !r.join(" ").toLowerCase().includes(search)) return;
 
     visibleCount++;
-
     const tr=document.createElement("tr");
 
-    if(posIndex !== -1){
-      const position = r[posIndex];
-      if(position==="EDGE") tr.classList.add("edge-row");
-      if(position==="DT") tr.classList.add("dt-row");
-      if(position==="CB") tr.classList.add("cb-row");
-      if(position==="S") tr.classList.add("s-row");
-      if(position==="TE") tr.classList.add("te-row");
-      if(position==="RB") tr.classList.add("rb-row");
-      if(position==="WR") tr.classList.add("wr-row");
+    if(posIndex!==-1){
+      const p=r[posIndex];
+      if(p==="EDGE") tr.classList.add("edge-row");
+      if(p==="DT") tr.classList.add("dt-row");
+      if(p==="CB") tr.classList.add("cb-row");
+      if(p==="S") tr.classList.add("s-row");
+      if(p==="TE") tr.classList.add("te-row");
+      if(p==="RB") tr.classList.add("rb-row");
+      if(p==="WR") tr.classList.add("wr-row");
     }
 
     r.forEach((c,i)=>{
       const td=document.createElement("td");
-
-      if(i === schoolIndex && c === "Alabama"){
-        td.innerHTML = '<img src="bama.svg" class="school-logo">';
+      if(i===schoolIndex && c==="Alabama"){
+        td.innerHTML='<img src="bama.svg" class="school-logo">';
       } else {
-        td.textContent = c;
+        td.textContent=c;
       }
-
-      if(i<3){
-        td.classList.add("sticky-col","sticky-"+(i+1));
-      }
-
+      if(i<3) td.classList.add("sticky-col","sticky-"+(i+1));
       tr.appendChild(td);
     });
 
