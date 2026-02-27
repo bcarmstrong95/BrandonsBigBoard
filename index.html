@@ -5,7 +5,6 @@
 <title>Brandon's Big Board 2026</title>
 
 <style>
-/* (ALL YOUR CSS REMAINS EXACTLY THE SAME — unchanged) */
 body {
   font-family: Arial, sans-serif;
   margin: 40px;
@@ -86,9 +85,9 @@ th[title]:hover::after {
   position: absolute;
   top: -30px;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.85);
   color: #fff;
-  padding: 5px;
+  padding: 5px 8px;
   border-radius: 4px;
   font-size: 12px;
   white-space: nowrap;
@@ -136,29 +135,13 @@ let posIndex = -1;
 
 const columnDescriptions = {
   "B#": "NFL Expert Brandon Armstrong's Big Board Ranking",
-  "C#": "Consensus Ranking according to NFLMockDraftDatabase.com",
+  "C#": "Consensus Ranking",
   "Name": "Player's Name",
   "POS": "Player's Primary Position",
-  "School": "The university out of which the player is being drafted",
-  "Height": "Player's Height",
-  "Weight": "Player's Weight in pounds",
-  "Age": "Player's Draft Age",
-  "PFN": "Impact Score according to ProFootballNetwork.com",
-  "PFF": "Grade for most recently played season according to ProFootballFocus.com",
-  "NFLDB": "Draft Prospect Grade according to NFLDraftBuzz.com",
-  "AVG": "Average of PFN, PFF, & NFLDB",
-  "GP": "Games Played",
-  "Sacks": "Total Sacks",
-  "S/G": "Sacks per Game",
-  "TFL": "Tackles for Loss",
-  "TFL/G": "Tackles for Loss per Game",
-  "Tackles": "Combined Tackles",
-  "T/G": "Tackles per Game",
-  "PDe": "Passes Defended",
-  "INTs": "Interceptions",
-  "INT/G": "Interceptions per Game",
-  "FF": "Forced Fumbles",
-  "FF/G": "Forced Fumbles per Game"
+  "School": "University",
+  "Height": "Player Height",
+  "Weight": "Weight in pounds",
+  "Age": "Draft Age"
 };
 
 Papa.parse(csvUrl, {
@@ -212,22 +195,32 @@ function createHeaders() {
   thead.appendChild(row);
 }
 
-/* ✅ UPDATED HEIGHT PARSER */
+/* ✅ TRUE HEIGHT FIX */
 function parseHeight(val){
   if(!val) return 0;
 
   val = val.toString().trim();
 
-  // Handle 6-2, 6'2, 6 2
-  let match = val.match(/(\d+)[-'\s](\d+)/);
+  // 6'2", 6'2.5", 5'11.875"
+  let match = val.match(/(\d+)'\s*(\d+(\.\d+)?)/);
   if(match){
-    return parseInt(match[1]) * 12 + parseInt(match[2]);
+    let feet = parseFloat(match[1]);
+    let inches = parseFloat(match[2]);
+    return feet * 12 + inches;
   }
 
-  // Handle decimal like 6.2 (6 feet 2 inches)
+  // 6-2 or 6 2
+  match = val.match(/(\d+)[-\s](\d+(\.\d+)?)/);
+  if(match){
+    let feet = parseFloat(match[1]);
+    let inches = parseFloat(match[2]);
+    return feet * 12 + inches;
+  }
+
+  // 6.2 format
   if(val.includes(".")){
     let parts = val.split(".");
-    let feet = parseInt(parts[0]);
+    let feet = parseFloat(parts[0]);
     let inches = parseFloat(parts[1]);
     return feet * 12 + inches;
   }
@@ -247,12 +240,7 @@ function sortTable(col) {
     let A = parseHeight(a[col]);
     let B = parseHeight(b[col]);
 
-    if(typeof A === "number" && typeof B === "number"){
-      return sortAscending ? A-B : B-A;
-    }
-    return sortAscending
-      ? A.toString().localeCompare(B)
-      : B.toString().localeCompare(A);
+    return sortAscending ? A - B : B - A;
   });
 
   displayRows();
