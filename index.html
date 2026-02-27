@@ -156,6 +156,7 @@ tbody tr:nth-child(even){ background:#111; }
 
 .school-logo{
   height:22px;
+  vertical-align:middle;
 }
 </style>
 </head>
@@ -216,13 +217,7 @@ Papa.parse(csvUrl,{
 
     populatePositions();
     createHeaders();
-    applyFilters();
-
-    const fortyIndex=headers.findIndex(h=>h.toLowerCase().includes("40"));
-    if(fortyIndex!==-1){
-      sortAsc=true;
-      sortTable(fortyIndex);
-    }
+    displayRows(); // NO auto sort
   }
 });
 
@@ -264,8 +259,16 @@ function displayRows(){
 
     r.forEach((c,i)=>{
       const td=document.createElement("td");
-      td.textContent=c;
+
+      // Replace Alabama with logo
+      if(i===schoolIndex && c.toLowerCase()==="alabama"){
+        td.innerHTML='<img src="bama.svg" class="school-logo">';
+      } else {
+        td.textContent=c;
+      }
+
       if(currentSort===i) td.classList.add("active-col");
+
       tr.appendChild(td);
     });
 
@@ -284,8 +287,7 @@ function applyFilters(){
            (!pos || r[posIndex]===pos);
   });
 
-  if(currentSort!==-1) sortTable(currentSort,false);
-  else displayRows();
+  displayRows();
 }
 
 function parseValue(val){
@@ -299,14 +301,12 @@ function parseValue(val){
   return val.toLowerCase();
 }
 
-function sortTable(col,toggle=true){
+function sortTable(col){
 
-  if(toggle){
-    if(currentSort===col) sortAsc=!sortAsc;
-    else{
-      sortAsc=true;
-      currentSort=col;
-    }
+  if(currentSort===col) sortAsc=!sortAsc;
+  else{
+    currentSort=col;
+    sortAsc=true;
   }
 
   filteredData.sort((a,b)=>{
