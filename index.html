@@ -74,12 +74,6 @@ th:hover {
 
 tr:hover { background-color: #222; }
 
-th[title]:hover {
-  background-color: #355acb;
-  cursor: pointer;
-  position: relative;
-}
-
 th[title]:hover::after {
   content: attr(title);
   position: absolute;
@@ -125,24 +119,13 @@ th[title]:hover::after {
 </table>
 
 <script>
-const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
+const csvUrl = "YOUR_GOOGLE_SHEET_CSV_LINK_HERE";
 
 let tableData = [];
 let headers = [];
 let currentSortColumn = -1;
 let sortAscending = true;
 let posIndex = -1;
-
-const columnDescriptions = {
-  "B#": "NFL Expert Brandon Armstrong's Big Board Ranking",
-  "C#": "Consensus Ranking",
-  "Name": "Player's Name",
-  "POS": "Player's Primary Position",
-  "School": "University",
-  "Height": "Player Height",
-  "Weight": "Weight in pounds",
-  "Age": "Draft Age"
-};
 
 Papa.parse(csvUrl, {
   download: true,
@@ -179,15 +162,7 @@ function createHeaders() {
     th.appendChild(label);
     th.appendChild(arrow);
 
-    if (columnDescriptions[h]) {
-      th.title = columnDescriptions[h];
-    }
-
-    th.onclick = () => {
-      sortTable(i);
-      updateArrows();
-      highlightColumn();
-    };
+    th.onclick = () => sortTable(i);
 
     row.appendChild(th);
   });
@@ -195,40 +170,33 @@ function createHeaders() {
   thead.appendChild(row);
 }
 
-/* ✅ TRUE HEIGHT FIX */
+/* ✅ Correct Height Parser */
 function parseHeight(val){
   if(!val) return 0;
 
   val = val.toString().trim();
 
-  // 6'2", 6'2.5", 5'11.875"
   let match = val.match(/(\d+)'\s*(\d+(\.\d+)?)/);
   if(match){
-    let feet = parseFloat(match[1]);
-    let inches = parseFloat(match[2]);
-    return feet * 12 + inches;
+    return parseFloat(match[1]) * 12 + parseFloat(match[2]);
   }
 
-  // 6-2 or 6 2
   match = val.match(/(\d+)[-\s](\d+(\.\d+)?)/);
   if(match){
-    let feet = parseFloat(match[1]);
-    let inches = parseFloat(match[2]);
-    return feet * 12 + inches;
+    return parseFloat(match[1]) * 12 + parseFloat(match[2]);
   }
 
-  // 6.2 format
   if(val.includes(".")){
     let parts = val.split(".");
-    let feet = parseFloat(parts[0]);
-    let inches = parseFloat(parts[1]);
-    return feet * 12 + inches;
+    return parseFloat(parts[0]) * 12 + parseFloat(parts[1]);
   }
 
   return parseFloat(val) || 0;
 }
 
+/* ✅ SMART SORTING */
 function sortTable(col) {
+
   if (currentSortColumn === col) {
     sortAscending = !sortAscending;
   } else {
@@ -236,14 +204,34 @@ function sortTable(col) {
     sortAscending = true;
   }
 
-  tableData.sort((a,b)=>{
-    let A = parseHeight(a[col]);
-    let B = parseHeight(b[col]);
+  const headerName = headers[col].toLowerCase();
 
-    return sortAscending ? A - B : B - A;
+  tableData.sort((a, b) => {
+
+    let A = a[col];
+    let B = b[col];
+
+    // Height column special handling
+    if (headerName.includes("height")) {
+      A = parseHeight(A);
+      B = parseHeight(B);
+      return sortAscending ? A - B : B - A;
+    }
+
+    // Numeric columns
+    if (!isNaN(A) && !isNaN(B) && A !== "" && B !== "") {
+      return sortAscending ? A - B : B - A;
+    }
+
+    // Text columns
+    return sortAscending
+      ? A.toString().localeCompare(B.toString())
+      : B.toString().localeCompare(A.toString());
   });
 
+  updateArrows();
   displayRows();
+  highlightColumn();
 }
 
 function updateArrows(){
