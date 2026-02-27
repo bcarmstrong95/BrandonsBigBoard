@@ -14,11 +14,36 @@ body{
   margin:20px;
 }
 
-h1{
+/* ===== HERO BANNER ===== */
+.hero-banner{
+  background:linear-gradient(135deg,#0a0a0a,#1a1a1a);
+  border:1px solid #222;
+  padding:40px 20px;
+  margin-bottom:30px;
   text-align:center;
-  margin-bottom:10px;
 }
 
+.hero-content h1{
+  font-size:36px;
+  margin:0;
+  letter-spacing:2px;
+  font-weight:700;
+}
+
+.hero-content h2{
+  font-size:22px;
+  margin:10px 0;
+  color:#4169E1;
+  font-weight:600;
+}
+
+.hero-content p{
+  font-size:14px;
+  color:#aaa;
+  margin-top:10px;
+}
+
+/* ===== LOGOS ===== */
 .logo-container{
   display:flex;
   justify-content:center;
@@ -31,6 +56,7 @@ h1{
   height:150px;
 }
 
+/* ===== CONTROLS ===== */
 .controls{
   text-align:center;
   margin-bottom:15px;
@@ -45,6 +71,7 @@ input, select{
   border:1px solid #444;
 }
 
+/* ===== TABLE WRAPPER ===== */
 .table-wrapper{
   overflow:auto;
   max-height:75vh;
@@ -107,7 +134,7 @@ tbody tr:hover{ background:#1a1a1a; }
 .sticky-col{
   position:sticky;
   background-clip:padding-box;
-  border-right:1px solid #222; /* <-- UX Enhancement Added */
+  border-right:1px solid #222;
 }
 
 tbody tr:nth-child(odd) .sticky-col{ background:#000; }
@@ -134,13 +161,22 @@ td:first-child{
 
 <body>
 
-<h1>Brandon's Big Board 2026</h1>
+<!-- ===== HERO SECTION ===== -->
+<div class="hero-banner">
+  <div class="hero-content">
+    <h1>Brandon Armstrong</h1>
+    <h2>2026 NFL Draft Big Board</h2>
+    <p>Updated: February 2026 • Prospect Rankings</p>
+  </div>
+</div>
 
+<!-- ===== LOGOS ===== -->
 <div class="logo-container">
   <img src="NFLLogo.png">
   <img src="Draft26.jpg">
 </div>
 
+<!-- ===== CONTROLS ===== -->
 <div class="controls">
   <input type="text" id="searchBox" placeholder="Search players...">
   <select id="positionFilter">
@@ -148,6 +184,7 @@ td:first-child{
   </select>
 </div>
 
+<!-- ===== TABLE ===== -->
 <div class="table-wrapper">
 <table id="data-table">
   <thead></thead>
