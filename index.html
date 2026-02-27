@@ -141,14 +141,14 @@ thead .sticky-3{ z-index:302; }
   vertical-align:middle;
 }
 
-/* ===== POSITION COLOR CODING ===== */
+/* POSITION COLOR CODING */
 .edge-row td {
-  color: #ff8c00; /* orange */
+  color: #ff8c00;
   font-weight: 600;
 }
 
 .dt-row td {
-  color: #40e0d0; /* turquoise */
+  color: #40e0d0;
   font-weight: 600;
 }
 </style>
@@ -197,7 +197,6 @@ let schoolIndex = -1;
 let currentSort = -1;
 let sortAsc = true;
 
-/* LOAD */
 Papa.parse(csvUrl,{
   download:true,
   skipEmptyLines:true,
@@ -216,13 +215,11 @@ Papa.parse(csvUrl,{
   }
 });
 
-/* PROSPECT COUNT */
 function updateProspectCount(count){
   document.getElementById("prospectCount").textContent =
     "Prospects: " + count;
 }
 
-/* HEADERS */
 function createHeaders(){
   const thead = document.querySelector("#data-table thead");
   thead.innerHTML="";
@@ -243,8 +240,9 @@ function createHeaders(){
   thead.appendChild(row);
 }
 
-/* SORT */
+/* HEIGHT SORT FIX INCLUDED */
 function sortTable(index){
+
   if(currentSort === index){
     sortAsc = !sortAsc;
   } else {
@@ -253,10 +251,23 @@ function sortTable(index){
   }
 
   tableData.sort((a,b)=>{
+
     let valA = a[index];
     let valB = b[index];
 
-    if(!isNaN(valA) && !isNaN(valB)){
+    if(headers[index].toLowerCase().includes("height")){
+
+      function heightToInches(h){
+        const match = h.match(/(\d+)'(\d+(\.\d+)?)"/);
+        if(!match) return 0;
+        return parseFloat(match[1]) * 12 + parseFloat(match[2]);
+      }
+
+      valA = heightToInches(valA);
+      valB = heightToInches(valB);
+    }
+
+    else if(!isNaN(valA) && !isNaN(valB)){
       valA = parseFloat(valA);
       valB = parseFloat(valB);
     }
@@ -276,7 +287,6 @@ function sortTable(index){
   displayRows();
 }
 
-/* FILTER */
 function populateFilter(){
   if(posIndex === -1) return;
 
@@ -293,7 +303,6 @@ function populateFilter(){
   select.addEventListener("change",displayRows);
 }
 
-/* DISPLAY */
 function displayRows(){
   const tbody=document.querySelector("#data-table tbody");
   tbody.innerHTML="";
@@ -313,12 +322,8 @@ function displayRows(){
 
     if(posIndex !== -1){
       const position = r[posIndex];
-      if(position === "EDGE"){
-        tr.classList.add("edge-row");
-      }
-      if(position === "DT"){
-        tr.classList.add("dt-row");
-      }
+      if(position === "EDGE") tr.classList.add("edge-row");
+      if(position === "DT") tr.classList.add("dt-row");
     }
 
     r.forEach((c,i)=>{
