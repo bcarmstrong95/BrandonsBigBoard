@@ -108,14 +108,24 @@ th:hover{
   background:#3154b3;
 }
 
+/* Hide arrows by default */
 th .arrow{
   display:inline-block;
   margin-left:6px;
   transition:transform .25s ease, opacity .2s ease;
+  opacity:0;
+}
+
+/* Show arrow on hover */
+th:hover .arrow{
   opacity:.4;
 }
 
-th.sorted .arrow{ opacity:1; }
+/* Show fully when sorted */
+th.sorted .arrow{
+  opacity:1;
+}
+
 th.sorted.asc .arrow{ transform:rotate(0deg); }
 th.sorted.desc .arrow{ transform:rotate(180deg); }
 
@@ -135,15 +145,14 @@ tbody tr:hover .sticky-col{ background:#1a1a1a; }
 
 .sticky-1{ z-index:150; }
 .sticky-2{ z-index:151; }
-.sticky-3{ z-index:152; }
+.sticky-3{ 
+  z-index:152;
+  box-shadow:6px 0 10px rgba(0,0,0,.7);
+}
 
 thead .sticky-1{ z-index:300; }
 thead .sticky-2{ z-index:301; }
 thead .sticky-3{ z-index:302; }
-
-.sticky-3{
-  box-shadow:4px 0 6px rgba(0,0,0,.6);
-}
 
 td:first-child{
   font-weight:bold;
@@ -211,7 +220,7 @@ Papa.parse(csvUrl,{
     createHeaders();
     populateFilter();
     displayRows();
-    fetchLastUpdated();   // Timestamp now updates properly
+    fetchLastUpdated();
   }
 });
 
