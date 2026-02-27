@@ -99,7 +99,12 @@ th{
   cursor:pointer;
   position:sticky;
   top:0;
-  z-index:500;
+  z-index:1000; /* higher than sticky columns */
+  transition:background .2s ease;
+}
+
+th:hover{
+  background:#3157c7;
 }
 
 /* Sorting Arrow */
@@ -107,11 +112,13 @@ th .arrow{
   display:inline-block;
   margin-left:6px;
   opacity:0;
+  transform:translateY(-2px);
   transition:transform .25s ease, opacity .2s ease;
 }
 
 th.sorted .arrow{
   opacity:1;
+  transform:translateY(0);
 }
 
 th.sorted.desc .arrow{
@@ -127,21 +134,21 @@ th:nth-child(3), td:nth-child(3){ width:110px; min-width:110px; }
 th:nth-child(1), td:nth-child(1){
   position:sticky;
   left:0;
-  z-index:400;
+  z-index:900;
   background:#000;
 }
 
 th:nth-child(2), td:nth-child(2){
   position:sticky;
   left:140px;
-  z-index:401;
+  z-index:901;
   background:#000;
 }
 
 th:nth-child(3), td:nth-child(3){
   position:sticky;
   left:230px;
-  z-index:402;
+  z-index:902;
   background:#000;
   box-shadow:6px 0 10px rgba(0,0,0,.7);
 }
@@ -220,6 +227,7 @@ Papa.parse(csvUrl,{
   download:true,
   skipEmptyLines:true,
   complete:function(results){
+
     headers=results.data[1].map(h=>h.trim());
     tableData=results.data.slice(2)
       .filter(r=>r.length===headers.length);
@@ -235,6 +243,8 @@ Papa.parse(csvUrl,{
 
 function createHeaders(){
   const thead=document.querySelector("#data-table thead");
+  thead.innerHTML=""; // prevent duplication
+
   const row=document.createElement("tr");
 
   headers.forEach((h,i)=>{
@@ -257,13 +267,12 @@ function sortTable(index){
     let valB=b[index];
 
     if(headers[index].toLowerCase().includes("height")){
-      function heightToInches(h){
-        const match=h.match(/(\d+)'(\d+(\.\d+)?)"/);
-        if(!match) return 0;
-        return parseFloat(match[1])*12+parseFloat(match[2]);
-      }
-      valA=heightToInches(valA);
-      valB=heightToInches(valB);
+      const convert=h=>{
+        const m=h.match(/(\d+)'(\d+(\.\d+)?)"/);
+        return m ? parseFloat(m[1])*12+parseFloat(m[2]) : 0;
+      };
+      valA=convert(valA);
+      valB=convert(valB);
     }
     else if(!isNaN(valA)&&!isNaN(valB)){
       valA=parseFloat(valA);
