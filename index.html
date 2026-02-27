@@ -43,20 +43,6 @@ body{
   color:#ccc;
 }
 
-/* LOGOS */
-.logo-container{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:30px;
-  margin:10px 0 25px 0;
-}
-
-.logo-container img{
-  height:150px;
-  object-fit:contain;
-}
-
 /* CONTROLS */
 .controls{
   text-align:center;
@@ -146,7 +132,7 @@ tbody tr:nth-child(even) td:nth-child(-n+3){ background:#111; }
 tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
 
 /* POSITION COLORS */
-.edge-row td { color:#ff4500; font-weight:600; }
+.edge-row td { color:#cc5500; font-weight:600; } /* BURNT ORANGE */
 .dt-row td { color:#40e0d0; font-weight:600; }
 .cb-row td { color:#ff0000; font-weight:600; }
 .s-row td { color:#ff1493; font-weight:600; }
@@ -198,6 +184,7 @@ let originalData=[];
 let filteredData=[];
 let headers=[];
 let posIndex=-1;
+let schoolIndex=-1;
 let currentSort=-1;
 let sortAsc=true;
 
@@ -209,7 +196,9 @@ Papa.parse(csvUrl,{
     headers = results.data[1].map(h=>h.trim());
     originalData = results.data.slice(2).filter(r=>r.length===headers.length);
     filteredData = [...originalData];
+
     posIndex = headers.findIndex(h=>h.toLowerCase().includes("pos"));
+    schoolIndex = headers.findIndex(h=>h.toLowerCase().includes("school"));
 
     createHeaders();
     populateFilter();
@@ -219,14 +208,12 @@ Papa.parse(csvUrl,{
 
 function createHeaders(){
   const row=document.createElement("tr");
-
   headers.forEach((h,i)=>{
     const th=document.createElement("th");
     th.innerHTML = h + '<span class="arrow">▲</span>';
     th.onclick=()=>sortTable(i);
     row.appendChild(th);
   });
-
   document.querySelector("#data-table thead").appendChild(row);
 }
 
@@ -259,11 +246,10 @@ function sortTable(index){
 
   const header=headers[index].toLowerCase();
 
-  if(currentSort===index){
-    sortAsc=!sortAsc;
-  } else{
+  if(currentSort===index){ sortAsc=!sortAsc; }
+  else{
     currentSort=index;
-    sortAsc = true; // default ascending (LOWEST first for 40)
+    sortAsc=true; // lowest first (good for 40)
   }
 
   filteredData.sort((a,b)=>{
@@ -338,8 +324,15 @@ function displayRows(){
 
     r.forEach((c,i)=>{
       const td=document.createElement("td");
-      td.textContent=c;
+
+      if(i===schoolIndex && c==="Alabama"){
+        td.innerHTML='<img src="bama.svg" class="school-logo">';
+      } else {
+        td.textContent=c;
+      }
+
       if(i===currentSort) td.classList.add("sorted-column");
+
       tr.appendChild(td);
     });
 
