@@ -37,12 +37,6 @@ body{
   font-weight:600;
 }
 
-.hero-content p{
-  font-size:14px;
-  color:#aaa;
-  margin-top:6px;
-}
-
 .meta-info{
   margin-top:12px;
   font-size:13px;
@@ -50,7 +44,7 @@ body{
 }
 
 .meta-info span{
-  margin:0 10px;
+  margin:0 12px;
 }
 
 /* ===== LOGOS ===== */
@@ -159,14 +153,14 @@ td:first-child{
 
 <body>
 
-<!-- ===== HERO ===== -->
+<!-- HERO -->
 <div class="hero-banner">
   <div class="hero-content">
     <h1>Brandon's Big Board 2026</h1>
     <h2>2026 NFL Draft Database</h2>
     <div class="meta-info">
       <span id="prospectCount">Prospects: --</span>
-      <span id="lastUpdated">Last Updated: --</span>
+      <span id="lastUpdated">Last Synced: --</span>
     </div>
   </div>
 </div>
@@ -200,8 +194,7 @@ let posIndex = -1;
 let currentSort = -1;
 let sortAsc = true;
 
-fetchLastUpdated();
-
+/* ===== LOAD DATA ===== */
 Papa.parse(csvUrl,{
   download:true,
   skipEmptyLines:true,
@@ -218,27 +211,18 @@ Papa.parse(csvUrl,{
     createHeaders();
     populateFilter();
     displayRows();
+    fetchLastUpdated();   // Timestamp now updates properly
   }
 });
 
-/* ===== FETCH LAST UPDATED FROM GOOGLE ===== */
+/* ===== LAST SYNC TIME ===== */
 function fetchLastUpdated(){
-  fetch(csvUrl,{ method:"HEAD" })
-    .then(res=>{
-      const lastMod = res.headers.get("Last-Modified");
-      if(lastMod){
-        const date = new Date(lastMod);
-        document.getElementById("lastUpdated").textContent =
-          "Last Updated: " + date.toLocaleString();
-      }
-    })
-    .catch(()=> {
-      document.getElementById("lastUpdated").textContent =
-        "Last Updated: Unavailable";
-    });
+  const now = new Date();
+  document.getElementById("lastUpdated").textContent =
+    "Last Synced: " + now.toLocaleString();
 }
 
-/* ===== LIVE PROSPECT COUNT ===== */
+/* ===== PROSPECT COUNT ===== */
 function updateProspectCount(count){
   document.getElementById("prospectCount").textContent =
     "Prospects: " + count;
