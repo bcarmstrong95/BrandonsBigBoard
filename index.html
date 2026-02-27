@@ -176,7 +176,7 @@ tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
 
 <script>
 
-const csvUrl = "YOUR_CSV_LINK_HERE";
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
 let originalData=[];
 let filteredData=[];
@@ -202,7 +202,6 @@ Papa.parse(csvUrl,{
     populateFilter();
     displayRows();
 
-    // AUTO SORT 40 TIME LOWEST FIRST
     const fortyIndex = headers.findIndex(h => h.toLowerCase().includes("40"));
     if(fortyIndex !== -1){
       sortTable(fortyIndex);
