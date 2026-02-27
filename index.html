@@ -142,15 +142,14 @@ thead .sticky-3{ z-index:302; }
 }
 
 /* POSITION COLOR CODING */
-.edge-row td {
-  color: #ff8c00;
-  font-weight: 600;
-}
+.edge-row td { color:#ff8c00; font-weight:600; }
+.dt-row td { color:#40e0d0; font-weight:600; }
+.cb-row td { color:#ff0000; font-weight:600; }
+.s-row td { color:#ff1493; font-weight:600; }
+.te-row td { color:#800080; font-weight:600; }
+.rb-row td { color:#006400; font-weight:600; }
+.wr-row td { color:#b8860b; font-weight:600; }
 
-.dt-row td {
-  color: #40e0d0;
-  font-weight: 600;
-}
 </style>
 </head>
 
@@ -188,7 +187,7 @@ thead .sticky-3{ z-index:302; }
 
 <script>
 
-const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
+const csvUrl = "YOUR_CSV_LINK_HERE";  // keep your current link
 
 let tableData = [];
 let headers = [];
@@ -240,7 +239,6 @@ function createHeaders(){
   thead.appendChild(row);
 }
 
-/* HEIGHT SORT FIX INCLUDED */
 function sortTable(index){
 
   if(currentSort === index){
@@ -256,17 +254,14 @@ function sortTable(index){
     let valB = b[index];
 
     if(headers[index].toLowerCase().includes("height")){
-
       function heightToInches(h){
         const match = h.match(/(\d+)'(\d+(\.\d+)?)"/);
         if(!match) return 0;
         return parseFloat(match[1]) * 12 + parseFloat(match[2]);
       }
-
       valA = heightToInches(valA);
       valB = heightToInches(valB);
     }
-
     else if(!isNaN(valA) && !isNaN(valB)){
       valA = parseFloat(valA);
       valB = parseFloat(valB);
@@ -322,8 +317,13 @@ function displayRows(){
 
     if(posIndex !== -1){
       const position = r[posIndex];
-      if(position === "EDGE") tr.classList.add("edge-row");
-      if(position === "DT") tr.classList.add("dt-row");
+      if(position==="EDGE") tr.classList.add("edge-row");
+      if(position==="DT") tr.classList.add("dt-row");
+      if(position==="CB") tr.classList.add("cb-row");
+      if(position==="S") tr.classList.add("s-row");
+      if(position==="TE") tr.classList.add("te-row");
+      if(position==="RB") tr.classList.add("rb-row");
+      if(position==="WR") tr.classList.add("wr-row");
     }
 
     r.forEach((c,i)=>{
@@ -346,32 +346,10 @@ function displayRows(){
   });
 
   updateProspectCount(visibleCount);
-  applyStickyOffsets();
 }
 
 document.getElementById("searchBox")
   .addEventListener("input",displayRows);
-
-window.addEventListener("resize", applyStickyOffsets);
-
-function applyStickyOffsets(){
-  const firstRow = document.querySelector("#data-table tbody tr");
-  if(!firstRow) return;
-
-  let leftOffset = 0;
-
-  for(let i=0;i<3;i++){
-    const width = firstRow.children[i].offsetWidth;
-
-    document.querySelectorAll(
-      `td:nth-child(${i+1}), th:nth-child(${i+1})`
-    ).forEach(cell=>{
-      cell.style.left = leftOffset + "px";
-    });
-
-    leftOffset += width;
-  }
-}
 
 </script>
 
