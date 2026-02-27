@@ -54,14 +54,16 @@ th, td{
   padding:8px;
   text-align:center;
   border:none;
+  white-space:nowrap;
 }
 
+/* Sticky header */
 th{
   background-color:#4169E1;
   cursor:pointer;
   position:sticky;
   top:0;
-  z-index:2;
+  z-index:5;
 }
 
 th:hover{
@@ -72,11 +74,13 @@ th .arrow{
   margin-left:5px;
 }
 
+/* First column styling */
 td:first-child{
   background-color:#4169E1;
   font-weight:bold;
 }
 
+/* Sorted column highlight */
 .sorted-column{
   background-color:#222 !important;
 }
@@ -87,6 +91,48 @@ tbody tr:hover{
 
 tbody tr:nth-child(even){
   background-color:#111;
+}
+
+/* ========================= */
+/* STICKY FIRST 3 COLUMNS */
+/* ========================= */
+
+/* Column 1 */
+th:nth-child(1),
+td:nth-child(1){
+  position:sticky;
+  left:0;
+  z-index:4;
+}
+
+/* Column 2 */
+th:nth-child(2),
+td:nth-child(2){
+  position:sticky;
+  left:70px; /* width of col 1 */
+  z-index:4;
+}
+
+/* Column 3 */
+th:nth-child(3),
+td:nth-child(3){
+  position:sticky;
+  left:140px; /* col1 + col2 */
+  z-index:4;
+}
+
+/* Make header cells layer above body cells */
+thead th:nth-child(1),
+thead th:nth-child(2),
+thead th:nth-child(3){
+  z-index:6;
+}
+
+/* Ensure sticky cells keep dark background */
+td:nth-child(1),
+td:nth-child(2),
+td:nth-child(3){
+  background-color:#000;
 }
 </style>
 </head>
@@ -107,10 +153,12 @@ tbody tr:nth-child(even){
   </select>
 </div>
 
+<div style="overflow-x:auto;">
 <table id="data-table">
   <thead></thead>
   <tbody></tbody>
 </table>
+</div>
 
 <script>
 
@@ -144,7 +192,6 @@ Papa.parse(csvUrl,{
   skipEmptyLines:true,
   complete:function(results){
 
-    // Your sheet uses row 1 as header
     headers = results.data[1].map(h => h.trim());
 
     tableData = results.data.slice(2)
