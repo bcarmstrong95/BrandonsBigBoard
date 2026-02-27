@@ -1,126 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Brandon's Big Board 2026</title>
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 40px;
-  background-color: #000;
-  color: white;
-}
-
-h1 { text-align: center; }
-
-.logo-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 40px;
-  margin-bottom: 20px;
-}
-
-.logo-row img {
-  height: 150px;
-}
-
-select, input {
-  padding: 8px;
-  margin-bottom: 15px;
-  font-size: 16px;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  background: #111;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-}
-
-th, td {
-  padding: 10px;
-  border-bottom: 1px solid #333;
-  text-align: left;
-}
-
-th {
-  background-color: #4169E1;
-  color: white;
-  position: sticky;
-  top: 0;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-td:first-child {
-  background-color: #4169E1;
-  color: white;
-}
-
-th:hover {
-  background-color: #355acb;
-}
-
-.arrow {
-  margin-left: 6px;
-  font-size: 12px;
-}
-
-.sorted-column {
-  background-color: rgba(65,105,225,0.25);
-}
-
-tr:hover { background-color: #222; }
-
-th[title]:hover::after {
-  content: attr(title);
-  position: absolute;
-  top: -30px;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.85);
-  color: #fff;
-  padding: 5px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  z-index: 1000;
-}
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-</head>
-
-<body>
-
-<h1>Brandon's Big Board 2026</h1>
-
-<div class="logo-row">
-  <img src="NFLLogo.png" alt="NFL Logo">
-  <img src="Draft26.jpg" alt="NFL Draft 2026">
-</div>
-
-<label><strong>Search:</strong></label><br>
-<input type="text" id="searchBox" placeholder="Type to search players..." />
-
-<br><br>
-
-<label><strong>Filter by Position:</strong></label><br>
-<select id="positionFilter">
-  <option value="ALL">All Positions</option>
-</select>
-
-<br><br>
-
-<table id="data-table">
-  <thead></thead>
-  <tbody></tbody>
-</table>
-
 <script>
-
-/* ✅ RESTORED REAL CSV LINK */
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
 let tableData = [];
@@ -128,6 +6,21 @@ let headers = [];
 let currentSortColumn = -1;
 let sortAscending = true;
 let posIndex = -1;
+
+const columnDescriptions = {
+  "B#": "NFL Expert Brandon Armstrong's Big Board Ranking",
+  "C#": "Consensus Ranking according to NFLMockDraftDatabase.com",
+  "Name": "Player's Name",
+  "POS": "Player's Primary Position",
+  "School": "The university out of which the player is being drafted",
+  "Height": "Player's Height",
+  "Weight": "Player's Weight in pounds",
+  "Age": "Player's Draft Age",
+  "PFN": "Impact Score according to ProFootballNetwork.com",
+  "PFF": "Grade for most recently played season according to ProFootballFocus.com",
+  "NFLDB": "Draft Prospect Grade according to NFLDraftBuzz.com",
+  "AVG": "Average of PFN, PFF & NFLDB (if available)"
+};
 
 Papa.parse(csvUrl, {
   download: true,
@@ -154,7 +47,6 @@ function createHeaders() {
 
   headers.forEach((h, i) => {
     const th = document.createElement("th");
-
     const label = document.createElement("span");
     label.textContent = h;
 
@@ -164,7 +56,15 @@ function createHeaders() {
     th.appendChild(label);
     th.appendChild(arrow);
 
-    th.onclick = () => sortTable(i);
+    if (columnDescriptions[h]) {
+      th.title = columnDescriptions[h];
+    }
+
+    th.onclick = () => {
+      sortTable(i);
+      updateArrows();
+      highlightColumn();
+    };
 
     row.appendChild(th);
   });
@@ -172,31 +72,41 @@ function createHeaders() {
   thead.appendChild(row);
 }
 
-/* ✅ Accurate Height Parser */
+/* HEIGHT PARSER */
 function parseHeight(val){
   if(!val) return 0;
 
   val = val.toString().trim();
+  const match = val.match(/^(\d+)[-'](\d+(\.\d+)?)$/);
 
-  let match = val.match(/(\d+)'\s*(\d+(\.\d+)?)/);
   if(match){
     return parseFloat(match[1]) * 12 + parseFloat(match[2]);
-  }
-
-  match = val.match(/(\d+)[-\s](\d+(\.\d+)?)/);
-  if(match){
-    return parseFloat(match[1]) * 12 + parseFloat(match[2]);
-  }
-
-  if(val.includes(".")){
-    let parts = val.split(".");
-    return parseFloat(parts[0]) * 12 + parseFloat(parts[1]);
   }
 
   return parseFloat(val) || 0;
 }
 
-/* ✅ Smart Sorting */
+/* HAND / ARM PARSER */
+function parseMeasurement(val){
+  if(!val) return 0;
+
+  val = val.toString().trim();
+
+  let mixed = val.match(/^(\d+)\s+(\d+)\/(\d+)$/);
+  if(mixed){
+    return parseFloat(mixed[1]) +
+           (parseFloat(mixed[2]) / parseFloat(mixed[3]));
+  }
+
+  let fraction = val.match(/^(\d+)\/(\d+)$/);
+  if(fraction){
+    return parseFloat(fraction[1]) /
+           parseFloat(fraction[2]);
+  }
+
+  return parseFloat(val) || 0;
+}
+
 function sortTable(col) {
 
   if (currentSortColumn === col) {
@@ -208,29 +118,42 @@ function sortTable(col) {
 
   const headerName = headers[col].toLowerCase();
 
-  tableData.sort((a, b) => {
+  tableData.sort((a,b)=>{
 
     let A = a[col];
     let B = b[col];
 
-    if (headerName.includes("height")) {
+    if(!A) A = "";
+    if(!B) B = "";
+
+    /* HEIGHT */
+    if(headerName.includes("height")){
       A = parseHeight(A);
       B = parseHeight(B);
-      return sortAscending ? A - B : B - A;
+      return sortAscending ? A-B : B-A;
     }
 
-    if (!isNaN(A) && !isNaN(B) && A !== "" && B !== "") {
-      return sortAscending ? A - B : B - A;
+    /* HAND / ARM */
+    if(headerName.includes("hand") || headerName.includes("arm")){
+      A = parseMeasurement(A);
+      B = parseMeasurement(B);
+      return sortAscending ? A-B : B-A;
     }
 
+    /* GENERAL NUMBERS */
+    if(!isNaN(parseFloat(A)) && !isNaN(parseFloat(B))){
+      return sortAscending
+        ? parseFloat(A) - parseFloat(B)
+        : parseFloat(B) - parseFloat(A);
+    }
+
+    /* TEXT (School now works correctly) */
     return sortAscending
       ? A.toString().localeCompare(B.toString())
       : B.toString().localeCompare(A.toString());
   });
 
-  updateArrows();
   displayRows();
-  highlightColumn();
 }
 
 function updateArrows(){
@@ -300,8 +223,4 @@ function displayRows(){
 
   highlightColumn();
 }
-
 </script>
-
-</body>
-</html>
