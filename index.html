@@ -169,7 +169,6 @@ td:first-child{
     <h2>2026 NFL Draft Database</h2>
     <div class="meta-info">
       <span id="prospectCount">Prospects: --</span>
-      <span id="lastUpdated">Last Synced: --</span>
     </div>
   </div>
 </div>
@@ -220,16 +219,8 @@ Papa.parse(csvUrl,{
     createHeaders();
     populateFilter();
     displayRows();
-    fetchLastUpdated();
   }
 });
-
-/* ===== LAST SYNC TIME ===== */
-function fetchLastUpdated(){
-  const now = new Date();
-  document.getElementById("lastUpdated").textContent =
-    "Last Synced: " + now.toLocaleString();
-}
 
 /* ===== PROSPECT COUNT ===== */
 function updateProspectCount(count){
