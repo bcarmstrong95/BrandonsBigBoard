@@ -140,6 +140,17 @@ thead .sticky-3{ z-index:302; }
   height:26px;
   vertical-align:middle;
 }
+
+/* ===== POSITION COLOR CODING ===== */
+.edge-row td {
+  color: #ff8c00; /* orange */
+  font-weight: 600;
+}
+
+.dt-row td {
+  color: #40e0d0; /* turquoise */
+  font-weight: 600;
+}
 </style>
 </head>
 
@@ -299,6 +310,16 @@ function displayRows(){
     visibleCount++;
 
     const tr=document.createElement("tr");
+
+    if(posIndex !== -1){
+      const position = r[posIndex];
+      if(position === "EDGE"){
+        tr.classList.add("edge-row");
+      }
+      if(position === "DT"){
+        tr.classList.add("dt-row");
+      }
+    }
 
     r.forEach((c,i)=>{
       const td=document.createElement("td");
