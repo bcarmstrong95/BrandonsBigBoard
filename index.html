@@ -128,11 +128,6 @@ thead .sticky-3{ z-index:302; }
 td:first-child{
   font-weight:bold;
 }
-
-/* Sorted column highlight */
-.sorted-column{
-  background:#1f1f1f !important;
-}
 </style>
 </head>
 
@@ -202,14 +197,15 @@ function createHeaders(){
     }
 
     th.onclick=()=>sortTable(i);
-
     row.appendChild(th);
   });
 
   thead.appendChild(row);
 }
 
+/* ===== HEIGHT-AWARE SORTING ===== */
 function sortTable(col){
+
   if(currentSort===col){
     sortAsc=!sortAsc;
   } else{
@@ -217,15 +213,37 @@ function sortTable(col){
     sortAsc=true;
   }
 
+  const isHeightColumn = headers[col].toLowerCase().includes("height");
+
   tableData.sort((a,b)=>{
     let A=a[col]||"";
     let B=b[col]||"";
 
+    /* Special Height Sorting */
+    if(isHeightColumn){
+
+      const convertHeight = (h)=>{
+        const match = h.match(/(\d+)'(\d+(\.\d+)?)/);
+        if(!match) return 0;
+
+        const feet = parseFloat(match[1]);
+        const inches = parseFloat(match[2]);
+        return (feet*12)+inches;
+      };
+
+      A = convertHeight(A);
+      B = convertHeight(B);
+
+      return sortAsc ? A-B : B-A;
+    }
+
+    /* Numeric Sort */
     if(!isNaN(parseFloat(A)) && !isNaN(parseFloat(B))){
       return sortAsc ? parseFloat(A)-parseFloat(B)
                      : parseFloat(B)-parseFloat(A);
     }
 
+    /* Text Sort */
     return sortAsc ? A.localeCompare(B)
                    : B.localeCompare(A);
   });
