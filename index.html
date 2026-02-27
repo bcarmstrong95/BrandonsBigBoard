@@ -45,25 +45,30 @@ input, select{
   border:1px solid #444;
 }
 
+.table-wrapper{
+  overflow-x:auto;
+}
+
 table{
-  border-collapse:collapse;
+  border-collapse:separate;
+  border-spacing:0;
   width:100%;
+  min-width:max-content;
 }
 
 th, td{
-  padding:8px;
+  padding:8px 14px;
   text-align:center;
-  border:none;
   white-space:nowrap;
 }
 
-/* Sticky header */
+/* HEADER */
 th{
   background-color:#4169E1;
   cursor:pointer;
   position:sticky;
   top:0;
-  z-index:5;
+  z-index:10;
 }
 
 th:hover{
@@ -74,65 +79,67 @@ th .arrow{
   margin-left:5px;
 }
 
-/* First column styling */
-td:first-child{
-  background-color:#4169E1;
-  font-weight:bold;
-}
-
-/* Sorted column highlight */
-.sorted-column{
-  background-color:#222 !important;
-}
-
-tbody tr:hover{
-  background-color:#1a1a1a;
+/* ROWS */
+tbody tr{
+  background-color:#000;
 }
 
 tbody tr:nth-child(even){
   background-color:#111;
 }
 
-/* ========================= */
-/* STICKY FIRST 3 COLUMNS */
-/* ========================= */
+tbody tr:hover{
+  background-color:#1a1a1a;
+}
 
-/* Column 1 */
+/* SORTED COLUMN */
+.sorted-column{
+  background-color:#1f1f1f !important;
+}
+
+/* =============================== */
+/* SMOOTH STICKY FIRST 3 COLUMNS */
+/* =============================== */
+
+/* Base sticky styling */
+th:nth-child(-n+3),
+td:nth-child(-n+3){
+  position:sticky;
+  background-color:#0a0a0a;
+  z-index:5;
+}
+
+/* Individual column offsets */
 th:nth-child(1),
 td:nth-child(1){
-  position:sticky;
   left:0;
-  z-index:4;
 }
 
-/* Column 2 */
 th:nth-child(2),
 td:nth-child(2){
-  position:sticky;
-  left:70px; /* width of col 1 */
-  z-index:4;
+  left:80px;
 }
 
-/* Column 3 */
 th:nth-child(3),
 td:nth-child(3){
-  position:sticky;
-  left:140px; /* col1 + col2 */
-  z-index:4;
+  left:160px;
 }
 
-/* Make header cells layer above body cells */
-thead th:nth-child(1),
-thead th:nth-child(2),
-thead th:nth-child(3){
-  z-index:6;
+/* Make header cells stack properly */
+thead th:nth-child(-n+3){
+  z-index:15;
+  background-color:#4169E1;
 }
 
-/* Ensure sticky cells keep dark background */
-td:nth-child(1),
-td:nth-child(2),
-td:nth-child(3){
-  background-color:#000;
+/* Smooth divider shadow */
+td:nth-child(3),
+th:nth-child(3){
+  box-shadow:4px 0 8px rgba(0,0,0,0.6);
+}
+
+/* First column special look */
+td:first-child{
+  font-weight:bold;
 }
 </style>
 </head>
@@ -153,7 +160,7 @@ td:nth-child(3){
   </select>
 </div>
 
-<div style="overflow-x:auto;">
+<div class="table-wrapper">
 <table id="data-table">
   <thead></thead>
   <tbody></tbody>
@@ -162,7 +169,7 @@ td:nth-child(3){
 
 <script>
 
-const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
+const csvUrl = "YOUR_CSV_URL_HERE";
 
 let tableData = [];
 let headers = [];
@@ -179,8 +186,8 @@ const columnDescriptions = {
   "Height": "Player height (converted to total inches for sorting)",
   "Weight": "Player weight in pounds",
   "Age": "Player age at time of draft",
-  "Hand": "Hand measurement in inches (supports fractions & decimals)",
-  "Arm": "Arm length in inches (supports fractions & decimals)",
+  "Hand": "Hand measurement in inches",
+  "Arm": "Arm length in inches",
   "PFN": "Impact Score from ProFootballNetwork.com",
   "PFF": "Most recent season grade from ProFootballFocus.com",
   "NFLDB": "Prospect grade from NFLDraftBuzz.com",
@@ -193,7 +200,6 @@ Papa.parse(csvUrl,{
   complete:function(results){
 
     headers = results.data[1].map(h => h.trim());
-
     tableData = results.data.slice(2)
       .filter(r => r.length === headers.length);
 
@@ -240,38 +246,7 @@ function createHeaders(){
   thead.appendChild(row);
 }
 
-function parseHeight(val){
-  if(!val) return 0;
-  val = val.toString().trim();
-  const match = val.match(/^(\d+)[-'](\d+(\.\d+)?)$/);
-  if(match){
-    return parseFloat(match[1])*12 + parseFloat(match[2]);
-  }
-  return parseFloat(val) || 0;
-}
-
-function parseMeasurement(val){
-  if(!val) return 0;
-  val = val.toString().trim();
-
-  let mixed = val.match(/^(\d+)\s+(\d+)\/(\d+)$/);
-  if(mixed){
-    return parseFloat(mixed[1]) +
-           (parseFloat(mixed[2]) / parseFloat(mixed[3]));
-  }
-
-  let fraction = val.match(/^(\d+)\/(\d+)$/);
-  if(fraction){
-    return parseFloat(fraction[1]) /
-           parseFloat(fraction[2]);
-  }
-
-  let decimal = parseFloat(val);
-  return isNaN(decimal) ? 0 : decimal;
-}
-
 function sortTable(col){
-
   if(currentSortColumn===col){
     sortAscending=!sortAscending;
   } else{
@@ -279,24 +254,9 @@ function sortTable(col){
     sortAscending=true;
   }
 
-  const headerName=headers[col].toLowerCase();
-
   tableData.sort((a,b)=>{
-
     let A=a[col]||"";
     let B=b[col]||"";
-
-    if(headerName.includes("height")){
-      A=parseHeight(A);
-      B=parseHeight(B);
-      return sortAscending?A-B:B-A;
-    }
-
-    if(headerName.includes("hand")||headerName.includes("arm")){
-      A=parseMeasurement(A);
-      B=parseMeasurement(B);
-      return sortAscending?A-B:B-A;
-    }
 
     if(!isNaN(parseFloat(A)) && !isNaN(parseFloat(B))){
       return sortAscending
@@ -305,8 +265,8 @@ function sortTable(col){
     }
 
     return sortAscending
-      ? A.toString().localeCompare(B.toString())
-      : B.toString().localeCompare(A.toString());
+      ? A.localeCompare(B)
+      : B.localeCompare(A);
   });
 
   displayRows();
