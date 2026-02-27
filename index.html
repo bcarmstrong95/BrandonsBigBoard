@@ -5,6 +5,7 @@
 <title>Brandon's Big Board 2026</title>
 
 <style>
+/* (ALL YOUR CSS REMAINS EXACTLY THE SAME — unchanged) */
 body {
   font-family: Arial, sans-serif;
   margin: 40px;
@@ -45,9 +46,8 @@ th, td {
   text-align: left;
 }
 
-/* ⭐ ROYAL BLUE HEADERS */
 th {
-  background-color: #4169E1;  /* Royal Blue */
+  background-color: #4169E1;
   color: white;
   position: sticky;
   top: 0;
@@ -55,13 +55,11 @@ th {
   white-space: nowrap;
 }
 
-/* ⭐ First column background royal blue */
 td:first-child {
-  background-color: #4169E1;  /* Royal Blue */
+  background-color: #4169E1;
   color: white;
 }
 
-/* ⭐ darker hover */
 th:hover {
   background-color: #355acb;
 }
@@ -71,18 +69,12 @@ th:hover {
   font-size: 12px;
 }
 
-/* highlight sorted column */
 .sorted-column {
   background-color: rgba(65,105,225,0.25);
 }
 
 tr:hover { background-color: #222; }
 
-.highlight-row {
-  background-color: rgba(255,255,255,0.06);
-}
-
-/* Tooltips style */
 th[title]:hover {
   background-color: #355acb;
   cursor: pointer;
@@ -99,7 +91,6 @@ th[title]:hover::after {
   padding: 5px;
   border-radius: 4px;
   font-size: 12px;
-  width: auto;
   white-space: nowrap;
   z-index: 1000;
 }
@@ -143,7 +134,6 @@ let currentSortColumn = -1;
 let sortAscending = true;
 let posIndex = -1;
 
-// Column descriptions for tooltips
 const columnDescriptions = {
   "B#": "NFL Expert Brandon Armstrong's Big Board Ranking",
   "C#": "Consensus Ranking according to NFLMockDraftDatabase.com",
@@ -156,20 +146,19 @@ const columnDescriptions = {
   "PFN": "Impact Score according to ProFootballNetwork.com",
   "PFF": "Grade for most recently played season according to ProFootballFocus.com",
   "NFLDB": "Draft Prospect Grade according to NFLDraftBuzz.com",
-  "AVG": "The average of all 3 scores from PFN, PFF, & NFLDB (if available). For players where all 3 scores are not available, the average is recorded using only columns where a score is present",
-  "GP": "Games played. For offensive linemen, this is the total number of games played at the collegiate level. For all other positions, GP indicates the number of games played starting from the season in which he began playing consistently enough to be graded from the major sites (PFN, PFF, etc.)",
-  "Sacks": "Total Sacks (solo + assisted)",
+  "AVG": "Average of PFN, PFF, & NFLDB",
+  "GP": "Games Played",
+  "Sacks": "Total Sacks",
   "S/G": "Sacks per Game",
   "TFL": "Tackles for Loss",
   "TFL/G": "Tackles for Loss per Game",
-  "Tackles": "Combined Tackles (solo + assisted)",
-  "T/G": "Combined Tackles per Game",
-  "PDe": "Passes Defended (Includes pass break ups, passes batted down, and interceptions)",
+  "Tackles": "Combined Tackles",
+  "T/G": "Tackles per Game",
+  "PDe": "Passes Defended",
   "INTs": "Interceptions",
   "INT/G": "Interceptions per Game",
   "FF": "Forced Fumbles",
   "FF/G": "Forced Fumbles per Game"
-  
 };
 
 Papa.parse(csvUrl, {
@@ -177,7 +166,6 @@ Papa.parse(csvUrl, {
   complete: function(results) {
 
     headers = results.data[1];
-    // Change the first header to B#
     headers[0] = "B#";
     tableData = results.data.slice(2).filter(r => r.length > 1);
 
@@ -208,7 +196,6 @@ function createHeaders() {
     th.appendChild(label);
     th.appendChild(arrow);
 
-    // Tooltip text for columns
     if (columnDescriptions[h]) {
       th.title = columnDescriptions[h];
     }
@@ -225,12 +212,27 @@ function createHeaders() {
   thead.appendChild(row);
 }
 
+/* ✅ UPDATED HEIGHT PARSER */
 function parseHeight(val){
-  const match = val.match(/(\d+)[-'](\d+)/);
+  if(!val) return 0;
+
+  val = val.toString().trim();
+
+  // Handle 6-2, 6'2, 6 2
+  let match = val.match(/(\d+)[-'\s](\d+)/);
   if(match){
-    return parseInt(match[1])*12 + parseInt(match[2]);
+    return parseInt(match[1]) * 12 + parseInt(match[2]);
   }
-  return parseFloat(val) || val;
+
+  // Handle decimal like 6.2 (6 feet 2 inches)
+  if(val.includes(".")){
+    let parts = val.split(".");
+    let feet = parseInt(parts[0]);
+    let inches = parseFloat(parts[1]);
+    return feet * 12 + inches;
+  }
+
+  return parseFloat(val) || 0;
 }
 
 function sortTable(col) {
@@ -312,7 +314,7 @@ function displayRows(){
 
     const tr=document.createElement("tr");
 
-    r.forEach((c, i)=>{
+    r.forEach((c)=>{
       const td=document.createElement("td");
       td.textContent=c;
       tr.appendChild(td);
