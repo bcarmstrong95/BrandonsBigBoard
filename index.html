@@ -39,8 +39,9 @@ body{
 
 .meta-info{
   margin-top:12px;
-  font-size:13px;
+  font-size:15px;
   color:#ccc;
+  font-weight:500;
 }
 
 /* ===== TABLE WRAPPER ===== */
@@ -94,19 +95,16 @@ th.sorted.desc .arrow{ transform:rotate(180deg); }
 
 /* ===== COLUMN WIDTHS ===== */
 
-/* Column 1 */
 th:nth-child(1), td:nth-child(1){
   width:90px;
   min-width:90px;
 }
 
-/* Column 2 */
 th:nth-child(2), td:nth-child(2){
   width:90px;
   min-width:90px;
 }
 
-/* Column 3 (NAME COLUMN WIDE) */
 th:nth-child(3), td:nth-child(3){
   width:300px;
   min-width:300px;
@@ -178,7 +176,7 @@ tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
     <h1>Brandon's Big Board 2026</h1>
     <h2>2026 NFL Draft Database</h2>
     <div class="meta-info">
-      Live Combine Tracker • Updated Daily
+      Prospects: <span id="prospectCount">Loading...</span>
     </div>
   </div>
 </div>
@@ -210,6 +208,8 @@ Papa.parse(csvUrl,{
     headers = results.data[1].map(h=>h.trim());
     originalData = results.data.slice(2).filter(r=>r.length===headers.length);
     filteredData = [...originalData];
+
+    document.getElementById("prospectCount").textContent = originalData.length;
 
     posIndex = headers.findIndex(h=>h.toLowerCase().includes("pos"));
     schoolIndex = headers.findIndex(h=>h.toLowerCase().includes("school"));
