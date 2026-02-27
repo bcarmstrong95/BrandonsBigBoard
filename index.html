@@ -177,7 +177,7 @@ thead .sticky-3{ z-index:302; }
 
 <script>
 
-const csvUrl = "YOUR_GOOGLE_SHEET_CSV_LINK_HERE";
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
 let tableData = [];
 let headers = [];
@@ -265,7 +265,7 @@ function sortTable(index){
   displayRows();
 }
 
-/* FILTER DROPDOWN */
+/* FILTER */
 function populateFilter(){
   if(posIndex === -1) return;
 
