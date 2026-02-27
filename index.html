@@ -53,13 +53,15 @@ table{
 th, td{
   padding:8px;
   text-align:center;
-  border:none; /* 🔥 removed grid lines */
+  border:none;
 }
 
 th{
   background-color:#4169E1;
   cursor:pointer;
-  position:relative;
+  position:sticky;
+  top:0;
+  z-index:2;
 }
 
 th:hover{
@@ -79,9 +81,12 @@ td:first-child{
   background-color:#222 !important;
 }
 
-/* Optional subtle row hover */
 tbody tr:hover{
   background-color:#1a1a1a;
+}
+
+tbody tr:nth-child(even){
+  background-color:#111;
 }
 </style>
 </head>
@@ -136,13 +141,18 @@ const columnDescriptions = {
 
 Papa.parse(csvUrl,{
   download:true,
+  skipEmptyLines:true,
   complete:function(results){
 
-    headers = results.data[1];
-    headers[0] = "B#";
-    tableData = results.data.slice(2).filter(r=>r.length>1);
+    // Grab first row as headers safely
+    headers = results.data[0].map(h => h.trim());
 
-    posIndex = headers.findIndex(h=>h.toLowerCase().includes("pos"));
+    tableData = results.data.slice(1)
+      .filter(r => r.length > 1);
+
+    posIndex = headers.findIndex(h => 
+      h.toLowerCase().includes("pos")
+    );
 
     createHeaders();
     populateFilter();
