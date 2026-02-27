@@ -103,22 +103,19 @@ th .arrow{
 th.sorted .arrow{ opacity:1; }
 th.sorted.desc .arrow{ transform:rotate(180deg); }
 
-/* Sorted column highlight */
 .sorted-column{
   background:#162b55 !important;
 }
 
-/* Column widths */
+/* Sticky Columns */
 th:nth-child(1), td:nth-child(1){ width:140px; min-width:140px; }
 th:nth-child(2), td:nth-child(2){ width:90px; min-width:90px; }
 th:nth-child(3), td:nth-child(3){ width:110px; min-width:110px; }
 
-/* Sticky BODY columns */
 td:nth-child(1){ position:sticky; left:0; z-index:900; background:#000; }
 td:nth-child(2){ position:sticky; left:140px; z-index:901; background:#000; }
 td:nth-child(3){ position:sticky; left:230px; z-index:902; background:#000; box-shadow:6px 0 10px rgba(0,0,0,.7); }
 
-/* Sticky HEADER columns */
 th:nth-child(1){ left:0; z-index:1100; }
 th:nth-child(2){ left:140px; z-index:1099; }
 th:nth-child(3){ left:230px; z-index:1098; }
@@ -132,7 +129,7 @@ tbody tr:nth-child(even) td:nth-child(-n+3){ background:#111; }
 tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
 
 /* POSITION COLORS */
-.edge-row td { color:#ff8c00; font-weight:600; } /* CLEAN ORANGE */
+.edge-row td { color:#ff8c00; font-weight:600; }
 .dt-row td { color:#40e0d0; font-weight:600; }
 .cb-row td { color:#ff0000; font-weight:600; }
 .s-row td { color:#ff1493; font-weight:600; }
@@ -179,7 +176,7 @@ tbody tr:hover td:nth-child(-n+3){ background:#1a1a1a; }
 
 <script>
 
-const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
+const csvUrl = "YOUR_CSV_LINK_HERE";
 
 let originalData=[];
 let filteredData=[];
@@ -204,6 +201,12 @@ Papa.parse(csvUrl,{
     createHeaders();
     populateFilter();
     displayRows();
+
+    // AUTO SORT 40 TIME LOWEST FIRST
+    const fortyIndex = headers.findIndex(h => h.toLowerCase().includes("40"));
+    if(fortyIndex !== -1){
+      sortTable(fortyIndex);
+    }
   }
 });
 
@@ -245,12 +248,11 @@ function applyFilters(){
 
 function sortTable(index){
 
-  const header=headers[index].toLowerCase();
-
-  if(currentSort===index){ sortAsc=!sortAsc; }
-  else{
-    currentSort=index;
-    sortAsc=true;
+  if(currentSort === index){
+    sortAsc = !sortAsc;
+  } else {
+    currentSort = index;
+    sortAsc = true;
   }
 
   filteredData.sort((a,b)=>{
@@ -258,34 +260,31 @@ function sortTable(index){
     let valA = a[index] ? a[index].toString().trim() : "";
     let valB = b[index] ? b[index].toString().trim() : "";
 
-    if(header.includes("height")){
-      const convert=h=>{
-        const m=h.match(/(\\d+)'(\\d+(\\.\\d+)?)"/);
-        return m ? parseFloat(m[1])*12+parseFloat(m[2]) : 0;
+    const heightRegex = /^\d+'\d+(\.\d+)?"$/;
+
+    if(heightRegex.test(valA) && heightRegex.test(valB)){
+      const convert = h => {
+        const parts = h.match(/(\d+)'(\d+(\.\d+)?)"/);
+        return parseFloat(parts[1]) * 12 + parseFloat(parts[2]);
       };
-      valA=convert(valA);
-      valB=convert(valB);
+      valA = convert(valA);
+      valB = convert(valB);
     }
 
-    else if(
-      header.includes("40") ||
-      header.includes("hand") ||
-      header.includes("age") ||
-      header.includes("weight") ||
-      header.includes("bench") ||
-      header.includes("vert") ||
-      header.includes("broad")
-    ){
-      const clean = v => {
-        const num = parseFloat(v.replace(/[^\\d.]/g,""));
-        return isNaN(num) ? -9999 : num;
-      };
-      valA=clean(valA);
-      valB=clean(valB);
+    else if(!isNaN(parseFloat(valA.replace(/[^\d.-]/g,''))) &&
+            !isNaN(parseFloat(valB.replace(/[^\d.-]/g,'')))){
+
+      valA = parseFloat(valA.replace(/[^\d.-]/g,''));
+      valB = parseFloat(valB.replace(/[^\d.-]/g,''));
     }
 
-    if(valA < valB) return sortAsc?-1:1;
-    if(valA > valB) return sortAsc?1:-1;
+    else{
+      valA = valA.toLowerCase();
+      valB = valB.toLowerCase();
+    }
+
+    if(valA < valB) return sortAsc ? -1 : 1;
+    if(valA > valB) return sortAsc ? 1 : -1;
     return 0;
   });
 
@@ -293,7 +292,7 @@ function sortTable(index){
     th.classList.remove("sorted","desc");
   });
 
-  const active=document.querySelectorAll("th")[currentSort];
+  const active = document.querySelectorAll("th")[currentSort];
   active.classList.add("sorted");
   if(!sortAsc) active.classList.add("desc");
 
