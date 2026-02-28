@@ -125,8 +125,11 @@ td:nth-child(1){ position:sticky; left:0; background:#000; z-index:5; }
 td:nth-child(2){ position:sticky; left:90px; background:#000; z-index:5; }
 td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:5; }
 
+/* Logos 25% Larger & Uniform */
 .school-logo{
-  height:22px;
+  height:28px;
+  width:28px;
+  object-fit:contain;
   vertical-align:middle;
 }
 
@@ -239,6 +242,14 @@ Papa.parse(csvUrl,{
   }
 });
 
+function roundIfDecimal(val){
+  if(!val) return val;
+  if(!isNaN(val) && val.toString().includes(".")){
+    return parseFloat(val).toFixed(3);
+  }
+  return val;
+}
+
 function parseValue(val){
   if(!val) return "";
   val=val.toString().trim();
@@ -328,7 +339,7 @@ function displayRows(){
         }
       }
       else{
-        td.textContent=c;
+        td.textContent=roundIfDecimal(c);
       }
 
       if(i===currentSort) td.classList.add("active-col");
