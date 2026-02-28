@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Brandon's Big Board</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 
 <style>
@@ -77,14 +75,13 @@ body{
   color:white;
 }
 
-/* TABLE WRAPPER */
+/* TABLE */
 .table-wrapper{
   overflow:auto;
   max-height:75vh;
   margin:20px;
 }
 
-/* DESKTOP TABLE */
 table{
   border-collapse:separate;
   border-spacing:0;
@@ -120,7 +117,7 @@ th.sorted{
   background:#1c1c1c !important;
 }
 
-/* DESKTOP COLUMN WIDTHS */
+/* DESKTOP WIDTHS */
 th:nth-child(1), td:nth-child(1){ width:90px; }
 th:nth-child(2), td:nth-child(2){ width:90px; }
 th:nth-child(3), td:nth-child(3){ width:320px; text-align:left; }
@@ -130,53 +127,23 @@ td:nth-child(1){ position:sticky; left:0; background:#000; }
 td:nth-child(2){ position:sticky; left:90px; background:#000; }
 td:nth-child(3){ position:sticky; left:180px; background:#000; }
 
-tbody tr:nth-child(even){ background:#111; }
-
 .school-logo{
   height:22px;
   vertical-align:middle;
 }
 
-/* ========================= */
-/* TRUE CLEAN MOBILE MODE */
-/* ========================= */
+/* POSITION GROUP STRIPING */
+.pos-light { background:#111; }
+.pos-dark  { background:#1a1a1a; }
 
+/* MOBILE FIX */
 @media (max-width: 768px){
-
-  .top-logos{
-    flex-direction:column;
-    gap:20px;
-  }
-
-  .top-logos img{
-    height:140px;
-  }
-
-  .filter-bar{
-    flex-direction:column;
-    align-items:center;
-  }
-
-  .table-wrapper{
-    overflow-x:auto;
-    overflow-y:auto;
-    max-height:none;
-    margin:10px;
-  }
-
-  table{
-    table-layout:auto !important;
-    width:auto !important;
-    min-width:800px !important;
-  }
-
-  th, td{
-    position:static !important;
-    width:auto !important;
-    min-width:120px !important;
-    white-space:nowrap;
-  }
-
+  .top-logos{ flex-direction:column; gap:20px; }
+  .top-logos img{ height:140px; }
+  .filter-bar{ flex-direction:column; align-items:center; }
+  .table-wrapper{ overflow-x:auto; overflow-y:auto; max-height:none; margin:10px; }
+  table{ table-layout:auto !important; width:auto !important; min-width:800px !important; }
+  th, td{ position:static !important; width:auto !important; min-width:120px !important; }
 }
 
 </style>
@@ -216,11 +183,25 @@ tbody tr:nth-child(even){ background:#111; }
 
 <script>
 
-const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
+const csvUrl="YOUR CSV LINK HERE";
 
 let originalData=[], filteredData=[], headers=[];
 let posIndex=-1, schoolIndex=-1;
 let currentSort=-1, sortAsc=true;
+
+/* TEXT COLOR MAP */
+const positionTextColors={
+  "EDGE":"orange",
+  "OT":"#39FF14",
+  "IOL":"yellow",
+  "WR":"gold",
+  "RB":"darkgreen",
+  "S":"magenta",
+  "TE":"#ff00ff",
+  "DT":"turquoise",
+  "CB":"red",
+  "LB":"royalblue"
+};
 
 Papa.parse(csvUrl,{
   download:true,
@@ -238,9 +219,20 @@ Papa.parse(csvUrl,{
 
     populatePositions();
     createHeaders();
-    displayRows();
+    applyFilters();
   }
 });
+
+function formatValue(val){
+  if(val===null || val===undefined) return "";
+  let trimmed=val.toString().trim();
+  if(trimmed.includes("'")) return trimmed;
+  let num=parseFloat(trimmed);
+  if(!isNaN(num) && trimmed.includes(".")){
+    return parseFloat(num.toFixed(3)).toString();
+  }
+  return trimmed;
+}
 
 function populatePositions(){
   const select=document.getElementById("positionFilter");
@@ -267,12 +259,39 @@ function createHeaders(){
   thead.appendChild(row);
 }
 
+function applyFilters(){
+  const search=document.getElementById("searchInput").value.toLowerCase();
+  const pos=document.getElementById("positionFilter").value;
+
+  filteredData=originalData.filter(r=>{
+    const matchesSearch=r.join(" ").toLowerCase().includes(search);
+    const matchesPos=!pos || r[posIndex]===pos;
+    return matchesSearch && matchesPos;
+  });
+
+  displayRows();
+}
+
 function displayRows(){
   const tbody=document.querySelector("#data-table tbody");
   tbody.innerHTML="";
 
+  let currentPos="";
+  let toggle=false;
+
   filteredData.forEach(r=>{
     const tr=document.createElement("tr");
+
+    if(r[posIndex]!==currentPos){
+      currentPos=r[posIndex];
+      toggle=!toggle;
+    }
+
+    tr.classList.add(toggle ? "pos-dark" : "pos-light");
+
+    if(positionTextColors[r[posIndex]]){
+      tr.style.color=positionTextColors[r[posIndex]];
+    }
 
     r.forEach((c,i)=>{
       const td=document.createElement("td");
@@ -280,7 +299,7 @@ function displayRows(){
       if(i===schoolIndex && c.toLowerCase()==="alabama"){
         td.innerHTML='<img src="bama.svg" class="school-logo">';
       } else {
-        td.textContent=c;
+        td.textContent=formatValue(c);
       }
 
       if(currentSort===i) td.classList.add("active-col");
@@ -294,28 +313,21 @@ function displayRows(){
   document.getElementById("prospectCount").textContent=filteredData.length;
 }
 
-/* HEIGHT FIX */
 function parseValue(val){
   if(!val) return 0;
-  val = val.toString().trim();
-
-  const heightMatch = val.match(/^(\d+)'\s*(\d+)?/);
+  val=val.toString().trim();
+  const heightMatch=val.match(/^(\d+)'\s*(\d+)?/);
   if(heightMatch){
-    return (parseInt(heightMatch[1]) * 12) + parseInt(heightMatch[2] || 0);
+    return (parseInt(heightMatch[1])*12)+parseInt(heightMatch[2]||0);
   }
-
-  const num = parseFloat(val);
+  const num=parseFloat(val);
   if(!isNaN(num)) return num;
-
   return val.toLowerCase();
 }
 
 function sortTable(col){
   if(currentSort===col) sortAsc=!sortAsc;
-  else{
-    currentSort=col;
-    sortAsc=true;
-  }
+  else{ currentSort=col; sortAsc=true; }
 
   filteredData.sort((a,b)=>{
     const v1=parseValue(a[col]);
@@ -334,11 +346,11 @@ function sortTable(col){
   activeTh.classList.add("sorted");
   activeTh.querySelector(".arrow").textContent=sortAsc?"▲":"▼";
 
-  displayRows();
+  applyFilters();
 }
 
-document.getElementById("searchInput").addEventListener("input",displayRows);
-document.getElementById("positionFilter").addEventListener("change",displayRows);
+document.getElementById("searchInput").addEventListener("input",applyFilters);
+document.getElementById("positionFilter").addEventListener("change",applyFilters);
 
 </script>
 
