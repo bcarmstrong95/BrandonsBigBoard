@@ -43,7 +43,7 @@ body{
   color:#ccc;
 }
 
-/* LOGOS (DESKTOP UNCHANGED) */
+/* LOGOS */
 .top-logos{
   display:flex;
   justify-content:center;
@@ -137,17 +137,17 @@ td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:5; }
 .pos-light { background:#111; }
 .pos-dark  { background:#1a1a1a; }
 
-/* ✅ MOBILE — ONLY LOGO CHANGES MADE */
+/* MOBILE */
 @media (max-width: 768px){
 
   .top-logos{
-    flex-direction:row !important;   /* keep horizontal */
+    flex-direction:row !important;
     justify-content:center;
-    gap:20px;                        /* tighter spacing */
+    gap:20px;
   }
 
   .top-logos img{
-    height:70px !important;          /* half size and uniform */
+    height:70px !important;
   }
 
   .filter-bar{
@@ -212,8 +212,6 @@ td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:5; }
 <script>
 const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
-/* JS UNCHANGED — YOUR CSV + ALL FEATURES INTACT */
-
 let originalData=[], filteredData=[], headers=[];
 let posIndex=-1, schoolIndex=-1;
 let currentSort=-1, sortAsc=true;
@@ -222,7 +220,7 @@ const positionTextColors={
   "EDGE":"orange",
   "OT":"#39FF14",
   "IOL":"yellow",
-  "WR":"darkgold",
+  "WR":"#B8860B",   /* darker gold */
   "RB":"darkgreen",
   "S":"magenta",
   "TE":"#ff00ff",
@@ -247,6 +245,8 @@ Papa.parse(csvUrl,{
     displayRows();
   }
 });
+
+/* ALL OTHER JS UNCHANGED */
 
 function formatValue(val){
   if(!val) return "";
