@@ -15,7 +15,7 @@ body{
 }
 
 .hero-banner{
-  background:linear-gradient(135deg,#0a0a0a,#1a1a1a);
+  background:linear-gradient(135deg,#0a0a0a,#1a0a0a);
   border-top:1px solid #222;
   border-bottom:1px solid #222;
   padding:30px 20px;
@@ -239,9 +239,21 @@ Papa.parse(csvUrl,{
   }
 });
 
-function formatValue(val){
-  if(val===null||val===undefined) return "";
-  return val;
+function parseValue(val){
+  if(!val) return "";
+  val=val.toString().trim();
+
+  const heightMatch = val.match(/^(\d+)'\s*([\d\.]+)?/);
+  if(heightMatch){
+    const feet=parseFloat(heightMatch[1]);
+    const inches=parseFloat(heightMatch[2]||0);
+    return feet*12+inches;
+  }
+
+  const num=parseFloat(val);
+  if(!isNaN(num)) return num;
+
+  return val.toLowerCase();
 }
 
 function createHeaders(){
@@ -293,27 +305,27 @@ function displayRows(){
       if(i===schoolIndex){
         const school=c.trim();
 
-        if(school==="Alabama"){
-          td.innerHTML='<img src="bama.svg" class="school-logo">';
-        }
-        else if(school==="Michigan"){
-          td.innerHTML='<img src="michigan.png" class="school-logo">';
-        }
-        else if(school==="Indiana"){
-          td.innerHTML='<img src="iu1.png" class="school-logo">';
+        if(school==="Ohio St."){
+          td.innerHTML='<img src="osu1.png" class="school-logo">';
         }
         else if(school==="LSU"){
           td.innerHTML='<img src="lsu1.png" class="school-logo">';
         }
-        else if(school==="Ohio St."){
-          td.innerHTML='<img src="osu1.png" class="school-logo">';
+        else if(school==="Indiana"){
+          td.innerHTML='<img src="iu1.png" class="school-logo">';
+        }
+        else if(school==="Alabama"){
+          td.innerHTML='<img src="bama.svg" class="school-logo">';
+        }
+        else if(school==="Michigan"){
+          td.innerHTML='<img src="michigan.png" class="school-logo">';
         }
         else{
           td.textContent=school;
         }
       }
       else{
-        td.textContent=formatValue(c);
+        td.textContent=c;
       }
 
       if(i===currentSort) td.classList.add("active-col");
@@ -325,6 +337,50 @@ function displayRows(){
 
   document.getElementById("prospectCount").textContent=filteredData.length;
 }
+
+function sortTable(col){
+  if(currentSort===col){ sortAsc=!sortAsc; }
+  else{ currentSort=col; sortAsc=true; }
+
+  filteredData.sort((a,b)=>{
+    const v1=parseValue(a[col]);
+    const v2=parseValue(b[col]);
+
+    if(typeof v1==="number" && typeof v2==="number"){
+      return sortAsc ? v1-v2 : v2-v1;
+    }
+    return sortAsc
+      ? v1.toString().localeCompare(v2)
+      : v2.toString().localeCompare(v1);
+  });
+
+  document.querySelectorAll("th").forEach(th=>{
+    th.classList.remove("sorted");
+    th.querySelector(".arrow").textContent="";
+  });
+
+  const activeTh=document.querySelectorAll("th")[col];
+  activeTh.classList.add("sorted");
+  activeTh.querySelector(".arrow").textContent=sortAsc?"▲":"▼";
+
+  displayRows();
+}
+
+document.getElementById("searchInput").addEventListener("input",function(){
+  const search=this.value.toLowerCase();
+  filteredData=originalData.filter(r=>
+    r.join(" ").toLowerCase().includes(search)
+  );
+  displayRows();
+});
+
+document.getElementById("positionFilter").addEventListener("change",function(){
+  const pos=this.value;
+  filteredData=pos
+    ? originalData.filter(r=>r[posIndex]===pos)
+    : [...originalData];
+  displayRows();
+});
 </script>
 
 </body>
