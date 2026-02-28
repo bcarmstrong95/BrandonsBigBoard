@@ -130,7 +130,7 @@ th:nth-child(1), td:nth-child(1){ width:90px; min-width:90px; }
 th:nth-child(2), td:nth-child(2){ width:90px; min-width:90px; }
 th:nth-child(3), td:nth-child(3){ width:320px; min-width:320px; text-align:left; }
 
-/* STICKY */
+/* STICKY DESKTOP */
 td:nth-child(1){ position:sticky; left:0; background:#000; z-index:900; }
 td:nth-child(2){ position:sticky; left:90px; background:#000; z-index:901; }
 td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:902; }
@@ -158,6 +158,41 @@ tbody tr:nth-child(even){ background:#111; }
   height:22px;
   vertical-align:middle;
 }
+
+/* ========================= */
+/* MOBILE FIX */
+/* ========================= */
+
+@media (max-width: 768px){
+
+  .table-wrapper{
+    overflow-x:auto;
+    max-height:none;
+  }
+
+  table{
+    table-layout:auto;
+    min-width:900px;
+  }
+
+  th, td{
+    white-space:nowrap;
+  }
+
+  /* Remove sticky columns on mobile */
+  td:nth-child(1),
+  td:nth-child(2),
+  td:nth-child(3),
+  th:nth-child(1),
+  th:nth-child(2),
+  th:nth-child(3){
+    position:static !important;
+    left:auto !important;
+    background:inherit !important;
+  }
+
+}
+
 </style>
 </head>
 
@@ -195,7 +230,7 @@ tbody tr:nth-child(even){ background:#111; }
 
 <script>
 
-const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
+const csvUrl="YOUR_CSV_URL_HERE";
 
 let originalData=[], filteredData=[], headers=[];
 let posIndex=-1, schoolIndex=-1;
@@ -217,7 +252,7 @@ Papa.parse(csvUrl,{
 
     populatePositions();
     createHeaders();
-    displayRows(); // NO auto sort
+    displayRows();
   }
 });
 
@@ -260,7 +295,6 @@ function displayRows(){
     r.forEach((c,i)=>{
       const td=document.createElement("td");
 
-      // Replace Alabama with logo
       if(i===schoolIndex && c.toLowerCase()==="alabama"){
         td.innerHTML='<img src="bama.svg" class="school-logo">';
       } else {
@@ -292,17 +326,12 @@ function applyFilters(){
 
 function parseValue(val){
   if(!val) return 0;
-  if(val.includes("'")){
-    const parts=val.split("'");
-    return parseInt(parts[0])*12+parseInt(parts[1]);
-  }
   const num=parseFloat(val);
   if(!isNaN(num)) return num;
   return val.toLowerCase();
 }
 
 function sortTable(col){
-
   if(currentSort===col) sortAsc=!sortAsc;
   else{
     currentSort=col;
