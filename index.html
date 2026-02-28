@@ -125,7 +125,6 @@ td:nth-child(1){ position:sticky; left:0; background:#000; z-index:5; }
 td:nth-child(2){ position:sticky; left:90px; background:#000; z-index:5; }
 td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:5; }
 
-/* Default logos now 2x larger */
 .school-logo{
   height:56px;
   width:56px;
@@ -133,7 +132,6 @@ td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:5; }
   vertical-align:middle;
 }
 
-/* Exceptions */
 .logo-small{
   height:28px !important;
   width:28px !important;
@@ -385,6 +383,24 @@ function sortTable(col){
 
   displayRows();
 }
+
+/* RESTORED FILTER FUNCTIONALITY */
+
+document.getElementById("searchInput").addEventListener("input",function(){
+  const search=this.value.toLowerCase();
+  filteredData=originalData.filter(r=>
+    r.join(" ").toLowerCase().includes(search)
+  );
+  displayRows();
+});
+
+document.getElementById("positionFilter").addEventListener("change",function(){
+  const pos=this.value;
+  filteredData=pos
+    ? originalData.filter(r=>r[posIndex]===pos)
+    : [...originalData];
+  displayRows();
+});
 </script>
 
 </body>
