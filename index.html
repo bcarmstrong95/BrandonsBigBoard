@@ -115,12 +115,10 @@ th .arrow{
   font-weight:bold;
 }
 
-/* Active header */
 th.sorted{
   background:#162b55 !important;
 }
 
-/* Active column highlight */
 .active-col{
   background:#1c1c1c !important;
 }
@@ -159,10 +157,7 @@ tbody tr:nth-child(even){ background:#111; }
   vertical-align:middle;
 }
 
-/* ========================= */
 /* MOBILE FIX */
-/* ========================= */
-
 @media (max-width: 768px){
 
   .table-wrapper{
@@ -175,11 +170,6 @@ tbody tr:nth-child(even){ background:#111; }
     min-width:900px;
   }
 
-  th, td{
-    white-space:nowrap;
-  }
-
-  /* Remove sticky columns on mobile */
   td:nth-child(1),
   td:nth-child(2),
   td:nth-child(3),
@@ -190,7 +180,6 @@ tbody tr:nth-child(even){ background:#111; }
     left:auto !important;
     background:inherit !important;
   }
-
 }
 
 </style>
@@ -230,7 +219,7 @@ tbody tr:nth-child(even){ background:#111; }
 
 <script>
 
-const csvUrl="YOUR_CSV_URL_HERE";
+const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
 let originalData=[], filteredData=[], headers=[];
 let posIndex=-1, schoolIndex=-1;
@@ -312,18 +301,6 @@ function displayRows(){
   document.getElementById("prospectCount").textContent=filteredData.length;
 }
 
-function applyFilters(){
-  const search=document.getElementById("searchInput").value.toLowerCase();
-  const pos=document.getElementById("positionFilter").value;
-
-  filteredData=originalData.filter(r=>{
-    return r.join(" ").toLowerCase().includes(search) &&
-           (!pos || r[posIndex]===pos);
-  });
-
-  displayRows();
-}
-
 function parseValue(val){
   if(!val) return 0;
   const num=parseFloat(val);
@@ -358,8 +335,8 @@ function sortTable(col){
   displayRows();
 }
 
-document.getElementById("searchInput").addEventListener("input",applyFilters);
-document.getElementById("positionFilter").addEventListener("change",applyFilters);
+document.getElementById("searchInput").addEventListener("input",displayRows);
+document.getElementById("positionFilter").addEventListener("change",displayRows);
 
 </script>
 
