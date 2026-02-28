@@ -87,7 +87,7 @@ table{
   border-spacing:0;
   width:100%;
   min-width:max-content;
-  table-layout:auto;   /* changed from fixed */
+  table-layout:auto;
 }
 
 th, td{
@@ -122,12 +122,10 @@ th.sorted{
 th:nth-child(1), td:nth-child(1){ width:90px; }
 th:nth-child(2), td:nth-child(2){ width:90px; }
 
-/* Name column auto-width now */
 th:nth-child(3), td:nth-child(3){
   text-align:left;
 }
 
-/* DESKTOP STICKY */
 td:nth-child(1){ position:sticky; left:0; background:#000; z-index:5; }
 td:nth-child(2){ position:sticky; left:90px; background:#000; z-index:5; }
 td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:5; }
@@ -137,7 +135,7 @@ td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:5; }
   vertical-align:middle;
 }
 
-/* POSITION GROUP STRIPING */
+/* POSITION STRIPING */
 .pos-light { background:#111; }
 .pos-dark  { background:#1a1a1a; }
 
@@ -225,7 +223,7 @@ const positionTextColors={
   "WR":"#B8860B",
   "RB":"darkgreen",
   "S":"magenta",
-  "TE":"#800080",   /* darker purple */
+  "TE":"#800080",
   "DT":"turquoise",
   "CB":"red",
   "LB":"royalblue",
@@ -271,8 +269,6 @@ function parseValue(val){
   return val.toLowerCase();
 }
 
-/* Rest unchanged */
-
 function createHeaders(){
   const thead=document.querySelector("#data-table thead");
   const row=document.createElement("tr");
@@ -301,6 +297,7 @@ function displayRows(){
   tbody.innerHTML="";
   let currentPos="";
   let toggle=false;
+
   filteredData.forEach(r=>{
     const tr=document.createElement("tr");
     if(r[posIndex]!==currentPos){
@@ -308,21 +305,47 @@ function displayRows(){
       toggle=!toggle;
     }
     tr.classList.add(toggle ? "pos-dark" : "pos-light");
+
     if(positionTextColors[r[posIndex]]){
       tr.style.color=positionTextColors[r[posIndex]];
     }
+
     r.forEach((c,i)=>{
       const td=document.createElement("td");
-      if(i===schoolIndex && c.toLowerCase()==="alabama"){
-        td.innerHTML='<img src="bama.svg" class="school-logo">';
-      } else {
+
+      if(i===schoolIndex){
+        const school=c.trim();
+
+        if(school==="Alabama"){
+          td.innerHTML='<img src="bama.svg" class="school-logo">';
+        }
+        else if(school==="Indiana"){
+          td.innerHTML='<img src="iu.png" class="school-logo">';
+        }
+        else if(school==="Michigan"){
+          td.innerHTML='<img src="michigan.png" class="school-logo">';
+        }
+        else if(school==="LSU"){
+          td.innerHTML='<img src="lsu.png" class="school-logo">';
+        }
+        else if(school==="Ohio St."){
+          td.innerHTML='<img src="osu.svg" class="school-logo">';
+        }
+        else{
+          td.textContent=formatValue(c);
+        }
+      }
+      else{
         td.textContent=formatValue(c);
       }
+
       if(i===currentSort) td.classList.add("active-col");
       tr.appendChild(td);
     });
+
     tbody.appendChild(tr);
   });
+
   document.getElementById("prospectCount").textContent=filteredData.length;
 }
 
