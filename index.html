@@ -139,7 +139,6 @@ td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:5; }
 
 /* MOBILE */
 @media (max-width: 768px){
-
   .top-logos{
     flex-direction:row !important;
     justify-content:center;
@@ -220,14 +219,14 @@ const positionTextColors={
   "EDGE":"orange",
   "OT":"#39FF14",
   "IOL":"yellow",
-  "WR":"#B8860B",   /* darker gold */
+  "WR":"#B8860B",
   "RB":"darkgreen",
   "S":"magenta",
   "TE":"#ff00ff",
   "DT":"turquoise",
   "CB":"red",
   "LB":"royalblue",
-  "QB":"lightgray"
+  "QB":"gray"   // ✅ standard gray now
 };
 
 Papa.parse(csvUrl,{
@@ -246,7 +245,23 @@ Papa.parse(csvUrl,{
   }
 });
 
-/* ALL OTHER JS UNCHANGED */
+/* ✅ FIXED HEIGHT SORTING (handles decimals like 11.5") */
+function parseValue(val){
+  if(!val) return "";
+  val=val.toString().trim();
+
+  const heightMatch = val.match(/^(\d+)'\s*([\d\.]+)?/);
+  if(heightMatch){
+    const feet = parseFloat(heightMatch[1]);
+    const inches = parseFloat(heightMatch[2] || 0);
+    return (feet * 12) + inches;
+  }
+
+  const num=parseFloat(val);
+  if(!isNaN(num)) return num;
+
+  return val.toLowerCase();
+}
 
 function formatValue(val){
   if(!val) return "";
@@ -259,17 +274,7 @@ function formatValue(val){
   return trimmed;
 }
 
-function parseValue(val){
-  if(!val) return "";
-  val=val.toString().trim();
-  const heightMatch=val.match(/^(\d+)'\s*(\d+)?/);
-  if(heightMatch){
-    return (parseInt(heightMatch[1])*12)+parseInt(heightMatch[2]||0);
-  }
-  const num=parseFloat(val);
-  if(!isNaN(num)) return num;
-  return val.toLowerCase();
-}
+/* REST OF JS UNCHANGED */
 
 function createHeaders(){
   const thead=document.querySelector("#data-table thead");
@@ -331,6 +336,7 @@ function sortTable(col){
   filteredData.sort((a,b)=>{
     const v1=parseValue(a[col]);
     const v2=parseValue(b[col]);
+
     if(typeof v1==="number" && typeof v2==="number"){
       return sortAsc ? v1-v2 : v2-v1;
     }
