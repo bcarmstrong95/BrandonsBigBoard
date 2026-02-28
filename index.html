@@ -87,7 +87,7 @@ table{
   border-spacing:0;
   width:100%;
   min-width:max-content;
-  table-layout:fixed;
+  table-layout:auto;   /* changed from fixed */
 }
 
 th, td{
@@ -121,7 +121,11 @@ th.sorted{
 /* DESKTOP WIDTHS */
 th:nth-child(1), td:nth-child(1){ width:90px; }
 th:nth-child(2), td:nth-child(2){ width:90px; }
-th:nth-child(3), td:nth-child(3){ width:320px; text-align:left; }
+
+/* Name column auto-width now */
+th:nth-child(3), td:nth-child(3){
+  text-align:left;
+}
 
 /* DESKTOP STICKY */
 td:nth-child(1){ position:sticky; left:0; background:#000; z-index:5; }
@@ -169,7 +173,6 @@ td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:5; }
 
   th, td{
     position:static !important;
-    width:auto !important;
     min-width:120px !important;
   }
 }
@@ -222,7 +225,7 @@ const positionTextColors={
   "WR":"#B8860B",
   "RB":"darkgreen",
   "S":"magenta",
-  "TE":"#ff00ff",
+  "TE":"#800080",   /* darker purple */
   "DT":"turquoise",
   "CB":"red",
   "LB":"royalblue",
@@ -245,37 +248,26 @@ Papa.parse(csvUrl,{
   }
 });
 
-/* Preserve inch symbols exactly */
 function formatValue(val){
   if(val === null || val === undefined) return "";
   let raw = val.toString();
-
-  if(raw.includes("'") || raw.includes('"')){
-    return raw;  // do NOT alter height/measurement formatting
-  }
-
+  if(raw.includes("'") || raw.includes('"')) return raw;
   let num=parseFloat(raw);
-  if(!isNaN(num) && raw.includes(".")){
-    return Number(num.toFixed(3));
-  }
+  if(!isNaN(num) && raw.includes(".")) return Number(num.toFixed(3));
   return raw;
 }
 
-/* Height sorting (supports decimals like 11.5") */
 function parseValue(val){
   if(!val) return "";
   val=val.toString().trim();
-
   const heightMatch = val.match(/^(\d+)'\s*([\d\.]+)?/);
   if(heightMatch){
     const feet = parseFloat(heightMatch[1]);
     const inches = parseFloat(heightMatch[2] || 0);
     return (feet * 12) + inches;
   }
-
   const num=parseFloat(val);
   if(!isNaN(num)) return num;
-
   return val.toLowerCase();
 }
 
