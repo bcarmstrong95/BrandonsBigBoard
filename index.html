@@ -14,7 +14,6 @@ body{
   margin:0;
 }
 
-/* HERO */
 .hero-banner{
   background:linear-gradient(135deg,#0a0a0a,#1a1a1a);
   border-top:1px solid #222;
@@ -43,7 +42,6 @@ body{
   color:#ccc;
 }
 
-/* LOGOS */
 .top-logos{
   display:flex;
   justify-content:center;
@@ -57,7 +55,6 @@ body{
   object-fit:contain;
 }
 
-/* FILTER BAR */
 .filter-bar{
   display:flex;
   justify-content:center;
@@ -75,7 +72,6 @@ body{
   color:white;
 }
 
-/* TABLE */
 .table-wrapper{
   overflow:auto;
   max-height:75vh;
@@ -118,7 +114,6 @@ th.sorted{
   background:#1c1c1c !important;
 }
 
-/* DESKTOP WIDTHS */
 th:nth-child(1), td:nth-child(1){ width:90px; }
 th:nth-child(2), td:nth-child(2){ width:90px; }
 
@@ -135,11 +130,9 @@ td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:5; }
   vertical-align:middle;
 }
 
-/* POSITION STRIPING */
 .pos-light { background:#111; }
 .pos-dark  { background:#1a1a1a; }
 
-/* MOBILE */
 @media (max-width: 768px){
   .top-logos{
     flex-direction:row !important;
@@ -316,20 +309,14 @@ function displayRows(){
       if(i===schoolIndex){
         const school=c.trim();
 
-        if(school==="Alabama"){
-          td.innerHTML='<img src="bama.svg" class="school-logo">';
+        if(school==="iu.png"){
+          td.innerHTML='<img src="iu1.png" class="school-logo">';
         }
-        else if(school==="Indiana"){
-          td.innerHTML='<img src="iu.png" class="school-logo">';
+        else if(school==="lsu.png"){
+          td.innerHTML='<img src="lsu1.png" class="school-logo">';
         }
-        else if(school==="Michigan"){
-          td.innerHTML='<img src="michigan.png" class="school-logo">';
-        }
-        else if(school==="LSU"){
-          td.innerHTML='<img src="lsu.png" class="school-logo">';
-        }
-        else if(school==="Ohio St."){
-          td.innerHTML='<img src="osu.svg" class="school-logo">';
+        else if(school==="osu.svg"){
+          td.innerHTML='<img src="osu1.png" class="school-logo">';
         }
         else{
           td.textContent=formatValue(c);
