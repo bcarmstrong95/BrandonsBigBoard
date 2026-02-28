@@ -128,7 +128,7 @@ th:nth-child(1), td:nth-child(1){ width:90px; min-width:90px; }
 th:nth-child(2), td:nth-child(2){ width:90px; min-width:90px; }
 th:nth-child(3), td:nth-child(3){ width:320px; min-width:320px; text-align:left; }
 
-/* STICKY DESKTOP */
+/* STICKY DESKTOP ONLY */
 td:nth-child(1){ position:sticky; left:0; background:#000; z-index:900; }
 td:nth-child(2){ position:sticky; left:90px; background:#000; z-index:901; }
 td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:902; }
@@ -157,25 +157,32 @@ tbody tr:nth-child(even){ background:#111; }
   vertical-align:middle;
 }
 
-/* MOBILE FIX */
+/* ========================= */
+/* TRUE MOBILE FIX */
+/* ========================= */
+
 @media (max-width: 768px){
 
   .table-wrapper{
     overflow-x:auto;
+    overflow-y:auto;
     max-height:none;
   }
 
   table{
-    table-layout:auto;
-    min-width:900px;
+    table-layout:auto !important;
+    width:auto !important;
+    min-width:1000px;
   }
 
-  td:nth-child(1),
-  td:nth-child(2),
-  td:nth-child(3),
-  th:nth-child(1),
-  th:nth-child(2),
-  th:nth-child(3){
+  th, td{
+    width:auto !important;
+    min-width:120px !important;
+    white-space:nowrap;
+  }
+
+  /* Remove ALL sticky behavior */
+  th, td{
     position:static !important;
     left:auto !important;
     background:inherit !important;
@@ -301,10 +308,23 @@ function displayRows(){
   document.getElementById("prospectCount").textContent=filteredData.length;
 }
 
+/* HEIGHT + NUMBER SORT FIX */
 function parseValue(val){
+
   if(!val) return 0;
-  const num=parseFloat(val);
+
+  val = val.toString().trim();
+
+  const heightMatch = val.match(/^(\d+)'\s*(\d+)?/);
+  if(heightMatch){
+    const feet = parseInt(heightMatch[1]);
+    const inches = parseInt(heightMatch[2] || 0);
+    return (feet * 12) + inches;
+  }
+
+  const num = parseFloat(val);
   if(!isNaN(num)) return num;
+
   return val.toLowerCase();
 }
 
@@ -323,7 +343,7 @@ function sortTable(col){
     return 0;
   });
 
-  document.querySelectorAll("th").forEach((th,i)=>{
+  document.querySelectorAll("th").forEach((th)=>{
     th.classList.remove("sorted");
     th.querySelector(".arrow").textContent="";
   });
