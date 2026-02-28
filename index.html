@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <title>Brandon's Big Board</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 
 <style>
@@ -75,13 +77,14 @@ body{
   color:white;
 }
 
-/* TABLE */
+/* TABLE WRAPPER */
 .table-wrapper{
   overflow:auto;
   max-height:75vh;
   margin:20px;
 }
 
+/* DESKTOP TABLE */
 table{
   border-collapse:separate;
   border-spacing:0;
@@ -96,18 +99,12 @@ th, td{
   white-space:nowrap;
 }
 
-/* HEADER */
 th{
   background:#4169E1;
   cursor:pointer;
   position:sticky;
   top:0;
   z-index:1000;
-  transition:background .2s ease;
-}
-
-th:hover{
-  background:#3157c7;
 }
 
 th .arrow{
@@ -123,34 +120,17 @@ th.sorted{
   background:#1c1c1c !important;
 }
 
-/* COLUMN WIDTHS */
-th:nth-child(1), td:nth-child(1){ width:90px; min-width:90px; }
-th:nth-child(2), td:nth-child(2){ width:90px; min-width:90px; }
-th:nth-child(3), td:nth-child(3){ width:320px; min-width:320px; text-align:left; }
+/* DESKTOP COLUMN WIDTHS */
+th:nth-child(1), td:nth-child(1){ width:90px; }
+th:nth-child(2), td:nth-child(2){ width:90px; }
+th:nth-child(3), td:nth-child(3){ width:320px; text-align:left; }
 
-/* STICKY DESKTOP ONLY */
-td:nth-child(1){ position:sticky; left:0; background:#000; z-index:900; }
-td:nth-child(2){ position:sticky; left:90px; background:#000; z-index:901; }
-td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:902; }
+/* DESKTOP STICKY */
+td:nth-child(1){ position:sticky; left:0; background:#000; }
+td:nth-child(2){ position:sticky; left:90px; background:#000; }
+td:nth-child(3){ position:sticky; left:180px; background:#000; }
 
-th:nth-child(1){ left:0; }
-th:nth-child(2){ left:90px; }
-th:nth-child(3){ left:180px; }
-
-/* STRIPING */
 tbody tr:nth-child(even){ background:#111; }
-
-/* POSITION COLORS */
-.edge-row td { color:orange; font-weight:600; }
-.dt-row td { color:#40e0d0; font-weight:600; }
-.cb-row td { color:red; font-weight:600; }
-.s-row td { color:#ff1493; font-weight:600; }
-.te-row td { color:purple; font-weight:600; }
-.rb-row td { color:#006400; font-weight:600; }
-.wr-row td { color:#b8860b; font-weight:600; }
-.lb-row td { color:#4169E1; font-weight:600; }
-.ot-row td { color:yellow; font-weight:600; }
-.iol-row td { color:#00ff00; font-weight:600; }
 
 .school-logo{
   height:22px;
@@ -158,35 +138,45 @@ tbody tr:nth-child(even){ background:#111; }
 }
 
 /* ========================= */
-/* TRUE MOBILE FIX */
+/* TRUE CLEAN MOBILE MODE */
 /* ========================= */
 
 @media (max-width: 768px){
+
+  .top-logos{
+    flex-direction:column;
+    gap:20px;
+  }
+
+  .top-logos img{
+    height:140px;
+  }
+
+  .filter-bar{
+    flex-direction:column;
+    align-items:center;
+  }
 
   .table-wrapper{
     overflow-x:auto;
     overflow-y:auto;
     max-height:none;
+    margin:10px;
   }
 
   table{
     table-layout:auto !important;
     width:auto !important;
-    min-width:1000px;
+    min-width:800px !important;
   }
 
   th, td{
+    position:static !important;
     width:auto !important;
     min-width:120px !important;
     white-space:nowrap;
   }
 
-  /* Remove ALL sticky behavior */
-  th, td{
-    position:static !important;
-    left:auto !important;
-    background:inherit !important;
-  }
 }
 
 </style>
@@ -284,10 +274,6 @@ function displayRows(){
   filteredData.forEach(r=>{
     const tr=document.createElement("tr");
 
-    if(posIndex>=0){
-      tr.classList.add(r[posIndex].toLowerCase()+"-row");
-    }
-
     r.forEach((c,i)=>{
       const td=document.createElement("td");
 
@@ -308,18 +294,14 @@ function displayRows(){
   document.getElementById("prospectCount").textContent=filteredData.length;
 }
 
-/* HEIGHT + NUMBER SORT FIX */
+/* HEIGHT FIX */
 function parseValue(val){
-
   if(!val) return 0;
-
   val = val.toString().trim();
 
   const heightMatch = val.match(/^(\d+)'\s*(\d+)?/);
   if(heightMatch){
-    const feet = parseInt(heightMatch[1]);
-    const inches = parseInt(heightMatch[2] || 0);
-    return (feet * 12) + inches;
+    return (parseInt(heightMatch[1]) * 12) + parseInt(heightMatch[2] || 0);
   }
 
   const num = parseFloat(val);
@@ -343,7 +325,7 @@ function sortTable(col){
     return 0;
   });
 
-  document.querySelectorAll("th").forEach((th)=>{
+  document.querySelectorAll("th").forEach(th=>{
     th.classList.remove("sorted");
     th.querySelector(".arrow").textContent="";
   });
