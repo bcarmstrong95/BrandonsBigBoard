@@ -203,7 +203,7 @@ td:nth-child(3){ position:sticky; left:180px; background:#000; z-index:5; }
 </div>
 
 <script>
-const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
+const csvUrl="YOUR_GOOGLE_SHEET_CSV_LINK_HERE";
 
 let originalData=[], filteredData=[], headers=[];
 let posIndex=-1, schoolIndex=-1;
@@ -240,26 +240,8 @@ Papa.parse(csvUrl,{
 });
 
 function formatValue(val){
-  if(val === null || val === undefined) return "";
-  let raw = val.toString();
-  if(raw.includes("'") || raw.includes('"')) return raw;
-  let num=parseFloat(raw);
-  if(!isNaN(num) && raw.includes(".")) return Number(num.toFixed(3));
-  return raw;
-}
-
-function parseValue(val){
-  if(!val) return "";
-  val=val.toString().trim();
-  const heightMatch = val.match(/^(\d+)'\s*([\d\.]+)?/);
-  if(heightMatch){
-    const feet = parseFloat(heightMatch[1]);
-    const inches = parseFloat(heightMatch[2] || 0);
-    return (feet * 12) + inches;
-  }
-  const num=parseFloat(val);
-  if(!isNaN(num)) return num;
-  return val.toLowerCase();
+  if(val===null||val===undefined) return "";
+  return val;
 }
 
 function createHeaders(){
@@ -293,10 +275,12 @@ function displayRows(){
 
   filteredData.forEach(r=>{
     const tr=document.createElement("tr");
+
     if(r[posIndex]!==currentPos){
       currentPos=r[posIndex];
       toggle=!toggle;
     }
+
     tr.classList.add(toggle ? "pos-dark" : "pos-light");
 
     if(positionTextColors[r[posIndex]]){
@@ -309,24 +293,23 @@ function displayRows(){
       if(i===schoolIndex){
         const school=c.trim();
 
-        if(school==="iu.png"){
+        if(school==="Indiana"){
           td.innerHTML='<img src="iu1.png" class="school-logo">';
         }
-        else if(school==="lsu.png"){
+        else if(school==="LSU"){
           td.innerHTML='<img src="lsu1.png" class="school-logo">';
         }
-        else if(school==="osu.svg"){
+        else if(school==="Ohio St."){
           td.innerHTML='<img src="osu1.png" class="school-logo">';
         }
         else{
-          td.textContent=formatValue(c);
+          td.textContent=school;
         }
       }
       else{
         td.textContent=formatValue(c);
       }
 
-      if(i===currentSort) td.classList.add("active-col");
       tr.appendChild(td);
     });
 
@@ -335,49 +318,6 @@ function displayRows(){
 
   document.getElementById("prospectCount").textContent=filteredData.length;
 }
-
-function sortTable(col){
-  if(currentSort===col){ sortAsc=!sortAsc; }
-  else{ currentSort=col; sortAsc=true; }
-
-  filteredData.sort((a,b)=>{
-    const v1=parseValue(a[col]);
-    const v2=parseValue(b[col]);
-    if(typeof v1==="number" && typeof v2==="number"){
-      return sortAsc ? v1-v2 : v2-v1;
-    }
-    return sortAsc
-      ? v1.toString().localeCompare(v2)
-      : v2.toString().localeCompare(v1);
-  });
-
-  document.querySelectorAll("th").forEach(th=>{
-    th.classList.remove("sorted");
-    th.querySelector(".arrow").textContent="";
-  });
-
-  const activeTh=document.querySelectorAll("th")[col];
-  activeTh.classList.add("sorted");
-  activeTh.querySelector(".arrow").textContent=sortAsc?"▲":"▼";
-
-  displayRows();
-}
-
-document.getElementById("searchInput").addEventListener("input",function(){
-  const search=this.value.toLowerCase();
-  filteredData=originalData.filter(r=>
-    r.join(" ").toLowerCase().includes(search)
-  );
-  displayRows();
-});
-
-document.getElementById("positionFilter").addEventListener("change",function(){
-  const pos=this.value;
-  filteredData=pos
-    ? originalData.filter(r=>r[posIndex]===pos)
-    : [...originalData];
-  displayRows();
-});
 </script>
 
 </body>
