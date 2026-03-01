@@ -142,15 +142,8 @@ wingspanIndex=headers.findIndex(h=>h.toLowerCase()==="wingspan");
 
 data=results.data.slice(2).filter(r=>r.length===headers.length);
 
-data.forEach(row=>{
-row.forEach((cell,i)=>{
-if(i===heightIndex||i===handIndex||i===armIndex||i===wingspanIndex){
-row[i]=decimalToFraction(cell);
-}else{
-row[i]=roundThousandth(cell);
-}
-});
-});
+// Keep sheet values exactly as-is
+data = data.map(row => row.map(cell => cell));
 
 filteredData=[...data];
 createHeaders();
