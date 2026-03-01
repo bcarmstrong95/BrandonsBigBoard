@@ -259,9 +259,20 @@ if(positionColors[pos]) tr.style.color=positionColors[pos];
 r.forEach((c,i)=>{
 const td=document.createElement("td");
 
-if(headers[i].toLowerCase().includes("school") && schoolLogos[c]){
-    const logo = schoolLogos[c];
-    td.innerHTML = `<img src="${logo.src}" class="school-logo ${logo.class}">`;
+if(headers[i].toLowerCase().includes("school")){
+
+    const cleanSchool = String(c).trim().toLowerCase();
+
+    const matchedKey = Object.keys(schoolLogos).find(
+        key => key.toLowerCase() === cleanSchool
+    );
+
+    if(matchedKey){
+        const logo = schoolLogos[matchedKey];
+        td.innerHTML = `<img src="${logo.src}" class="school-logo ${logo.class}">`;
+    } else {
+        td.textContent = c;
+    }
 }
 else{
 
