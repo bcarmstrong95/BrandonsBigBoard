@@ -242,10 +242,28 @@ r.forEach((c,i)=>{
 const td=document.createElement("td");
 
 if(headers[i].toLowerCase().includes("school") && schoolLogos[c]){
-const logo=schoolLogos[c];
-td.innerHTML=`<img src="${logo.src}" class="school-logo ${logo.class}">`;
-}else{
-td.textContent=c;
+    const logo = schoolLogos[c];
+    td.innerHTML = `<img src="${logo.src}" class="school-logo ${logo.class}">`;
+}
+else{
+
+    let displayValue = c;
+    let header = headers[i].toLowerCase();
+
+    // Skip rounding for measurement columns
+    if(i !== heightIndex && i !== handIndex && i !== armIndex && i !== wingspanIndex){
+
+        let num = parseFloat(c);
+
+        if(!isNaN(num)){
+            displayValue = (Math.round(num * 1000) / 1000).toFixed(3);
+
+            // Remove unnecessary trailing zeros
+            displayValue = displayValue.replace(/\.?0+$/, '');
+        }
+    }
+
+    td.textContent = displayValue;
 }
 
 if(i===currentSort) td.classList.add("active-col");
