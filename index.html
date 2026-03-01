@@ -21,6 +21,7 @@ th{background:#4169E1;cursor:pointer;position:sticky;top:0;z-index:1000;}
 th .arrow{margin-left:6px;font-weight:bold;}
 th.sorted{background:#162b55!important;}
 .active-col{background:#1c1c1c!important;}
+
 .school-logo{height:70px;width:70px;object-fit:contain;vertical-align:middle;}
 .logo-michigan,.logo-osu{height:49px;width:49px;}
 .logo-bama{height:42px;width:42px;}
@@ -71,68 +72,65 @@ const schoolLogos={
   "Iowa":{src:"iowa2.png", class:""}
 };
 
-/* ---------- Convert 5'11.625" → 5'11 5/8" ---------- */
-function convertHeightDecimalToFraction(val){
-    if(!val || val==="-" ) return val;
-    if(!val.includes("'")) return val;
+function gcd(a,b){ return b ? gcd(b, a%b) : a; }
 
-    let clean = val.replace(/"/g,"").trim();
-    let parts = clean.split("'");
+/* Convert 5'11.625" → 5'11 5/8" reduced */
+function convertHeight(val){
+if(!val || val==="-" ) return val;
+if(!val.includes("'")) return val;
 
-    let feet = parts[0];
-    let inchPart = parts[1];
+let clean=val.replace(/"/g,"").trim();
+let parts=clean.split("'");
 
-    if(!inchPart.includes(".")) return val; // already fraction
+let feet=parts[0];
+let inchPart=parts[1];
 
-    let inchesDecimal = parseFloat(inchPart);
-    let whole = Math.floor(inchesDecimal);
-    let decimal = inchesDecimal - whole;
+if(!inchPart.includes(".")) return val;
 
-    let denom = 8;
-    let numerator = Math.round(decimal * denom);
+let inchesDecimal=parseFloat(inchPart);
+let whole=Math.floor(inchesDecimal);
+let decimal=inchesDecimal-whole;
 
-    if(numerator === 0){
-        return feet + "'" + whole + '"';
-    }
+let denom=8;
+let num=Math.round(decimal*denom);
 
-    if(numerator === denom){
-        whole += 1;
-        numerator = 0;
-    }
+if(num===0) return feet+"'"+whole+'"';
+if(num===denom){whole+=1; num=0;}
 
-    if(numerator === 0){
-        return feet + "'" + whole + '"';
-    }
+if(num===0) return feet+"'"+whole+'"';
 
-    return feet + "'" + whole + " " + numerator + "/" + denom + '"';
+let divisor=gcd(num,denom);
+num/=divisor;
+denom/=divisor;
+
+return feet+"'"+whole+" "+num+"/"+denom+'"';
 }
 
-/* ---------- Convert height to numeric inches for sorting ---------- */
 function heightToInches(val){
-    if(!val || val==="-" ) return null;
+if(!val || val==="-" ) return null;
 
-    let clean = val.replace(/"/g,"");
-    let parts = clean.split("'");
+let clean=val.replace(/"/g,"");
+let parts=clean.split("'");
 
-    let feet = parseFloat(parts[0]);
-    let inchPart = parts[1].trim();
+let feet=parseFloat(parts[0]);
+let inchPart=parts[1].trim();
 
-    let inches = 0;
+let inches=0;
 
-    if(inchPart.includes("/")){
-        let split = inchPart.split(" ");
-        let whole = parseFloat(split[0])||0;
-        let frac = 0;
-        if(split[1]){
-            let f = split[1].split("/");
-            frac = parseFloat(f[0]) / parseFloat(f[1]);
-        }
-        inches = whole + frac;
-    } else {
-        inches = parseFloat(inchPart)||0;
-    }
+if(inchPart.includes("/")){
+let split=inchPart.split(" ");
+let whole=parseFloat(split[0])||0;
+let frac=0;
+if(split[1]){
+let f=split[1].split("/");
+frac=parseFloat(f[0])/parseFloat(f[1]);
+}
+inches=whole+frac;
+}else{
+inches=parseFloat(inchPart)||0;
+}
 
-    return (feet*12) + inches;
+return feet*12+inches;
 }
 
 Papa.parse(csvUrl,{
@@ -145,7 +143,7 @@ originalData=results.data.slice(2).filter(r=>r.length===headers.length);
 
 originalData.forEach(row=>{
 if(heightIndex>-1){
-row[heightIndex]=convertHeightDecimalToFraction(row[heightIndex]);
+row[heightIndex]=convertHeight(row[heightIndex]);
 }
 });
 
@@ -161,27 +159,27 @@ function sortTable(col){
 let header=headers[col].toLowerCase();
 
 if(currentSort===col){
-    sortAsc=!sortAsc;
+sortAsc=!sortAsc;
 }else{
-    currentSort=col;
-    sortAsc=!highFirstColumns.some(h=>header.includes(h));
+currentSort=col;
+sortAsc=!highFirstColumns.some(h=>header.includes(h));
 }
 
 filteredData.sort((a,b)=>{
 
 if(col===heightIndex){
-    let v1=heightToInches(a[col]);
-    let v2=heightToInches(b[col]);
-    if(v1===null) return 1;
-    if(v2===null) return -1;
-    return sortAsc ? v1-v2 : v2-v1;
+let v1=heightToInches(a[col]);
+let v2=heightToInches(b[col]);
+if(v1===null) return 1;
+if(v2===null) return -1;
+return sortAsc ? v1-v2 : v2-v1;
 }
 
 let n1=parseFloat(a[col]);
 let n2=parseFloat(b[col]);
 
 if(!isNaN(n1)&&!isNaN(n2)){
-    return sortAsc ? n1-n2 : n2-n1;
+return sortAsc ? n1-n2 : n2-n1;
 }
 
 return sortAsc
@@ -206,6 +204,7 @@ const tbody=document.querySelector("#data-table tbody");
 tbody.innerHTML="";
 filteredData.forEach(r=>{
 const tr=document.createElement("tr");
+
 r.forEach((c,i)=>{
 const td=document.createElement("td");
 
