@@ -91,6 +91,12 @@ const schoolLogos={
 
 function gcd(a,b){ return b ? gcd(b, a%b) : a; }
 
+function roundToThousandth(val){
+if(val===null || val==="" || val==="-" ) return val;
+if(isNaN(val)) return val;
+return Math.round(parseFloat(val)*1000)/1000;
+}
+
 function convertHeight(val){
 if(!val || val==="-" ) return val;
 if(!val.includes("'")) return val;
@@ -152,12 +158,17 @@ complete:function(results){
 headers=results.data[1].map(h=>h.trim());
 heightIndex=headers.findIndex(h=>h.toLowerCase()==="height");
 positionIndex=headers.findIndex(h=>h.toLowerCase()==="pos");
+
 originalData=results.data.slice(2).filter(r=>r.length===headers.length);
 
 originalData.forEach(row=>{
-if(heightIndex>-1){
-row[heightIndex]=convertHeight(row[heightIndex]);
+row.forEach((cell,i)=>{
+if(i===heightIndex){
+row[i]=convertHeight(cell);
+}else{
+row[i]=roundToThousandth(cell);
 }
+});
 });
 
 filteredData=[...originalData];
