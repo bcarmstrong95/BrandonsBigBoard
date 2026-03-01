@@ -52,6 +52,7 @@ const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I
 let headers=[], data=[], filteredData=[];
 let currentSort=-1, sortAsc=true;
 let heightIndex=-1, positionIndex=-1;
+let handIndex=-1, armIndex=-1, wingspanIndex=-1;
 
 const highFirstColumns=["height","weight","arm","hand","wingspan","vertical","broad",
 "pfn","pff","nfldb","avg","gp","gs","sacks","s/g","tfl",
@@ -75,41 +76,32 @@ const schoolLogos={
 "Iowa":{src:"iowa2.png",class:""}
 };
 
-function cleanNumber(val){
-if(val===null||val===""||val==="-" ) return null;
-if(typeof val==="string" && val.includes('"')) return val; 
-let n=parseFloat(val);
-if(isNaN(n)) return val;
-return Math.round(n*1000)/1000;
-}
-
 function gcd(a,b){ return b?gcd(b,a%b):a; }
 
-function convertHeight(val){
-if(!val||val==="-"||!val.includes("'")) return val;
+function decimalToFractionMeasurement(val){
+if(!val||val==="-"||!val.includes(".")) return val;
 
 let hasQuote=val.includes('"');
-let clean=val.replace(/"/g,"").trim();
-let parts=clean.split("'");
+let clean=val.replace(/"/g,"");
+let num=parseFloat(clean);
+if(isNaN(num)) return val;
 
-let feet=parts[0];
-let inchPart=parts[1];
+let whole=Math.floor(num);
+let decimal=num-whole;
 
-if(!inchPart.includes(".")) return val;
-
-let inchesDecimal=parseFloat(inchPart);
-let whole=Math.floor(inchesDecimal);
-let decimal=inchesDecimal-whole;
+if(decimal===0) return whole+(hasQuote?'"':"");
 
 let denom=8;
-let num=Math.round(decimal*denom);
-if(num===denom){whole+=1;num=0;}
-if(num===0) return feet+"'"+whole+(hasQuote?'"':"");
+let numerator=Math.round(decimal*denom);
 
-let divisor=gcd(num,denom);
-num/=divisor; denom/=divisor;
+if(numerator===denom){whole+=1;numerator=0;}
+if(numerator===0) return whole+(hasQuote?'"':"");
 
-return feet+"'"+whole+" "+num+"/"+denom+(hasQuote?'"':"");
+let divisor=gcd(numerator,denom);
+numerator/=divisor;
+denom/=divisor;
+
+return whole+" "+numerator+"/"+denom+(hasQuote?'"':"");
 }
 
 function heightToInches(val){
@@ -136,6 +128,22 @@ inches=parseFloat(inchPart)||0;
 return feet*12+inches;
 }
 
+function measurementToDecimal(val){
+if(!val||val==="-" ) return null;
+let clean=val.replace(/"/g,"").trim();
+if(clean.includes("/")){
+let parts=clean.split(" ");
+let whole=parseFloat(parts[0])||0;
+let frac=0;
+if(parts[1]){
+let f=parts[1].split("/");
+frac=parseFloat(f[0])/parseFloat(f[1]);
+}
+return whole+frac;
+}
+return parseFloat(clean);
+}
+
 Papa.parse(csvUrl,{
 download:true,
 skipEmptyLines:true,
@@ -144,15 +152,16 @@ complete:function(results){
 headers=results.data[1].map(h=>h.trim());
 heightIndex=headers.findIndex(h=>h.toLowerCase()==="height");
 positionIndex=headers.findIndex(h=>h.toLowerCase()==="pos");
+handIndex=headers.findIndex(h=>h.toLowerCase()==="hand");
+armIndex=headers.findIndex(h=>h.toLowerCase()==="arm");
+wingspanIndex=headers.findIndex(h=>h.toLowerCase()==="wingspan");
 
 data=results.data.slice(2).filter(r=>r.length===headers.length);
 
 data.forEach(row=>{
 row.forEach((cell,i)=>{
-if(i===heightIndex){
-row[i]=convertHeight(cell);
-}else{
-row[i]=cleanNumber(cell);
+if(i===handIndex||i===armIndex||i===wingspanIndex){
+row[i]=decimalToFractionMeasurement(cell);
 }
 });
 });
@@ -187,14 +196,16 @@ v1=heightToInches(v1);
 v2=heightToInches(v2);
 }
 
-if(v1===null||v1==="-"||v1==="") return 1;
-if(v2===null||v2==="-"||v2==="") return -1;
+if(col===handIndex||col===armIndex||col===wingspanIndex){
+v1=measurementToDecimal(v1);
+v2=measurementToDecimal(v2);
+}
 
-let n1=parseFloat(v1);
-let n2=parseFloat(v2);
+if(v1==null) return 1;
+if(v2==null) return -1;
 
-if(!isNaN(n1)&&!isNaN(n2)){
-return sortAsc?n1-n2:n2-n1;
+if(typeof v1==="number"&&typeof v2==="number"){
+return sortAsc?v1-v2:v2-v1;
 }
 
 return sortAsc
