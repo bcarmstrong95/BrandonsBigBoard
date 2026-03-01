@@ -371,11 +371,13 @@ function applyFilters(){
     });
 
     // Re-apply current sort if one exists
-    if(currentSort !== -1){
-        sortTable(currentSort);
-    } else {
-        displayRows();
-    }
+   if(currentSort !== -1){
+    sortTable(currentSort);
+} else {
+    displayRows();
+}
+
+document.getElementById("prospectCount").textContent = filteredData.length;
 }
 function createHeaders(){
 const thead=document.querySelector("#data-table thead");
