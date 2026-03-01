@@ -60,6 +60,25 @@ tbody tr:hover{
 <img src="Draft26.jpg">
 </div>
 
+    <div style="display:flex;flex-wrap:wrap;gap:15px;align-items:center;justify-content:center;margin:20px;">
+
+    <!-- Search Bar -->
+    <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Search players..." 
+        style="padding:8px 12px;border-radius:6px;border:none;font-size:14px;width:220px;"
+    >
+
+    <!-- Position Filter -->
+    <select 
+        id="positionFilter" 
+        multiple 
+        style="padding:8px 12px;border-radius:6px;border:none;font-size:14px;height:120px;"
+    >
+    </select>
+
+</div>
 <div class="table-wrapper">
 <table id="data-table">
 <thead></thead>
@@ -74,6 +93,9 @@ let headers=[], data=[], filteredData=[];
 let currentSort=-1, sortAsc=true;
 let heightIndex=-1, positionIndex=-1;
 let handIndex=-1, armIndex=-1, wingspanIndex=-1;
+
+let searchTerm="";
+let selectedPositions=[];
 
 const positionColors={
 "EDGE":"orange","OT":"#39FF14","IOL":"yellow","WR":"#B8860B",
@@ -164,8 +186,11 @@ data=results.data.slice(2).filter(r=>r.length===headers.length);
 data = data.map(row => row.map(cell => cell));
 
 filteredData=[...data];
+
 createHeaders();
-displayRows();
+initializeFilters();
+applyFilters();
+
 document.getElementById("prospectCount").textContent=data.length;
 }
 });
@@ -301,7 +326,54 @@ tr.appendChild(td);
 tbody.appendChild(tr);
 });
 }
+function initializeFilters(){
 
+    const positionSelect=document.getElementById("positionFilter");
+
+    if(positionIndex>-1){
+
+        const uniquePositions=[
+            ...new Set(data.map(r=>r[positionIndex]).filter(Boolean))
+        ].sort();
+
+        uniquePositions.forEach(pos=>{
+            const option=document.createElement("option");
+            option.value=pos;
+            option.textContent=pos;
+            positionSelect.appendChild(option);
+        });
+    }
+
+    document.getElementById("searchInput").addEventListener("input",e=>{
+        searchTerm=e.target.value.toLowerCase();
+        applyFilters();
+    });
+
+    positionSelect.addEventListener("change",()=>{
+        selectedPositions=[...positionSelect.selectedOptions].map(o=>o.value);
+        applyFilters();
+    });
+}
+
+function applyFilters(){
+
+    filteredData=data.filter(row=>{
+
+        // Search filter
+        const matchesSearch=row.some(cell=>
+            String(cell).toLowerCase().includes(searchTerm)
+        );
+
+        // Position filter
+        const matchesPosition=
+            selectedPositions.length===0 ||
+            selectedPositions.includes(row[positionIndex]);
+
+        return matchesSearch && matchesPosition;
+    });
+
+    displayRows();
+}
 function createHeaders(){
 const thead=document.querySelector("#data-table thead");
 const row=document.createElement("tr");
