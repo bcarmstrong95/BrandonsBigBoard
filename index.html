@@ -47,6 +47,7 @@ th.sorted{background:#162b55!important;}
 </div>
 
 <script>
+
 const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
 let headers=[], data=[], filteredData=[];
@@ -56,9 +57,17 @@ let heightIndex=-1, positionIndex=-1;
 let handIndex=-1, armIndex=-1, wingspanIndex=-1;
 
 const positionColors={
-"EDGE":"orange","OT":"#39FF14","IOL":"yellow","WR":"#B8860B",
-"RB":"darkgreen","S":"magenta","TE":"#800080","DT":"turquoise",
-"CB":"red","LB":"royalblue","QB":"gray"
+"EDGE":"orange",
+"OT":"#39FF14",
+"IOL":"yellow",
+"WR":"#B8860B",
+"RB":"darkgreen",
+"S":"magenta",
+"TE":"#800080",
+"DT":"turquoise",
+"CB":"red",
+"LB":"royalblue",
+"QB":"gray"
 };
 
 const schoolLogos={
@@ -82,7 +91,7 @@ function decimalToFraction(val){
 if(!val || !val.includes(".")) return val;
 
 let inchSymbol = val.includes('"') ? '"' : "";
-let clean = val.replace('"','');
+let clean = val.replace(/"/g,'');
 let num = parseFloat(clean);
 if(isNaN(num)) return val;
 
@@ -103,8 +112,7 @@ return whole+" "+numerator+"/"+denom + inchSymbol;
 
 function fractionToDecimal(val){
 if(!val) return null;
-let clean=val.replace('"','').trim();
-
+let clean=val.replace(/"/g,'').trim();
 if(clean.includes("/")){
 let parts=clean.split(" ");
 let whole=parseFloat(parts[0])||0;
@@ -120,7 +128,7 @@ return parseFloat(clean);
 
 function heightToInches(val){
 if(!val) return null;
-let clean=val.replace('"','');
+let clean=val.replace(/"/g,'');
 let parts=clean.split("'");
 let feet=parseFloat(parts[0]);
 let inches=fractionToDecimal(parts[1]);
@@ -133,6 +141,7 @@ skipEmptyLines:true,
 complete:function(results){
 
 headers=results.data[0].map(h=>h.trim());
+
 heightIndex=headers.findIndex(h=>h.toLowerCase()==="height");
 positionIndex=headers.findIndex(h=>h.toLowerCase()==="pos");
 handIndex=headers.findIndex(h=>h.toLowerCase()==="hand");
@@ -219,7 +228,9 @@ const tr=document.createElement("tr");
 
 if(positionIndex>-1){
 let pos=r[positionIndex];
-if(positionColors[pos]) tr.style.color=positionColors[pos];
+if(positionColors[pos]){
+tr.style.color=positionColors[pos]; // TEXT COLOR ONLY
+}
 }
 
 r.forEach((c,i)=>{
@@ -233,6 +244,7 @@ td.textContent=c;
 }
 
 if(i===currentSort) td.classList.add("active-col");
+
 tr.appendChild(td);
 });
 tbody.appendChild(tr);
@@ -250,7 +262,7 @@ row.appendChild(th);
 });
 thead.appendChild(row);
 }
-</script>
 
+</script>
 </body>
 </html>
