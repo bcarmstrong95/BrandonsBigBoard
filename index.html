@@ -161,57 +161,58 @@ document.getElementById("prospectCount").textContent=data.length;
 
 function sortTable(col){
 
-let header=headers[col].toLowerCase();
+    let header=headers[col].toLowerCase();
 
-if(currentSort===col){
-sortAsc=!sortAsc;
-}else{
-currentSort=col;
-if(header==="age"||header==="40") sortAsc=true;
-else sortAsc=false;
-}
-
-filteredData.sort((a,b)=>{
-
-let v1=a[col];
-let v2=b[col];
-
-if(col===heightIndex){
-v1=heightToInches(v1);
-v2=heightToInches(v2);
-}
-else if(col===handIndex||col===armIndex||col===wingspanIndex){
-v1=fractionToDecimal(v1);
-v2=fractionToDecimal(v2);
-}
-else{
-    let n1 = parseFloat(v1);
-    let n2 = parseFloat(v2);
-
-    if(!isNaN(n1) && !isNaN(n2)){
-        v1 = n1;
-        v2 = n2;
-    } else {
-        return sortAsc
-            ? String(a[col]).localeCompare(String(b[col]))
-            : String(b[col]).localeCompare(String(a[col]));
+    if(currentSort===col){
+        sortAsc=!sortAsc;
+    }else{
+        currentSort=col;
+        if(header==="age"||header==="40") sortAsc=true;
+        else sortAsc=false;
     }
+
+    filteredData.sort((a,b)=>{
+
+        let v1=a[col];
+        let v2=b[col];
+
+        if(col===heightIndex){
+            v1=heightToInches(v1);
+            v2=heightToInches(v2);
+        }
+        else if(col===handIndex||col===armIndex||col===wingspanIndex){
+            v1=fractionToDecimal(v1);
+            v2=fractionToDecimal(v2);
+        }
+        else{
+            let n1=parseFloat(v1);
+            let n2=parseFloat(v2);
+
+            if(!isNaN(n1) && !isNaN(n2)){
+                v1=n1;
+                v2=n2;
+            } else {
+                return sortAsc
+                    ? String(a[col]).localeCompare(String(b[col]))
+                    : String(b[col]).localeCompare(String(a[col]));
+            }
+        }
+
+        return sortAsc ? v1 - v2 : v2 - v1;
+
+    });
+
+    document.querySelectorAll("th").forEach(th=>{
+        th.classList.remove("sorted");
+        th.querySelector(".arrow").textContent="";
+    });
+
+    const active=document.querySelectorAll("th")[col];
+    active.classList.add("sorted");
+    active.querySelector(".arrow").textContent=sortAsc?"▲":"▼";
+
+    displayRows();
 }
-
-return sortAsc ? v1 - v2 : v2 - v1;
-
-document.querySelectorAll("th").forEach(th=>{
-th.classList.remove("sorted");
-th.querySelector(".arrow").textContent="";
-});
-
-const active=document.querySelectorAll("th")[col];
-active.classList.add("sorted");
-active.querySelector(".arrow").textContent=sortAsc?"▲":"▼";
-
-displayRows();
-}
-
 function displayRows(){
 const tbody=document.querySelector("#data-table tbody");
 tbody.innerHTML="";
