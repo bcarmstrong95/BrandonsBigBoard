@@ -9,8 +9,6 @@
 <style>
 body{background:black;color:white;font-family:Arial;margin:0;}
 .hero-banner{background:linear-gradient(135deg,#0a0a0a,#1a0a0a);border-top:1px solid #222;border-bottom:1px solid #222;padding:30px 20px;text-align:center;}
-.hero-content h1{font-size:36px;margin:0;letter-spacing:2px;font-weight:700;}
-.hero-content h2{font-size:22px;margin:10px 0;color:#4169E1;font-weight:600;}
 .meta-info{margin-top:12px;font-size:15px;color:#ccc;}
 .top-logos{display:flex;justify-content:center;align-items:center;gap:80px;padding:40px 0 20px 0;}
 .top-logos img{height:285px;object-fit:contain;}
@@ -27,7 +25,6 @@ th.sorted{background:#162b55!important;}
 .logo-bama{height:42px;width:42px;}
 </style>
 </head>
-
 <body>
 
 <div class="hero-banner">
@@ -52,61 +49,47 @@ th.sorted{background:#162b55!important;}
 <script>
 const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
-let headers=[], originalData=[], filteredData=[];
+let headers=[], data=[], filteredData=[];
 let currentSort=-1, sortAsc=true;
-let heightIndex=-1;
-let positionIndex=-1;
+let heightIndex=-1, positionIndex=-1;
 
-const highFirstColumns=[
-"height","weight","arm","hand","wingspan","vertical","broad",
+const highFirstColumns=["height","weight","arm","hand","wingspan","vertical","broad",
 "pfn","pff","nfldb","avg","gp","gs","sacks","s/g","tfl",
 "tfl/g","tackles","t/g","pde","ints","int/g","ff","ff/g",
-"rec.","rec. yards","ry/g","td","car","rush yards","ry/c"
-];
+"rec.","rec. yards","ry/g","td","car","rush yards","ry/c"];
 
 const lowFirstColumns=["age","40"];
 
 const positionColors={
-  "EDGE":"orange",
-  "OT":"#39FF14",
-  "IOL":"yellow",
-  "WR":"#B8860B",
-  "RB":"darkgreen",
-  "S":"magenta",
-  "TE":"#800080",
-  "DT":"turquoise",
-  "CB":"red",
-  "LB":"royalblue",
-  "QB":"gray"
+"EDGE":"orange","OT":"#39FF14","IOL":"yellow","WR":"#B8860B",
+"RB":"darkgreen","S":"magenta","TE":"#800080","DT":"turquoise",
+"CB":"red","LB":"royalblue","QB":"gray"
 };
 
 const schoolLogos={
-  "Michigan":{src:"michigan.png", class:"logo-michigan"},
-  "Ohio St.":{src:"osu1.png", class:"logo-osu"},
-  "Alabama":{src:"bama.svg", class:"logo-bama"},
-  "Indiana":{src:"iu1.png", class:""},
-  "LSU":{src:"lsu2.png", class:""},
-  "Iowa":{src:"iowa2.png", class:""}
+"Michigan":{src:"michigan.png",class:"logo-michigan"},
+"Ohio St.":{src:"osu1.png",class:"logo-osu"},
+"Alabama":{src:"bama.svg",class:"logo-bama"},
+"Indiana":{src:"iu1.png",class:""},
+"LSU":{src:"lsu2.png",class:""},
+"Iowa":{src:"iowa2.png",class:""}
 };
 
-function gcd(a,b){ return b ? gcd(b, a%b) : a; }
-
-function roundToThousandth(val){
-if(val===null || val==="" || val==="-" ) return val;
-if(isNaN(val)) return val;
-return Math.round(parseFloat(val)*1000)/1000;
+function cleanNumber(val){
+if(val===null||val===""||val==="-" ) return null;
+let n=parseFloat(val);
+if(isNaN(n)) return null;
+return Math.round(n*1000)/1000;
 }
 
-function convertHeight(val){
-if(!val || val==="-" ) return val;
-if(!val.includes("'")) return val;
+function gcd(a,b){ return b?gcd(b,a%b):a; }
 
+function convertHeight(val){
+if(!val||val==="-"||!val.includes("'")) return val;
 let clean=val.replace(/"/g,"").trim();
 let parts=clean.split("'");
-
 let feet=parts[0];
 let inchPart=parts[1];
-
 if(!inchPart.includes(".")) return val;
 
 let inchesDecimal=parseFloat(inchPart);
@@ -115,26 +98,23 @@ let decimal=inchesDecimal-whole;
 
 let denom=8;
 let num=Math.round(decimal*denom);
-
-if(num===0) return feet+"'"+whole+'"';
-if(num===denom){whole+=1; num=0;}
+if(num===denom){whole+=1;num=0;}
 if(num===0) return feet+"'"+whole+'"';
 
 let divisor=gcd(num,denom);
-num/=divisor;
-denom/=divisor;
-
+num/=divisor; denom/=divisor;
 return feet+"'"+whole+" "+num+"/"+denom+'"';
 }
 
 function heightToInches(val){
-if(!val || val==="-" ) return null;
+if(!val||val==="-" ) return null;
 let clean=val.replace(/"/g,"");
 let parts=clean.split("'");
+if(parts.length<2) return null;
 let feet=parseFloat(parts[0]);
 let inchPart=parts[1].trim();
-let inches=0;
 
+let inches=0;
 if(inchPart.includes("/")){
 let split=inchPart.split(" ");
 let whole=parseFloat(split[0])||0;
@@ -147,7 +127,6 @@ inches=whole+frac;
 }else{
 inches=parseFloat(inchPart)||0;
 }
-
 return feet*12+inches;
 }
 
@@ -155,69 +134,63 @@ Papa.parse(csvUrl,{
 download:true,
 skipEmptyLines:true,
 complete:function(results){
+
 headers=results.data[1].map(h=>h.trim());
 heightIndex=headers.findIndex(h=>h.toLowerCase()==="height");
 positionIndex=headers.findIndex(h=>h.toLowerCase()==="pos");
 
-originalData=results.data.slice(2).filter(r=>r.length===headers.length);
+data=results.data.slice(2).filter(r=>r.length===headers.length);
 
-originalData.forEach(row=>{
+data.forEach(row=>{
 row.forEach((cell,i)=>{
 if(i===heightIndex){
 row[i]=convertHeight(cell);
 }else{
-row[i]=roundToThousandth(cell);
+row[i]=cleanNumber(cell) ?? cell;
 }
 });
 });
 
-filteredData=[...originalData];
+filteredData=[...data];
 createHeaders();
 displayRows();
-document.getElementById("prospectCount").textContent=originalData.length;
+document.getElementById("prospectCount").textContent=data.length;
 }
 });
 
 function sortTable(col){
 
-let header=headers[col].toLowerCase();
+let header=headers[col].toLowerCase().trim();
 
 if(currentSort===col){
 sortAsc=!sortAsc;
 }else{
 currentSort=col;
-
-if(lowFirstColumns.includes(header)){
-sortAsc=true;
-}
-else if(highFirstColumns.some(h=>header.includes(h))){
-sortAsc=false;
-}
-else{
-sortAsc=true;
-}
+if(lowFirstColumns.includes(header)) sortAsc=true;
+else if(highFirstColumns.some(h=>header.includes(h))) sortAsc=false;
+else sortAsc=true;
 }
 
 filteredData.sort((a,b)=>{
 
+let v1=a[col];
+let v2=b[col];
+
 if(col===heightIndex){
-let v1=heightToInches(a[col]);
-let v2=heightToInches(b[col]);
-if(v1===null) return 1;
-if(v2===null) return -1;
-return sortAsc ? v1-v2 : v2-v1;
+v1=heightToInches(v1);
+v2=heightToInches(v2);
 }
 
-let n1=parseFloat(a[col]);
-let n2=parseFloat(b[col]);
+if(v1===null||v1==="-"||v1==="") return 1;
+if(v2===null||v2==="-"||v2==="") return -1;
 
-if(!isNaN(n1)&&!isNaN(n2)){
-return sortAsc ? n1-n2 : n2-n1;
+if(typeof v1==="number"&&typeof v2==="number"){
+return sortAsc?v1-v2:v2-v1;
 }
 
 return sortAsc
-? a[col].localeCompare(b[col])
-: b[col].localeCompare(a[col]);
+?String(v1).localeCompare(String(v2))
+:String(v2).localeCompare(String(v1));
 });
 
 document.querySelectorAll("th").forEach(th=>{
@@ -241,9 +214,7 @@ const tr=document.createElement("tr");
 
 if(positionIndex>-1){
 let pos=r[positionIndex];
-if(positionColors[pos]){
-tr.style.color=positionColors[pos];
-}
+if(positionColors[pos]) tr.style.color=positionColors[pos];
 }
 
 r.forEach((c,i)=>{
