@@ -196,7 +196,9 @@ function sortTable(col){
                 v2=n2;
             } else {
                 return sortAsc
-                    ? String(a[col]).localeCompare(String(b[col]))
+                    ? String(a[col]).toLowerCase().localeCompare(
+    String(b[col]).toLowerCase()
+)
                     : String(b[col]).localeCompare(String(a[col]));
             }
         }
