@@ -195,11 +195,12 @@ function sortTable(col){
                 v1=n1;
                 v2=n2;
             } else {
-                return sortAsc
-                    ? String(a[col]).toLowerCase().localeCompare(
-    String(b[col]).toLowerCase()
-)
-                    : String(b[col]).localeCompare(String(a[col]));
+                const s1 = String(a[col]).toLowerCase();
+const s2 = String(b[col]).toLowerCase();
+
+return sortAsc
+    ? s1.localeCompare(s2)
+    : s2.localeCompare(s1);
             }
         }
 
