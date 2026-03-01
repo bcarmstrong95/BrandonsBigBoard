@@ -187,22 +187,29 @@ function sortTable(col){
             v1=fractionToDecimal(v1);
             v2=fractionToDecimal(v2);
         }
-        else{
-            let n1=parseFloat(v1);
-            let n2=parseFloat(v2);
+       else{
+    let n1 = parseFloat(v1);
+    let n2 = parseFloat(v2);
 
-            if(!isNaN(n1) && !isNaN(n2)){
-                v1=n1;
-                v2=n2;
-            } else {
-                const s1 = String(a[col]).toLowerCase();
-const s2 = String(b[col]).toLowerCase();
+    // If both values are numbers
+    if(!isNaN(n1) && !isNaN(n2)){
 
-return sortAsc
-    ? s1.localeCompare(s2)
-    : s2.localeCompare(s1);
-            }
-        }
+        // Round to nearest thousandth
+        n1 = Math.round(n1 * 1000) / 1000;
+        n2 = Math.round(n2 * 1000) / 1000;
+
+        v1 = n1;
+        v2 = n2;
+    }
+    else{
+        const s1 = String(v1).toLowerCase();
+        const s2 = String(v2).toLowerCase();
+
+        return sortAsc
+            ? s1.localeCompare(s2)
+            : s2.localeCompare(s1);
+    }
+}
 
         return sortAsc ? v1 - v2 : v2 - v1;
 
