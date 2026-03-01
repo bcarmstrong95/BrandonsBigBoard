@@ -51,6 +51,7 @@ const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I
 
 let headers=[], data=[], filteredData=[];
 let currentSort=-1, sortAsc=true;
+
 let heightIndex=-1, positionIndex=-1;
 let handIndex=-1, armIndex=-1, wingspanIndex=-1;
 
@@ -74,30 +75,36 @@ function gcd(a,b){ return b?gcd(b,a%b):a; }
 function roundThousandth(val){
 let num=parseFloat(val);
 if(isNaN(num)) return val;
-return Math.round(num*1000)/1000;
+return (Math.round(num*1000)/1000).toString();
 }
 
 function decimalToFraction(val){
-if(!val||val==="-"||!val.includes(".")) return val;
-let hasQuote=val.includes('"');
-let clean=val.replace(/"/g,"");
-let num=parseFloat(clean);
+if(!val || !val.includes(".")) return val;
+
+let inchSymbol = val.includes('"') ? '"' : "";
+let clean = val.replace('"','');
+let num = parseFloat(clean);
 if(isNaN(num)) return val;
+
 let whole=Math.floor(num);
 let decimal=num-whole;
 let denom=8;
 let numerator=Math.round(decimal*denom);
+
 if(numerator===denom){whole+=1;numerator=0;}
-if(numerator===0) return whole+(hasQuote?'"':"");
+if(numerator===0) return whole + inchSymbol;
+
 let divisor=gcd(numerator,denom);
 numerator/=divisor;
 denom/=divisor;
-return whole+" "+numerator+"/"+denom+(hasQuote?'"':"");
+
+return whole+" "+numerator+"/"+denom + inchSymbol;
 }
 
 function fractionToDecimal(val){
-if(!val||val==="-" ) return null;
-let clean=val.replace(/"/g,"").trim();
+if(!val) return null;
+let clean=val.replace('"','').trim();
+
 if(clean.includes("/")){
 let parts=clean.split(" ");
 let whole=parseFloat(parts[0])||0;
@@ -112,8 +119,8 @@ return parseFloat(clean);
 }
 
 function heightToInches(val){
-if(!val||val==="-" ) return null;
-let clean=val.replace(/"/g,"");
+if(!val) return null;
+let clean=val.replace('"','');
 let parts=clean.split("'");
 let feet=parseFloat(parts[0]);
 let inches=fractionToDecimal(parts[1]);
@@ -125,14 +132,14 @@ download:true,
 skipEmptyLines:true,
 complete:function(results){
 
-headers=results.data[1].map(h=>h.trim());
+headers=results.data[0].map(h=>h.trim());
 heightIndex=headers.findIndex(h=>h.toLowerCase()==="height");
 positionIndex=headers.findIndex(h=>h.toLowerCase()==="pos");
 handIndex=headers.findIndex(h=>h.toLowerCase()==="hand");
 armIndex=headers.findIndex(h=>h.toLowerCase()==="arm");
 wingspanIndex=headers.findIndex(h=>h.toLowerCase()==="wingspan");
 
-data=results.data.slice(2).filter(r=>r.length===headers.length);
+data=results.data.slice(1).filter(r=>r.length===headers.length);
 
 data.forEach(row=>{
 row.forEach((cell,i)=>{
@@ -159,8 +166,7 @@ if(currentSort===col){
 sortAsc=!sortAsc;
 }else{
 currentSort=col;
-if(header==="age"||header==="40") sortAsc=true;
-else sortAsc=false;
+sortAsc = (header==="age"||header==="40");
 }
 
 filteredData.sort((a,b)=>{
@@ -175,6 +181,11 @@ v2=heightToInches(v2);
 else if(col===handIndex||col===armIndex||col===wingspanIndex){
 v1=fractionToDecimal(v1);
 v2=fractionToDecimal(v2);
+}
+else if(isNaN(parseFloat(v1))){
+return sortAsc
+?String(v1).localeCompare(String(v2))
+:String(v2).localeCompare(String(v1));
 }
 else{
 v1=parseFloat(v1);
