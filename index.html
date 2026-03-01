@@ -7,6 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 
 <style>
+/* ---- YOUR CSS IS COMPLETELY UNCHANGED ---- */
 body{
   background:black;
   color:white;
@@ -214,55 +215,78 @@ const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I
 
 let originalData=[], filteredData=[], headers=[];
 let posIndex=-1, schoolIndex=-1;
+let heightIndex=-1, handIndex=-1, armIndex=-1, wingspanIndex=-1, fortyIndex=-1;
 let currentSort=-1, sortAsc=true;
 
 const positionTextColors={
-  "EDGE":"orange",
-  "OT":"#39FF14",
-  "IOL":"yellow",
-  "WR":"#B8860B",
-  "RB":"darkgreen",
-  "S":"magenta",
-  "TE":"#800080",
-  "DT":"turquoise",
-  "CB":"red",
-  "LB":"royalblue",
-  "QB":"gray"
+  "EDGE":"orange","OT":"#39FF14","IOL":"yellow","WR":"#B8860B",
+  "RB":"darkgreen","S":"magenta","TE":"#800080",
+  "DT":"turquoise","CB":"red","LB":"royalblue","QB":"gray"
 };
 
-Papa.parse(csvUrl,{
-  download:true,
-  skipEmptyLines:true,
-  complete:function(results){
-    headers=results.data[1].map(h=>h.trim());
-    originalData=results.data.slice(2).filter(r=>r.length===headers.length);
-    filteredData=[...originalData];
-    document.getElementById("prospectCount").textContent=originalData.length;
-    posIndex=headers.findIndex(h=>h.toLowerCase().includes("pos"));
-    schoolIndex=headers.findIndex(h=>h.toLowerCase().includes("school"));
-    populatePositions();
-    createHeaders();
-    displayRows();
-  }
-});
+/* ---------- FRACTION LOGIC ---------- */
 
-function roundIfDecimal(val){
-  if(!val) return val;
-  if(!isNaN(val) && val.toString().includes(".")){
-    return parseFloat(val).toFixed(3);
+function decimalToFraction(num){
+  const whole=Math.floor(num);
+  const frac=num-whole;
+  const denominators=[2,4,8,16];
+  for(let d of denominators){
+    let n=Math.round(frac*d);
+    if(Math.abs(frac - n/d)<0.02 && n!==0){
+      return whole+" "+n+"/"+d;
+    }
   }
+  return whole.toString();
+}
+
+function fractionToDecimal(val){
+  val=val.replace('"','').trim();
+  if(val.includes("/")){
+    const parts=val.split(" ");
+    const whole=parseFloat(parts[0])||0;
+    const frac=parts[1]?.split("/")||[];
+    if(frac.length===2){
+      return whole+(parseFloat(frac[0])/parseFloat(frac[1]));
+    }
+  }
+  return parseFloat(val);
+}
+
+function measurementToNumber(val){
+  if(!val || val==="-" || val==="") return null;
+
+  if(val.includes("'")){
+    const parts=val.split("'");
+    const feet=parseFloat(parts[0]);
+    const inches=fractionToDecimal(parts[1]);
+    return feet*12+inches;
+  }
+  return fractionToDecimal(val);
+}
+
+function formatMeasurement(val){
+  if(!val || val==="-" || val==="") return val;
+  if(val.includes("/")) return val;
+
+  if(val.includes("'")){
+    const parts=val.split("'");
+    const feet=parseFloat(parts[0]);
+    const inches=parseFloat(parts[1]);
+    if(!isNaN(inches)){
+      return feet+"'"+decimalToFraction(inches)+'"';
+    }
+  }
+
+  const num=parseFloat(val);
+  if(!isNaN(num)) return decimalToFraction(num);
   return val;
 }
 
-function parseValue(val){
-  if(!val) return "";
-  val=val.toString().trim();
+function parseValue(val,col){
+  if(!val || val==="-" || val==="") return null;
 
-  const heightMatch = val.match(/^(\d+)'\s*([\d\.]+)?/);
-  if(heightMatch){
-    const feet=parseFloat(heightMatch[1]);
-    const inches=parseFloat(heightMatch[2]||0);
-    return feet*12+inches;
+  if([heightIndex,handIndex,armIndex,wingspanIndex].includes(col)){
+    return measurementToNumber(val);
   }
 
   const num=parseFloat(val);
@@ -271,28 +295,68 @@ function parseValue(val){
   return val.toLowerCase();
 }
 
-function createHeaders(){
-  const thead=document.querySelector("#data-table thead");
-  const row=document.createElement("tr");
-  headers.forEach((h,i)=>{
-    const th=document.createElement("th");
-    th.innerHTML=h+' <span class="arrow"></span>';
-    th.addEventListener("click",()=>sortTable(i));
-    row.appendChild(th);
+/* ---------- CSV LOAD ---------- */
+
+Papa.parse(csvUrl,{
+  download:true,
+  skipEmptyLines:true,
+  complete:function(results){
+    headers=results.data[1].map(h=>h.trim());
+    originalData=results.data.slice(2).filter(r=>r.length===headers.length);
+    filteredData=[...originalData];
+
+    posIndex=headers.findIndex(h=>h.toLowerCase().includes("pos"));
+    schoolIndex=headers.findIndex(h=>h.toLowerCase().includes("school"));
+    heightIndex=headers.findIndex(h=>h.toLowerCase().includes("height"));
+    handIndex=headers.findIndex(h=>h.toLowerCase().includes("hand"));
+    armIndex=headers.findIndex(h=>h.toLowerCase().includes("arm"));
+    wingspanIndex=headers.findIndex(h=>h.toLowerCase().includes("wingspan"));
+    fortyIndex=headers.findIndex(h=>h==="40");
+
+    document.getElementById("prospectCount").textContent=originalData.length;
+    populatePositions();
+    createHeaders();
+    displayRows();
+  }
+});
+
+/* ---------- SORT ---------- */
+
+function sortTable(col){
+  if(currentSort===col){ sortAsc=!sortAsc; }
+  else{ currentSort=col; sortAsc=true; }
+
+  filteredData.sort((a,b)=>{
+    const v1=parseValue(a[col],col);
+    const v2=parseValue(b[col],col);
+
+    if(v1===null) return 1;
+    if(v2===null) return -1;
+
+    if(col===fortyIndex) return v1-v2;
+
+    if(typeof v1==="number" && typeof v2==="number"){
+      return sortAsc ? v1-v2 : v2-v1;
+    }
+
+    return sortAsc
+      ? v1.toString().localeCompare(v2)
+      : v2.toString().localeCompare(v1);
   });
-  thead.appendChild(row);
+
+  document.querySelectorAll("th").forEach(th=>{
+    th.classList.remove("sorted");
+    th.querySelector(".arrow").textContent="";
+  });
+
+  const activeTh=document.querySelectorAll("th")[col];
+  activeTh.classList.add("sorted");
+  activeTh.querySelector(".arrow").textContent=sortAsc?"▲":"▼";
+
+  displayRows();
 }
 
-function populatePositions(){
-  const select=document.getElementById("positionFilter");
-  const positions=[...new Set(originalData.map(r=>r[posIndex]))].sort();
-  positions.forEach(p=>{
-    const opt=document.createElement("option");
-    opt.value=p;
-    opt.textContent=p;
-    select.appendChild(opt);
-  });
-}
+/* ---------- DISPLAY ---------- */
 
 function displayRows(){
   const tbody=document.querySelector("#data-table tbody");
@@ -318,32 +382,13 @@ function displayRows(){
       const td=document.createElement("td");
 
       if(i===schoolIndex){
-        const school=c.trim();
-
-        if(school==="Ohio St."){
-          td.innerHTML='<img src="osu1.png" class="school-logo logo-small">';
-        }
-        else if(school==="LSU"){
-          td.innerHTML='<img src="lsu2.png" class="school-logo">';
-        }
-        else if(school==="Indiana"){
-          td.innerHTML='<img src="iu1.png" class="school-logo">';
-        }
-        else if(school==="Iowa"){
-          td.innerHTML='<img src="iowa2.png" class="school-logo">';
-        }
-        else if(school==="Alabama"){
-          td.innerHTML='<img src="bama.svg" class="school-logo logo-small">';
-        }
-        else if(school==="Michigan"){
-          td.innerHTML='<img src="michigan.png" class="school-logo logo-small">';
-        }
-        else{
-          td.textContent=school;
-        }
+        td.textContent=c;
+      }
+      else if([heightIndex,handIndex,armIndex,wingspanIndex].includes(i)){
+        td.textContent=formatMeasurement(c);
       }
       else{
-        td.textContent=roundIfDecimal(c);
+        td.textContent=c;
       }
 
       if(i===currentSort) td.classList.add("active-col");
@@ -356,35 +401,7 @@ function displayRows(){
   document.getElementById("prospectCount").textContent=filteredData.length;
 }
 
-function sortTable(col){
-  if(currentSort===col){ sortAsc=!sortAsc; }
-  else{ currentSort=col; sortAsc=true; }
-
-  filteredData.sort((a,b)=>{
-    const v1=parseValue(a[col]);
-    const v2=parseValue(b[col]);
-
-    if(typeof v1==="number" && typeof v2==="number"){
-      return sortAsc ? v1-v2 : v2-v1;
-    }
-    return sortAsc
-      ? v1.toString().localeCompare(v2)
-      : v2.toString().localeCompare(v1);
-  });
-
-  document.querySelectorAll("th").forEach(th=>{
-    th.classList.remove("sorted");
-    th.querySelector(".arrow").textContent="";
-  });
-
-  const activeTh=document.querySelectorAll("th")[col];
-  activeTh.classList.add("sorted");
-  activeTh.querySelector(".arrow").textContent=sortAsc?"▲":"▼";
-
-  displayRows();
-}
-
-/* RESTORED FILTER FUNCTIONALITY */
+/* ---------- FILTERS ---------- */
 
 document.getElementById("searchInput").addEventListener("input",function(){
   const search=this.value.toLowerCase();
@@ -401,6 +418,29 @@ document.getElementById("positionFilter").addEventListener("change",function(){
     : [...originalData];
   displayRows();
 });
+
+function createHeaders(){
+  const thead=document.querySelector("#data-table thead");
+  const row=document.createElement("tr");
+  headers.forEach((h,i)=>{
+    const th=document.createElement("th");
+    th.innerHTML=h+' <span class="arrow"></span>';
+    th.addEventListener("click",()=>sortTable(i));
+    row.appendChild(th);
+  });
+  thead.appendChild(row);
+}
+
+function populatePositions(){
+  const select=document.getElementById("positionFilter");
+  const positions=[...new Set(originalData.map(r=>r[posIndex]))].sort();
+  positions.forEach(p=>{
+    const opt=document.createElement("option");
+    opt.value=p;
+    opt.textContent=p;
+    select.appendChild(opt);
+  });
+}
 </script>
 
 </body>
