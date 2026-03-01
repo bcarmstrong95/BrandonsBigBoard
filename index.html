@@ -77,8 +77,9 @@ const schoolLogos={
 
 function cleanNumber(val){
 if(val===null||val===""||val==="-" ) return null;
+if(typeof val==="string" && val.includes('"')) return val; 
 let n=parseFloat(val);
-if(isNaN(n)) return null;
+if(isNaN(n)) return val;
 return Math.round(n*1000)/1000;
 }
 
@@ -86,10 +87,14 @@ function gcd(a,b){ return b?gcd(b,a%b):a; }
 
 function convertHeight(val){
 if(!val||val==="-"||!val.includes("'")) return val;
+
+let hasQuote=val.includes('"');
 let clean=val.replace(/"/g,"").trim();
 let parts=clean.split("'");
+
 let feet=parts[0];
 let inchPart=parts[1];
+
 if(!inchPart.includes(".")) return val;
 
 let inchesDecimal=parseFloat(inchPart);
@@ -99,11 +104,12 @@ let decimal=inchesDecimal-whole;
 let denom=8;
 let num=Math.round(decimal*denom);
 if(num===denom){whole+=1;num=0;}
-if(num===0) return feet+"'"+whole+'"';
+if(num===0) return feet+"'"+whole+(hasQuote?'"':"");
 
 let divisor=gcd(num,denom);
 num/=divisor; denom/=divisor;
-return feet+"'"+whole+" "+num+"/"+denom+'"';
+
+return feet+"'"+whole+" "+num+"/"+denom+(hasQuote?'"':"");
 }
 
 function heightToInches(val){
@@ -146,7 +152,7 @@ row.forEach((cell,i)=>{
 if(i===heightIndex){
 row[i]=convertHeight(cell);
 }else{
-row[i]=cleanNumber(cell) ?? cell;
+row[i]=cleanNumber(cell);
 }
 });
 });
@@ -184,8 +190,11 @@ v2=heightToInches(v2);
 if(v1===null||v1==="-"||v1==="") return 1;
 if(v2===null||v2==="-"||v2==="") return -1;
 
-if(typeof v1==="number"&&typeof v2==="number"){
-return sortAsc?v1-v2:v2-v1;
+let n1=parseFloat(v1);
+let n2=parseFloat(v2);
+
+if(!isNaN(n1)&&!isNaN(n2)){
+return sortAsc?n1-n2:n2-n1;
 }
 
 return sortAsc
