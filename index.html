@@ -71,26 +71,27 @@ const schoolLogos={
 
 function gcd(a,b){ return b?gcd(b,a%b):a; }
 
+function roundThousandth(val){
+let num=parseFloat(val);
+if(isNaN(num)) return val;
+return Math.round(num*1000)/1000;
+}
+
 function decimalToFraction(val){
 if(!val||val==="-"||!val.includes(".")) return val;
-
 let hasQuote=val.includes('"');
 let clean=val.replace(/"/g,"");
 let num=parseFloat(clean);
 if(isNaN(num)) return val;
-
 let whole=Math.floor(num);
 let decimal=num-whole;
 let denom=8;
 let numerator=Math.round(decimal*denom);
-
 if(numerator===denom){whole+=1;numerator=0;}
 if(numerator===0) return whole+(hasQuote?'"':"");
-
 let divisor=gcd(numerator,denom);
 numerator/=divisor;
 denom/=divisor;
-
 return whole+" "+numerator+"/"+denom+(hasQuote?'"':"");
 }
 
@@ -137,6 +138,8 @@ data.forEach(row=>{
 row.forEach((cell,i)=>{
 if(i===heightIndex||i===handIndex||i===armIndex||i===wingspanIndex){
 row[i]=decimalToFraction(cell);
+}else{
+row[i]=roundThousandth(cell);
 }
 });
 });
