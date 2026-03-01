@@ -55,6 +55,7 @@ const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I
 let headers=[], originalData=[], filteredData=[];
 let currentSort=-1, sortAsc=true;
 let heightIndex=-1;
+let positionIndex=-1;
 
 const highFirstColumns=[
 "height","weight","arm","hand","wingspan","vertical","broad",
@@ -62,6 +63,22 @@ const highFirstColumns=[
 "tfl/g","tackles","t/g","pde","ints","int/g","ff","ff/g",
 "rec.","rec. yards","ry/g","td","car","rush yards","ry/c"
 ];
+
+const lowFirstColumns=["age","40"];
+
+const positionColors={
+  "EDGE":"orange",
+  "OT":"#39FF14",
+  "IOL":"yellow",
+  "WR":"#B8860B",
+  "RB":"darkgreen",
+  "S":"magenta",
+  "TE":"#800080",
+  "DT":"turquoise",
+  "CB":"red",
+  "LB":"royalblue",
+  "QB":"gray"
+};
 
 const schoolLogos={
   "Michigan":{src:"michigan.png", class:"logo-michigan"},
@@ -74,7 +91,6 @@ const schoolLogos={
 
 function gcd(a,b){ return b ? gcd(b, a%b) : a; }
 
-/* Convert 5'11.625" → 5'11 5/8" reduced */
 function convertHeight(val){
 if(!val || val==="-" ) return val;
 if(!val.includes("'")) return val;
@@ -96,7 +112,6 @@ let num=Math.round(decimal*denom);
 
 if(num===0) return feet+"'"+whole+'"';
 if(num===denom){whole+=1; num=0;}
-
 if(num===0) return feet+"'"+whole+'"';
 
 let divisor=gcd(num,denom);
@@ -108,13 +123,10 @@ return feet+"'"+whole+" "+num+"/"+denom+'"';
 
 function heightToInches(val){
 if(!val || val==="-" ) return null;
-
 let clean=val.replace(/"/g,"");
 let parts=clean.split("'");
-
 let feet=parseFloat(parts[0]);
 let inchPart=parts[1].trim();
-
 let inches=0;
 
 if(inchPart.includes("/")){
@@ -139,6 +151,7 @@ skipEmptyLines:true,
 complete:function(results){
 headers=results.data[1].map(h=>h.trim());
 heightIndex=headers.findIndex(h=>h.toLowerCase()==="height");
+positionIndex=headers.findIndex(h=>h.toLowerCase()==="pos");
 originalData=results.data.slice(2).filter(r=>r.length===headers.length);
 
 originalData.forEach(row=>{
@@ -162,7 +175,16 @@ if(currentSort===col){
 sortAsc=!sortAsc;
 }else{
 currentSort=col;
-sortAsc=!highFirstColumns.some(h=>header.includes(h));
+
+if(lowFirstColumns.includes(header)){
+sortAsc=true;
+}
+else if(highFirstColumns.some(h=>header.includes(h))){
+sortAsc=false;
+}
+else{
+sortAsc=true;
+}
 }
 
 filteredData.sort((a,b)=>{
@@ -202,8 +224,16 @@ displayRows();
 function displayRows(){
 const tbody=document.querySelector("#data-table tbody");
 tbody.innerHTML="";
+
 filteredData.forEach(r=>{
 const tr=document.createElement("tr");
+
+if(positionIndex>-1){
+let pos=r[positionIndex];
+if(positionColors[pos]){
+tr.style.backgroundColor=positionColors[pos];
+}
+}
 
 r.forEach((c,i)=>{
 const td=document.createElement("td");
