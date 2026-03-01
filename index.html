@@ -163,14 +163,24 @@ function sortTable(col){
 
     let header=headers[col].toLowerCase();
 
-    if(currentSort===col){
-        sortAsc=!sortAsc;
-    }else{
-        currentSort=col;
-        if(header==="age"||header==="40") sortAsc=true;
-        else sortAsc=false;
-    }
+   if(currentSort===col){
+    sortAsc=!sortAsc;
+}else{
+    currentSort=col;
 
+    // Columns that should default to A–Z
+    if(header==="name" || header==="school" || header==="pos"){
+        sortAsc=true;
+    }
+    // Columns that should default low→high
+    else if(header==="age" || header==="40"){
+        sortAsc=true;
+    }
+    // Everything else defaults high→low
+    else{
+        sortAsc=false;
+    }
+}
     filteredData.sort((a,b)=>{
 
         let v1=a[col];
