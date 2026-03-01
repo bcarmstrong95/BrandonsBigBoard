@@ -54,13 +54,6 @@ let currentSort=-1, sortAsc=true;
 let heightIndex=-1, positionIndex=-1;
 let handIndex=-1, armIndex=-1, wingspanIndex=-1;
 
-const highFirstColumns=["height","weight","arm","hand","wingspan","vertical","broad",
-"pfn","pff","nfldb","avg","gp","gs","sacks","s/g","tfl",
-"tfl/g","tackles","t/g","pde","ints","int/g","ff","ff/g",
-"rec.","rec. yards","ry/g","td","car","rush yards","ry/c"];
-
-const lowFirstColumns=["age","40"];
-
 const positionColors={
 "EDGE":"orange","OT":"#39FF14","IOL":"yellow","WR":"#B8860B",
 "RB":"darkgreen","S":"magenta","TE":"#800080","DT":"turquoise",
@@ -78,7 +71,7 @@ const schoolLogos={
 
 function gcd(a,b){ return b?gcd(b,a%b):a; }
 
-function decimalToFractionMeasurement(val){
+function decimalToFraction(val){
 if(!val||val==="-"||!val.includes(".")) return val;
 
 let hasQuote=val.includes('"');
@@ -88,9 +81,6 @@ if(isNaN(num)) return val;
 
 let whole=Math.floor(num);
 let decimal=num-whole;
-
-if(decimal===0) return whole+(hasQuote?'"':"");
-
 let denom=8;
 let numerator=Math.round(decimal*denom);
 
@@ -104,31 +94,7 @@ denom/=divisor;
 return whole+" "+numerator+"/"+denom+(hasQuote?'"':"");
 }
 
-function heightToInches(val){
-if(!val||val==="-" ) return null;
-let clean=val.replace(/"/g,"");
-let parts=clean.split("'");
-if(parts.length<2) return null;
-let feet=parseFloat(parts[0]);
-let inchPart=parts[1].trim();
-
-let inches=0;
-if(inchPart.includes("/")){
-let split=inchPart.split(" ");
-let whole=parseFloat(split[0])||0;
-let frac=0;
-if(split[1]){
-let f=split[1].split("/");
-frac=parseFloat(f[0])/parseFloat(f[1]);
-}
-inches=whole+frac;
-}else{
-inches=parseFloat(inchPart)||0;
-}
-return feet*12+inches;
-}
-
-function measurementToDecimal(val){
+function fractionToDecimal(val){
 if(!val||val==="-" ) return null;
 let clean=val.replace(/"/g,"").trim();
 if(clean.includes("/")){
@@ -142,6 +108,15 @@ frac=parseFloat(f[0])/parseFloat(f[1]);
 return whole+frac;
 }
 return parseFloat(clean);
+}
+
+function heightToInches(val){
+if(!val||val==="-" ) return null;
+let clean=val.replace(/"/g,"");
+let parts=clean.split("'");
+let feet=parseFloat(parts[0]);
+let inches=fractionToDecimal(parts[1]);
+return feet*12+inches;
 }
 
 Papa.parse(csvUrl,{
@@ -160,8 +135,8 @@ data=results.data.slice(2).filter(r=>r.length===headers.length);
 
 data.forEach(row=>{
 row.forEach((cell,i)=>{
-if(i===handIndex||i===armIndex||i===wingspanIndex){
-row[i]=decimalToFractionMeasurement(cell);
+if(i===heightIndex||i===handIndex||i===armIndex||i===wingspanIndex){
+row[i]=decimalToFraction(cell);
 }
 });
 });
@@ -175,15 +150,14 @@ document.getElementById("prospectCount").textContent=data.length;
 
 function sortTable(col){
 
-let header=headers[col].toLowerCase().trim();
+let header=headers[col].toLowerCase();
 
 if(currentSort===col){
 sortAsc=!sortAsc;
 }else{
 currentSort=col;
-if(lowFirstColumns.includes(header)) sortAsc=true;
-else if(highFirstColumns.some(h=>header.includes(h))) sortAsc=false;
-else sortAsc=true;
+if(header==="age"||header==="40") sortAsc=true;
+else sortAsc=false;
 }
 
 filteredData.sort((a,b)=>{
@@ -195,22 +169,19 @@ if(col===heightIndex){
 v1=heightToInches(v1);
 v2=heightToInches(v2);
 }
-
-if(col===handIndex||col===armIndex||col===wingspanIndex){
-v1=measurementToDecimal(v1);
-v2=measurementToDecimal(v2);
+else if(col===handIndex||col===armIndex||col===wingspanIndex){
+v1=fractionToDecimal(v1);
+v2=fractionToDecimal(v2);
+}
+else{
+v1=parseFloat(v1);
+v2=parseFloat(v2);
 }
 
-if(v1==null) return 1;
-if(v2==null) return -1;
+if(isNaN(v1)) return 1;
+if(isNaN(v2)) return -1;
 
-if(typeof v1==="number"&&typeof v2==="number"){
 return sortAsc?v1-v2:v2-v1;
-}
-
-return sortAsc
-?String(v1).localeCompare(String(v2))
-:String(v2).localeCompare(String(v1));
 });
 
 document.querySelectorAll("th").forEach(th=>{
