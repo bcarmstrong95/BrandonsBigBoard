@@ -359,12 +359,10 @@ function applyFilters(){
 
     filteredData=data.filter(row=>{
 
-        // Search filter
         const matchesSearch=row.some(cell=>
             String(cell).toLowerCase().includes(searchTerm)
         );
 
-        // Position filter
         const matchesPosition=
             selectedPositions.length===0 ||
             selectedPositions.includes(row[positionIndex]);
@@ -372,7 +370,12 @@ function applyFilters(){
         return matchesSearch && matchesPosition;
     });
 
-    displayRows();
+    // Re-apply current sort if one exists
+    if(currentSort !== -1){
+        sortTable(currentSort);
+    } else {
+        displayRows();
+    }
 }
 function createHeaders(){
 const thead=document.querySelector("#data-table thead");
