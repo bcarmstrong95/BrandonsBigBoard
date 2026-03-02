@@ -30,6 +30,11 @@ th.sorted{background:#162b55!important;}
     margin:auto;
 }
 
+.logo-large{
+    transform: scale(1.7);
+    transform-origin: center;
+}
+
 tbody tr:nth-child(even){
     background:#111;
 }
@@ -130,6 +135,24 @@ const positionColors={
 };
 
 const schoolLogos = {
+    const largeLogos = [
+    "Indiana",
+    "Texas Tech",
+    "Utah",
+    "Arizona",
+    "Arizona St.",
+    "Baylor",
+    "Clemson",
+    "Illinois",
+    "Nebraska",
+    "Northwestern",
+    "S. Carolina",
+    "SDSU",
+    "Texas A&M",
+    "UConn",
+    "Wyoming",
+    "Wisconsin"
+];
 
     "Michigan": "michigan.png",
     "Ohio St.": "osu1.png",
@@ -375,8 +398,13 @@ if(headers[i].toLowerCase().includes("school")){
     const cleanSchool = String(c).trim();
 
     if(schoolLogos[cleanSchool]){
-        td.innerHTML = `<img src="${schoolLogos[cleanSchool]}" class="school-logo">`;
-    } 
+
+    const extraClass = largeLogos.includes(cleanSchool)
+        ? "school-logo logo-large"
+        : "school-logo";
+
+    td.innerHTML = `<img src="${schoolLogos[cleanSchool]}" class="${extraClass}">`;
+}
     else{
         td.textContent = c;
     }
