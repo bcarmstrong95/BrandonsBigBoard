@@ -123,20 +123,44 @@ const positionColors={
 "CB":"red","LB":"royalblue","QB":"gray"
 };
 
-const schoolLogos={
-"Michigan":{src:"michigan.png",class:"logo-michigan"},
-"Ohio St.":{src:"osu1.png",class:"logo-osu"},
-"Alabama":{src:"bama.svg",class:"logo-bama"},
-"Indiana":{src:"iu1.png",class:""},
-"LSU":{src:"lsu2.png",class:""},
-"Iowa":{src:"iowa2.png",class:""},
+// School logos
+if(colName === "School"){
 
-// New logos
-"Utah":{src:"utah.png",class:""},
-"Miami":{src:"miami.png",class:""},
-"Texas Tech":{src:"texastech.png",class:""},
-"Tennessee":{src:"tennessee.png",class:""}
-};
+    const schoolLogos = {
+
+        // Existing logos
+        "Michigan": "michigan.png",
+        "Ohio St.": "ohiost.png",
+        "Alabama": "alabama.png",
+        "Indiana": "indiana.png",
+        "LSU": "lsu.png",
+        "Iowa": "iowa.png",
+
+        // Previously added
+        "Utah": "utah.png",
+        "Miami": "miami.png",
+        "Texas Tech": "texastech.png",
+        "Tennessee": "tennessee.png",
+
+        // Newly requested additions
+        "Notre Dame": "notredame.png",
+        "Arizona St.": "arizonast.png",
+        "Washington": "washington.png",
+        "Penn St.": "pennst.png",
+        "Oklahoma": "oklahoma.png",
+        "Oregon": "oregon.png",
+        "Texas A&M": "atm.png",
+        "Auburn": "auburn.png",
+        "USC": "usc.png",
+        "Georgia": "georgia.png",
+        "Clemson": "clemson.png",
+        "Florida": "florida.png"
+    };
+
+    if(schoolLogos[cellValue]){
+        cellValue = `<img src="${schoolLogos[cellValue]}" class="school-logo">`;
+    }
+}
 function gcd(a,b){ return b?gcd(b,a%b):a; }
 
 function roundThousandth(val){
