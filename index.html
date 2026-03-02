@@ -256,13 +256,33 @@ else if(
             v2=fractionToDecimal(v2);
         }
        else{
-    let n1 = parseFloat(v1);
-    let n2 = parseFloat(v2);
 
-    // If both values are numbers
+    let headerName = headers[col].toLowerCase();
+    let raw1 = String(v1).trim();
+    let raw2 = String(v2).trim();
+
+    let isBlank1 = raw1 === "" || raw1 === "-";
+    let isBlank2 = raw2 === "" || raw2 === "-";
+
+    // Special rule ONLY for Age and 40
+    if(headerName === "age" || headerName === "40"){
+
+        // Always push blanks to bottom
+        if(isBlank1 && !isBlank2) return 1;
+        if(!isBlank1 && isBlank2) return -1;
+        if(isBlank1 && isBlank2) return 0;
+
+        let num1 = parseFloat(raw1);
+        let num2 = parseFloat(raw2);
+
+        return num1 - num2; // always lowest first
+    }
+
+    let n1 = parseFloat(raw1);
+    let n2 = parseFloat(raw2);
+
     if(!isNaN(n1) && !isNaN(n2)){
 
-        // Round to nearest thousandth
         n1 = Math.round(n1 * 1000) / 1000;
         n2 = Math.round(n2 * 1000) / 1000;
 
@@ -270,15 +290,11 @@ else if(
         v2 = n2;
     }
     else{
-        const s1 = String(v1).toLowerCase();
-        const s2 = String(v2).toLowerCase();
-
         return sortAsc
-            ? s1.localeCompare(s2)
-            : s2.localeCompare(s1);
+            ? raw1.localeCompare(raw2)
+            : raw2.localeCompare(raw1);
     }
 }
-
         return sortAsc ? v1 - v2 : v2 - v1;
 
     });
