@@ -292,33 +292,6 @@ else if(
     active.querySelector(".arrow").textContent=sortAsc?"▲":"▼";
 
     displayRows();
-}function decimalToFraction(decimal) {
-    const tolerance = 1.0E-6;
-    let numerator = 1;
-    let denominator = 1;
-    let fraction = decimal;
-
-    for (let d = 1; d <= 64; d++) {
-        let n = Math.round(decimal * d);
-        if (Math.abs(decimal - n / d) < tolerance) {
-            numerator = n;
-            denominator = d;
-            break;
-        }
-    }
-
-    // Simplify fraction
-    function gcd(a, b) {
-        return b ? gcd(b, a % b) : a;
-    }
-
-    let divisor = gcd(numerator, denominator);
-    numerator /= divisor;
-    denominator /= divisor;
-
-    return denominator === 1
-        ? numerator.toString()
-        : `${numerator}/${denominator}`;
 }
 function displayRows(){
 const tbody=document.querySelector("#data-table tbody");
@@ -355,21 +328,66 @@ else{
     let displayValue = c;
     let header = headers[i].toLowerCase();
 
-    // Skip rounding for measurement columns OR anything containing quotes
+   // Convert measurement columns to simplified fractions
 if(
-    i !== heightIndex &&
-    i !== handIndex &&
-    i !== armIndex &&
-    i !== wingspanIndex &&
-    !String(c).includes('"')
+    i === heightIndex ||
+    i === handIndex ||
+    i === armIndex ||
+    i === wingspanIndex
 ){
+
+    let valueStr = String(c);
+    let hasQuote = valueStr.includes('"');
+    let clean = valueStr.replace(/"/g, "");
+
+    // HEIGHT (example: 6'2.75)
+    if(i === heightIndex && clean.includes("'")){
+        let parts = clean.split("'");
+        let feet = parts[0];
+        let inches = parseFloat(parts[1]);
+
+        if(!isNaN(inches)){
+            let whole = Math.floor(inches);
+            let decimal = inches - whole;
+
+            let fraction = decimal > 0
+                ? " " + decimalToFraction(decimal.toString())
+                : "";
+
+            displayValue = `${feet}'${whole}${fraction}`;
+        }
+        else{
+            displayValue = clean;
+        }
+    }
+    else{
+        let num = parseFloat(clean);
+
+        if(!isNaN(num)){
+            let whole = Math.floor(num);
+            let decimal = num - whole;
+
+            let fraction = decimal > 0
+                ? " " + decimalToFraction(decimal.toString())
+                : "";
+
+            displayValue = `${whole}${fraction}`;
+        }
+        else{
+            displayValue = clean;
+        }
+    }
+
+    if(hasQuote){
+        displayValue += '"';
+    }
+}
+else{
 
     let num = parseFloat(c);
 
     if(!isNaN(num)){
         displayValue = (Math.round(num * 1000) / 1000).toFixed(3);
-
-        // Remove unnecessary trailing zeros
         displayValue = displayValue.replace(/\.?0+$/, '');
     }
 }
