@@ -347,29 +347,39 @@ tbody.appendChild(tr);
 }
 function initializeFilters(){
 
-    const positionSelect=document.getElementById("positionFilter");
+    const buttonContainer = document.getElementById("positionButtons");
 
-    if(positionIndex>-1){
+    if(positionIndex > -1){
 
-        const uniquePositions=[
-            ...new Set(data.map(r=>r[positionIndex]).filter(Boolean))
+        const uniquePositions = [
+            ...new Set(data.map(r => r[positionIndex]).filter(Boolean))
         ].sort();
 
-        uniquePositions.forEach(pos=>{
-            const option=document.createElement("option");
-            option.value=pos;
-            option.textContent=pos;
-            positionSelect.appendChild(option);
+        uniquePositions.forEach(pos => {
+
+            const button = document.createElement("button");
+            button.textContent = pos;
+            button.classList.add("position-btn");
+
+            button.addEventListener("click", () => {
+
+                if(selectedPositions.includes(pos)){
+                    selectedPositions = selectedPositions.filter(p => p !== pos);
+                    button.classList.remove("active");
+                } else {
+                    selectedPositions.push(pos);
+                    button.classList.add("active");
+                }
+
+                applyFilters();
+            });
+
+            buttonContainer.appendChild(button);
         });
     }
 
-    document.getElementById("searchInput").addEventListener("input",e=>{
-        searchTerm=e.target.value.toLowerCase();
-        applyFilters();
-    });
-
-    positionSelect.addEventListener("change",()=>{
-        selectedPositions=[...positionSelect.selectedOptions].map(o=>o.value);
+    document.getElementById("searchInput").addEventListener("input", e=>{
+        searchTerm = e.target.value.toLowerCase();
         applyFilters();
     });
 }
@@ -382,9 +392,10 @@ function applyFilters(){
             String(cell).toLowerCase().includes(searchTerm)
         );
 
-        const matchesPosition=
-            selectedPositions.length===0 ||
-            selectedPositions.includes(row[positionIndex]);
+       const matchesPosition =
+    positionIndex === -1 ||
+    selectedPositions.length === 0 ||
+    selectedPositions.includes(row[positionIndex]);
 
         return matchesSearch && matchesPosition;
     });
