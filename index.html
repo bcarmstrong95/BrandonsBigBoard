@@ -123,44 +123,33 @@ const positionColors={
 "CB":"red","LB":"royalblue","QB":"gray"
 };
 
-// School logos
-if(colName === "School"){
+const schoolLogos = {
 
-    const schoolLogos = {
+    "Michigan": "michigan.png",
+    "Ohio St.": "ohiost.png",
+    "Alabama": "alabama.png",
+    "Indiana": "indiana.png",
+    "LSU": "lsu.png",
+    "Iowa": "iowa.png",
 
-        // Existing logos
-        "Michigan": "michigan.png",
-        "Ohio St.": "ohiost.png",
-        "Alabama": "alabama.png",
-        "Indiana": "indiana.png",
-        "LSU": "lsu.png",
-        "Iowa": "iowa.png",
+    "Utah": "utah.png",
+    "Miami": "miami.png",
+    "Texas Tech": "texastech.png",
+    "Tennessee": "tennessee.png",
 
-        // Previously added
-        "Utah": "utah.png",
-        "Miami": "miami.png",
-        "Texas Tech": "texastech.png",
-        "Tennessee": "tennessee.png",
-
-        // Newly requested additions
-        "Notre Dame": "notredame.png",
-        "Arizona St.": "arizonast.png",
-        "Washington": "washington.png",
-        "Penn St.": "pennst.png",
-        "Oklahoma": "oklahoma.png",
-        "Oregon": "oregon.png",
-        "Texas A&M": "atm.png",
-        "Auburn": "auburn.png",
-        "USC": "usc.png",
-        "Georgia": "georgia.png",
-        "Clemson": "clemson.png",
-        "Florida": "florida.png"
-    };
-
-    if(schoolLogos[cellValue]){
-        cellValue = `<img src="${schoolLogos[cellValue]}" class="school-logo">`;
-    }
-}
+    "Notre Dame": "notredame.png",
+    "Arizona St.": "arizonast.png",
+    "Washington": "washington.png",
+    "Penn St.": "pennst.png",
+    "Oklahoma": "oklahoma.png",
+    "Oregon": "oregon.png",
+    "Texas A&M": "atm.png",
+    "Auburn": "auburn.png",
+    "USC": "usc.png",
+    "Georgia": "georgia.png",
+    "Clemson": "clemson.png",
+    "Florida": "florida.png"
+};
 function gcd(a,b){ return b?gcd(b,a%b):a; }
 
 function roundThousandth(val){
@@ -351,16 +340,12 @@ const td=document.createElement("td");
 
 if(headers[i].toLowerCase().includes("school")){
 
-    const cleanSchool = String(c).trim().toLowerCase();
+    const cleanSchool = String(c).trim();
 
-    const matchedKey = Object.keys(schoolLogos).find(
-        key => key.toLowerCase() === cleanSchool
-    );
-
-    if(matchedKey){
-        const logo = schoolLogos[matchedKey];
-        td.innerHTML = `<img src="${logo.src}" class="school-logo ${logo.class}">`;
-    } else {
+    if(schoolLogos[cleanSchool]){
+        td.innerHTML = `<img src="${schoolLogos[cleanSchool]}" class="school-logo">`;
+    } 
+    else{
         td.textContent = c;
     }
 }
