@@ -385,11 +385,23 @@ if(
 }
 else{
 
-    let num = parseFloat(c);
+    let headerName = headers[i].toLowerCase();
 
-    if(!isNaN(num)){
-        displayValue = (Math.round(num * 1000) / 1000).toFixed(3);
-        displayValue = displayValue.replace(/\.?0+$/, '');
+    // Do NOT modify Vertical or Broad
+    if(
+        headerName === "vertical" ||
+        headerName === "broad"
+    ){
+        displayValue = c; // keep EXACTLY as sheet
+    }
+    else{
+
+        let num = parseFloat(c);
+
+        if(!isNaN(num)){
+            displayValue = (Math.round(num * 1000) / 1000).toFixed(3);
+            displayValue = displayValue.replace(/\.?0+$/, '');
+        }
     }
 }
 
