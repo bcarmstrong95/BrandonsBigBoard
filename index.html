@@ -392,16 +392,6 @@ function initializeFilters(){
     });
 }
 
-            buttonContainer.appendChild(button); // <-- YOU LOST THIS LINE
-        });
-    }
-
-    document.getElementById("searchInput").addEventListener("input", e=>{
-        searchTerm = e.target.value.toLowerCase();
-        applyFilters();
-    });
-}
-
 function applyFilters(){
 
     filteredData=data.filter(row=>{
