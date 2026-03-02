@@ -211,7 +211,7 @@ createHeaders();
 initializeFilters();
 applyFilters();
 
-document.getElementById("prospectCount").textContent=data.length;
+
 }
 });
 
@@ -366,10 +366,13 @@ function initializeFilters(){
 
                 if(selectedPositions.includes(pos)){
                     selectedPositions = selectedPositions.filter(p => p !== pos);
-                    button.classList.remove("active");
+                    button.style.background = "#111";
+button.style.borderColor = "#444";
                 } else {
                     selectedPositions.push(pos);
                     button.classList.add("active");
+button.style.background = positionColors[pos] || "#4169E1";
+button.style.borderColor = positionColors[pos] || "#4169E1";
                 }
 
                 applyFilters();
