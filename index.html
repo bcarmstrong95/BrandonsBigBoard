@@ -228,10 +228,14 @@ function sortTable(col){
     if(header==="name" || header==="school" || header==="pos"){
         sortAsc=true;
     }
-    // Columns that should default low→high
-    else if(header==="age" || header==="40"){
-        sortAsc=true;
-    }
+   // Columns that should default low→high
+else if(
+    header === "age" ||
+    header === "40" ||
+    header.includes("40")
+){
+    sortAsc = true;
+}
     // Everything else defaults high→low
     else{
         sortAsc=false;
@@ -324,18 +328,24 @@ else{
     let displayValue = c;
     let header = headers[i].toLowerCase();
 
-    // Skip rounding for measurement columns
-    if(i !== heightIndex && i !== handIndex && i !== armIndex && i !== wingspanIndex){
+    // Skip rounding for measurement columns OR anything containing quotes
+if(
+    i !== heightIndex &&
+    i !== handIndex &&
+    i !== armIndex &&
+    i !== wingspanIndex &&
+    !String(c).includes('"')
+){
 
-        let num = parseFloat(c);
+    let num = parseFloat(c);
 
-        if(!isNaN(num)){
-            displayValue = (Math.round(num * 1000) / 1000).toFixed(3);
+    if(!isNaN(num)){
+        displayValue = (Math.round(num * 1000) / 1000).toFixed(3);
 
-            // Remove unnecessary trailing zeros
-            displayValue = displayValue.replace(/\.?0+$/, '');
-        }
+        // Remove unnecessary trailing zeros
+        displayValue = displayValue.replace(/\.?0+$/, '');
     }
+}
 
     td.textContent = displayValue;
 }
