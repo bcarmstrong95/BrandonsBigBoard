@@ -362,30 +362,25 @@ function initializeFilters(){
             button.textContent = pos;
             button.classList.add("position-btn");
 
-            button.addEventListener("click", () => {
+       button.addEventListener("click", () => {
 
-                if(selectedPositions.includes(pos)){
-                    selectedPositions = selectedPositions.filter(p => p !== pos);
-                    button.style.background = "#111";
-button.style.borderColor = "#444";
-                } else {
-                    selectedPositions.push(pos);
-                    button.classList.add("active");
-button.style.background = positionColors[pos] || "#4169E1";
-button.style.borderColor = positionColors[pos] || "#4169E1";
-                }
+    if(selectedPositions.includes(pos)){
+        selectedPositions = selectedPositions.filter(p => p !== pos);
 
-                applyFilters();
-            });
+        button.classList.remove("active");
+        button.style.background = "#111";
+        button.style.borderColor = "#444";
+    } 
+    else {
+        selectedPositions.push(pos);
 
-            buttonContainer.appendChild(button);
-        });
+        button.classList.add("active");
+        button.style.background = positionColors[pos] || "#4169E1";
+        button.style.borderColor = positionColors[pos] || "#4169E1";
     }
 
-    document.getElementById("searchInput").addEventListener("input", e=>{
-        searchTerm = e.target.value.toLowerCase();
-        applyFilters();
-    });
+    applyFilters();
+});
 }
 
 function applyFilters(){
