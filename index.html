@@ -145,22 +145,23 @@ if(isNaN(num)) return val;
 return Math.round(num*1000)/1000;
 }
 
-function decimalToFraction(val){
-if(!val||val==="-"||!val.includes(".")) return val;
-let hasQuote=val.includes('"');
-let clean=val.replace(/"/g,"");
-let num=parseFloat(clean);
-if(isNaN(num)) return val;
-let whole=Math.floor(num);
-let decimal=num-whole;
-let denom=8;
-let numerator=Math.round(decimal*denom);
-if(numerator===denom){whole+=1;numerator=0;}
-if(numerator===0) return whole+(hasQuote?'"':"");
-let divisor=gcd(numerator,denom);
-numerator/=divisor;
-denom/=divisor;
-return whole+" "+numerator+"/"+denom+(hasQuote?'"':"");
+function decimalToFraction(decimal){
+
+let num = parseFloat(decimal);
+if(isNaN(num)) return decimal;
+
+// Work only with decimal portion (0–1)
+let denom = 8;
+let numerator = Math.round(num * denom);
+
+if(numerator === 0) return "";
+if(numerator === denom) return "1";
+
+let divisor = gcd(numerator, denom);
+numerator /= divisor;
+denom /= divisor;
+
+return numerator + "/" + denom;
 }
 
 function fractionToDecimal(val){
