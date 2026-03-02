@@ -382,6 +382,16 @@ function initializeFilters(){
                 applyFilters();
             });
 
+            buttonContainer.appendChild(button); // <-- REQUIRED
+        });
+    }
+
+    document.getElementById("searchInput").addEventListener("input", e=>{
+        searchTerm = e.target.value.toLowerCase();
+        applyFilters();
+    });
+}
+
             buttonContainer.appendChild(button); // <-- YOU LOST THIS LINE
         });
     }
