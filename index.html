@@ -292,6 +292,33 @@ else if(
     active.querySelector(".arrow").textContent=sortAsc?"▲":"▼";
 
     displayRows();
+}function decimalToFraction(decimal) {
+    const tolerance = 1.0E-6;
+    let numerator = 1;
+    let denominator = 1;
+    let fraction = decimal;
+
+    for (let d = 1; d <= 64; d++) {
+        let n = Math.round(decimal * d);
+        if (Math.abs(decimal - n / d) < tolerance) {
+            numerator = n;
+            denominator = d;
+            break;
+        }
+    }
+
+    // Simplify fraction
+    function gcd(a, b) {
+        return b ? gcd(b, a % b) : a;
+    }
+
+    let divisor = gcd(numerator, denominator);
+    numerator /= divisor;
+    denominator /= divisor;
+
+    return denominator === 1
+        ? numerator.toString()
+        : `${numerator}/${denominator}`;
 }
 function displayRows(){
 const tbody=document.querySelector("#data-table tbody");
