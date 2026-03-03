@@ -78,7 +78,17 @@ th:nth-child(-n+5){
 
 td:nth-child(-n+5){
     position: sticky;
-    background: inherit;
+    background: #000;
+}
+
+/* Proper zebra background for sticky cells */
+tbody tr:nth-child(even) td:nth-child(-n+5){
+    background:#111;
+}
+
+/* Proper hover background for sticky cells */
+tbody tr:hover td:nth-child(-n+5){
+    background:#1a1a1a;
 }
 
     /* Zebra preservation */
