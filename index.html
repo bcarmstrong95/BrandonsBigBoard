@@ -467,7 +467,7 @@ else{
     let displayValue = c;
     let header = headers[i].toLowerCase();
 
-   // Convert measurement columns to simplified fractions
+// Convert measurement columns (preserve sheet fractions exactly)
 if(
     i === heightIndex ||
     i === handIndex ||
@@ -477,50 +477,52 @@ if(
 
     let valueStr = String(c);
     let hasQuote = valueStr.includes('"');
-    let clean = valueStr.replace(/"/g, "");
+    let clean = valueStr.replace(/"/g, "").trim();
 
-    // HEIGHT (example: 6'2.75)
-   if(i === heightIndex && clean.includes("'")){
-
-    // If sheet already contains a fraction, keep EXACTLY as-is
+    // 🔥 RULE 1: If sheet already contains a fraction → KEEP EXACTLY AS-IS
     if(clean.includes("/")){
         displayValue = clean;
     }
     else{
-        let parts = clean.split("'");
-let feet = parts[0];
-let inches = fractionToDecimal(parts[1]);
 
-        if(!isNaN(inches)){
-            let whole = Math.floor(inches);
-            let decimal = inches - whole;
+        // HEIGHT column (example: 6'2.75)
+        if(i === heightIndex && clean.includes("'")){
 
-            let fraction = decimal > 0
-                ? " " + decimalToFraction(decimal.toString())
-                : "";
+            let parts = clean.split("'");
+            let feet = parts[0];
+            let inchesDecimal = parseFloat(parts[1]);
 
-            displayValue = `${feet}'${whole}${fraction}`;
+            if(!isNaN(inchesDecimal)){
+                let whole = Math.floor(inchesDecimal);
+                let decimal = inchesDecimal - whole;
+
+                let fraction = decimal > 0
+                    ? " " + decimalToFraction(decimal.toString())
+                    : "";
+
+                displayValue = `${feet}'${whole}${fraction}`;
+            }
+            else{
+                displayValue = clean;
+            }
         }
         else{
-            displayValue = clean;
-        }
-    }
-}
-    else{
-        let num = parseFloat(clean);
+            // Hand / Arm / Wingspan decimals only
+            let num = parseFloat(clean);
 
-        if(!isNaN(num)){
-            let whole = Math.floor(num);
-            let decimal = num - whole;
+            if(!isNaN(num)){
+                let whole = Math.floor(num);
+                let decimal = num - whole;
 
-            let fraction = decimal > 0
-                ? " " + decimalToFraction(decimal.toString())
-                : "";
+                let fraction = decimal > 0
+                    ? " " + decimalToFraction(decimal.toString())
+                    : "";
 
-            displayValue = `${whole}${fraction}`;
-        }
-        else{
-            displayValue = clean;
+                displayValue = `${whole}${fraction}`;
+            }
+            else{
+                displayValue = clean;
+            }
         }
     }
 
