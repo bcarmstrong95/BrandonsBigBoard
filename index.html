@@ -42,18 +42,26 @@ tbody tr:nth-child(even){
 tbody tr:hover{
     background:#1a1a1a;
 }/* ============================= */
-/* Desktop Sticky Columns FIXED */
+/* Desktop Sticky Columns FINAL */
 /* ============================= */
 @media (min-width: 900px){
 
-    /* ===== Shared Sticky Cell Styling ===== */
-    td:nth-child(-n+5){
-        position:sticky;
-        z-index:700;
-        background:#000; /* fallback */
+    table{
+        table-layout: fixed;
     }
 
-    /* Zebra row color preservation */
+    th, td{
+        width:140px;
+    }
+
+    /* Make first 5 columns sticky */
+    th:nth-child(-n+5),
+    td:nth-child(-n+5){
+        position:sticky;
+        background:#000;
+    }
+
+    /* Zebra preservation */
     tbody tr:nth-child(even) td:nth-child(-n+5){
         background:#111;
     }
@@ -63,22 +71,25 @@ tbody tr:hover{
         background:#1a1a1a;
     }
 
-    /* ===== Column Positions ===== */
-    th:nth-child(1), td:nth-child(1){ left:0; }
+    /* Left positions now match EXACT column width */
+    th:nth-child(1), td:nth-child(1){ left:0px; }
     th:nth-child(2), td:nth-child(2){ left:140px; }
     th:nth-child(3), td:nth-child(3){ left:280px; }
     th:nth-child(4), td:nth-child(4){ left:420px; }
     th:nth-child(5), td:nth-child(5){ left:560px; }
 
-    /* Header layering above cells */
+    /* Layering */
     th:nth-child(-n+5){
-        position:sticky;
-        z-index:1300;
+        z-index:2000;
     }
 
-    /* Clean divider shadow */
+    td:nth-child(-n+5){
+        z-index:1000;
+    }
+
+    /* Clean right divider */
     td:nth-child(5){
-        box-shadow: 6px 0 8px -4px rgba(0,0,0,0.6);
+        box-shadow: 8px 0 10px -6px rgba(0,0,0,0.8);
     }
 }
 /* Mobile logo resize only */
