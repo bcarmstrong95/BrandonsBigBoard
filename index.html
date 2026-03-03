@@ -46,76 +46,80 @@ tbody tr:hover{
 /* ============================= */
 @media (min-width: 900px){
 
-th:nth-child(1){
-    position: sticky;
-    left: 0;
-    background: #4169E1;
-    z-index: 10;
-}
+    /* Column 1 */
+    th:nth-child(1){
+        position: sticky;
+        left: 0;
+        background: #4169E1;
+        z-index: 10;
+    }
 
-td:nth-child(1){
-    position: sticky;
-    left: 0;
-    background: #111;
-    z-index: 6;
-}
+    td:nth-child(1){
+        position: sticky;
+        left: 0;
+        background: #111;
+        z-index: 6;
+    }
 
+    /* Column 2 */
     th:nth-child(2){
-    position: sticky;
-    left: 0;
-    background: #4169E1;
-    z-index: 10;
-}
+        position: sticky;
+        left: 140px;
+        background: #4169E1;
+        z-index: 10;
+    }
 
-td:nth-child(2){
-    position: sticky;
-    left: 0;
-    background: #111;
-    z-index: 6;
-}
+    td:nth-child(2){
+        position: sticky;
+        left: 140px;
+        background: #111;
+        z-index: 6;
+    }
 
+    /* Column 3 */
     th:nth-child(3){
-    position: sticky;
-    left: 0;
-    background: #4169E1;
-    z-index: 10;
-}
+        position: sticky;
+        left: 280px;
+        background: #4169E1;
+        z-index: 10;
+    }
 
-td:nth-child(3){
-    position: sticky;
-    left: 0;
-    background: #111;
-    z-index: 6;
-}
+    td:nth-child(3){
+        position: sticky;
+        left: 280px;
+        background: #111;
+        z-index: 6;
+    }
 
-th:nth-child(4){
-    position: sticky;
-    left: 0;
-    background: #4169E1;
-    z-index: 10;
-}
+    /* Column 4 */
+    th:nth-child(4){
+        position: sticky;
+        left: 420px;
+        background: #4169E1;
+        z-index: 10;
+    }
 
-td:nth-child(4){
-    position: sticky;
-    left: 0;
-    background: #111;
-    z-index: 6;
-}
+    td:nth-child(4){
+        position: sticky;
+        left: 420px;
+        background: #111;
+        z-index: 6;
+    }
 
-th:nth-child(5){
-    position: sticky;
-    left: 0;
-    background: #4169E1;
-    z-index: 10;
-}
+    /* Column 5 */
+    th:nth-child(5){
+        position: sticky;
+        left: 560px;
+        background: #4169E1;
+        z-index: 10;
+    }
 
-td:nth-child(5){
-    position: sticky;
-    left: 0;
-    background: #111;
-    z-index: 6;
-}
-
+    td:nth-child(5){
+        position: sticky;
+        left: 560px;
+        background: #111;
+        z-index: 6;
+    }
 }
 /* Mobile logo resize only */
 @media (max-width: 768px){
@@ -387,9 +391,11 @@ function heightToInches(val){
 if(!val||val==="-" ) return null;
 let clean=val.replace(/"/g,"");
 let parts=clean.split("'");
-let feet=parseFloat(parts[0]);
-let inches=fractionToDecimal(parts[1]);
-return feet*12+inches;
+
+let feet=parseFloat(parts[0]) || 0;
+let inches = parts[1] ? fractionToDecimal(parts[1]) : 0;
+
+return (feet*12) + (inches || 0);
 }
 
 Papa.parse(csvUrl,{
