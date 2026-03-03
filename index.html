@@ -41,6 +41,51 @@ tbody tr:nth-child(even){
 
 tbody tr:hover{
     background:#1a1a1a;
+}/* ============================= */
+/* Desktop Sticky Columns */
+/* ============================= */
+@media (min-width: 900px){
+
+    th:nth-child(1),
+    td:nth-child(1){
+        position: sticky;
+        left: 0;
+        background: #111;
+        z-index: 6;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2){
+        position: sticky;
+        left: 140px;
+        background: #111;
+        z-index: 6;
+    }
+
+    th:nth-child(3),
+    td:nth-child(3){
+        position: sticky;
+        left: 280px;
+        background: #111;
+        z-index: 6;
+    }
+
+    th:nth-child(4),
+    td:nth-child(4){
+        position: sticky;
+        left: 420px;
+        background: #111;
+        z-index: 6;
+    }
+
+    th:nth-child(5),
+    td:nth-child(5){
+        position: sticky;
+        left: 560px;
+        background: #111;
+        z-index: 6;
+    }
+
 }
 /* Mobile logo resize only */
 @media (max-width: 768px){
@@ -348,26 +393,37 @@ function sortTable(col){
 
     let header=headers[col].toLowerCase();
 
-   if(currentSort===col){
-    sortAsc=!sortAsc;
+if(currentSort === col){
+    sortAsc = !sortAsc;
 }else{
-    currentSort=col;
+    currentSort = col;
 
-    // Columns that should default to A–Z
-    if(header==="name" || header==="school" || header==="pos"){
-        sortAsc=true;
+    // FIRST TWO COLUMNS → always low to high on first click
+    if(col === 0 || col === 1){
+        sortAsc = true;
     }
-   // Columns that should default low→high
-else if(
-    header === "age" ||
-    header === "40" ||
-    header.includes("40")
-){
-    sortAsc = true;
-}
-    // Everything else defaults high→low
+
+    // Age + 40 → lowest first
+    else if(
+        header === "age" ||
+        header === "40" ||
+        header.includes("40")
+    ){
+        sortAsc = true;
+    }
+
+    // Name / School / Pos → A–Z first
+    else if(
+        header === "name" ||
+        header === "school" ||
+        header === "pos"
+    ){
+        sortAsc = true;
+    }
+
+    // Everything else → high to low first
     else{
-        sortAsc=false;
+        sortAsc = false;
     }
 }
 filteredData.sort((a,b)=>{
