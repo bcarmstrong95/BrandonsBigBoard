@@ -370,66 +370,55 @@ else if(
         sortAsc=false;
     }
 }
-    filteredData.sort((a,b)=>{
+filteredData.sort((a,b)=>{
 
-        let v1=a[col];
-        let v2=b[col];
+    let raw1 = String(a[col] ?? "").trim();
+    let raw2 = String(b[col] ?? "").trim();
 
-        if(col===heightIndex){
-            v1=heightToInches(v1);
-            v2=heightToInches(v2);
-        }
-        else if(col===handIndex||col===armIndex||col===wingspanIndex){
-            v1=fractionToDecimal(v1);
-            v2=fractionToDecimal(v2);
-        }
-       else{
+    // Force these values to ALWAYS go to bottom
+    const invalidValues = ["", "-", "0", "#DIV/0!"];
 
-    let headerName = headers[col].toLowerCase();
-    let raw1 = String(v1).trim();
-    let raw2 = String(v2).trim();
+    let isInvalid1 = invalidValues.includes(raw1);
+    let isInvalid2 = invalidValues.includes(raw2);
 
-    let isBlank1 = raw1 === "" || raw1 === "-";
-    let isBlank2 = raw2 === "" || raw2 === "-";
+    if(isInvalid1 && isInvalid2) return 0;
+    if(isInvalid1) return 1;
+    if(isInvalid2) return -1;
 
-   // Special rule for Age and ANY 40 column
-if(
-    headerName === "age" ||
-    headerName.includes("40")
-){
+    // HEIGHT sorting
+    if(col === heightIndex){
+        let h1 = heightToInches(raw1);
+        let h2 = heightToInches(raw2);
+        return sortAsc ? h1 - h2 : h2 - h1;
+    }
 
-    // Always push blanks to bottom
-    if(isBlank1 && !isBlank2) return 1;
-    if(!isBlank1 && isBlank2) return -1;
-    if(isBlank1 && isBlank2) return 0;
+    // HAND / ARM / WINGSPAN sorting
+    if(
+        col === handIndex ||
+        col === armIndex ||
+        col === wingspanIndex
+    ){
+        let f1 = fractionToDecimal(raw1);
+        let f2 = fractionToDecimal(raw2);
+        return sortAsc ? f1 - f2 : f2 - f1;
+    }
 
-    let num1 = parseFloat(raw1);
-    let num2 = parseFloat(raw2);
-
-    // Respect sort direction
-    return sortAsc ? num1 - num2 : num2 - num1;
-}
-
+    // Numeric sort if possible
     let n1 = parseFloat(raw1);
     let n2 = parseFloat(raw2);
 
     if(!isNaN(n1) && !isNaN(n2)){
-
         n1 = Math.round(n1 * 1000) / 1000;
         n2 = Math.round(n2 * 1000) / 1000;
-
-        v1 = n1;
-        v2 = n2;
+        return sortAsc ? n1 - n2 : n2 - n1;
     }
-    else{
-        return sortAsc
-            ? raw1.localeCompare(raw2)
-            : raw2.localeCompare(raw1);
-    }
-}
-        return sortAsc ? v1 - v2 : v2 - v1;
 
-    });
+    // Otherwise text sort
+    return sortAsc
+        ? raw1.localeCompare(raw2)
+        : raw2.localeCompare(raw1);
+
+});
 
     document.querySelectorAll("th").forEach(th=>{
         th.classList.remove("sorted");
@@ -478,7 +467,7 @@ else{
     let displayValue = c;
     let header = headers[i].toLowerCase();
 
-   // Convert measurement columns to simplified fractions
+// Convert measurement columns (preserve sheet fractions exactly)
 if(
     i === heightIndex ||
     i === handIndex ||
@@ -488,50 +477,52 @@ if(
 
     let valueStr = String(c);
     let hasQuote = valueStr.includes('"');
-    let clean = valueStr.replace(/"/g, "");
+    let clean = valueStr.replace(/"/g, "").trim();
 
-    // HEIGHT (example: 6'2.75)
-   if(i === heightIndex && clean.includes("'")){
-
-    // If sheet already contains a fraction, keep EXACTLY as-is
+    // 🔥 RULE 1: If sheet already contains a fraction → KEEP EXACTLY AS-IS
     if(clean.includes("/")){
         displayValue = clean;
     }
     else{
-        let parts = clean.split("'");
-let feet = parts[0];
-let inches = fractionToDecimal(parts[1]);
 
-        if(!isNaN(inches)){
-            let whole = Math.floor(inches);
-            let decimal = inches - whole;
+        // HEIGHT column (example: 6'2.75)
+        if(i === heightIndex && clean.includes("'")){
 
-            let fraction = decimal > 0
-                ? " " + decimalToFraction(decimal.toString())
-                : "";
+            let parts = clean.split("'");
+            let feet = parts[0];
+            let inchesDecimal = parseFloat(parts[1]);
 
-            displayValue = `${feet}'${whole}${fraction}`;
+            if(!isNaN(inchesDecimal)){
+                let whole = Math.floor(inchesDecimal);
+                let decimal = inchesDecimal - whole;
+
+                let fraction = decimal > 0
+                    ? " " + decimalToFraction(decimal.toString())
+                    : "";
+
+                displayValue = `${feet}'${whole}${fraction}`;
+            }
+            else{
+                displayValue = clean;
+            }
         }
         else{
-            displayValue = clean;
-        }
-    }
-}
-    else{
-        let num = parseFloat(clean);
+            // Hand / Arm / Wingspan decimals only
+            let num = parseFloat(clean);
 
-        if(!isNaN(num)){
-            let whole = Math.floor(num);
-            let decimal = num - whole;
+            if(!isNaN(num)){
+                let whole = Math.floor(num);
+                let decimal = num - whole;
 
-            let fraction = decimal > 0
-                ? " " + decimalToFraction(decimal.toString())
-                : "";
+                let fraction = decimal > 0
+                    ? " " + decimalToFraction(decimal.toString())
+                    : "";
 
-            displayValue = `${whole}${fraction}`;
-        }
-        else{
-            displayValue = clean;
+                displayValue = `${whole}${fraction}`;
+            }
+            else{
+                displayValue = clean;
+            }
         }
     }
 
