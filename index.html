@@ -42,71 +42,41 @@ tbody tr:nth-child(even){
 tbody tr:hover{
     background:#1a1a1a;
 }/* ============================= */
-/* Desktop Sticky Columns */
+/* Desktop Sticky Columns FIXED */
 /* ============================= */
 @media (min-width: 900px){
 
-    /* ===== Column 1 ===== */
-    th:nth-child(1){
+    /* ===== Shared Sticky Cell Styling ===== */
+    td:nth-child(-n+5){
         position:sticky;
-        left:0;
-        z-index:1200;
-    }
-    td:nth-child(1){
-        position:sticky;
-        left:0;
         z-index:700;
+        background:#000; /* fallback */
     }
 
-    /* ===== Column 2 ===== */
-    th:nth-child(2){
-        position:sticky;
-        left:140px;
-        z-index:1200;
-    }
-    td:nth-child(2){
-        position:sticky;
-        left:140px;
-        z-index:700;
+    /* Zebra row color preservation */
+    tbody tr:nth-child(even) td:nth-child(-n+5){
+        background:#111;
     }
 
-    /* ===== Column 3 ===== */
-    th:nth-child(3){
-        position:sticky;
-        left:280px;
-        z-index:1200;
-    }
-    td:nth-child(3){
-        position:sticky;
-        left:280px;
-        z-index:700;
+    /* Hover preservation */
+    tbody tr:hover td:nth-child(-n+5){
+        background:#1a1a1a;
     }
 
-    /* ===== Column 4 ===== */
-    th:nth-child(4){
+    /* ===== Column Positions ===== */
+    th:nth-child(1), td:nth-child(1){ left:0; }
+    th:nth-child(2), td:nth-child(2){ left:140px; }
+    th:nth-child(3), td:nth-child(3){ left:280px; }
+    th:nth-child(4), td:nth-child(4){ left:420px; }
+    th:nth-child(5), td:nth-child(5){ left:560px; }
+
+    /* Header layering above cells */
+    th:nth-child(-n+5){
         position:sticky;
-        left:420px;
-        z-index:1200;
-    }
-    td:nth-child(4){
-        position:sticky;
-        left:420px;
-        z-index:700;
+        z-index:1300;
     }
 
-    /* ===== Column 5 ===== */
-    th:nth-child(5){
-        position:sticky;
-        left:560px;
-        z-index:1200;
-    }
-    td:nth-child(5){
-        position:sticky;
-        left:560px;
-        z-index:700;
-    }
-
-    /* Optional subtle divider */
+    /* Clean divider shadow */
     td:nth-child(5){
         box-shadow: 6px 0 8px -4px rgba(0,0,0,0.6);
     }
