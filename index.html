@@ -392,19 +392,23 @@ else if(
     let isBlank1 = raw1 === "" || raw1 === "-";
     let isBlank2 = raw2 === "" || raw2 === "-";
 
-    // Special rule ONLY for Age and 40
-    if(headerName === "age" || headerName === "40"){
+   // Special rule for Age and ANY 40 column
+if(
+    headerName === "age" ||
+    headerName.includes("40")
+){
 
-        // Always push blanks to bottom
-        if(isBlank1 && !isBlank2) return 1;
-        if(!isBlank1 && isBlank2) return -1;
-        if(isBlank1 && isBlank2) return 0;
+    // Always push blanks to bottom
+    if(isBlank1 && !isBlank2) return 1;
+    if(!isBlank1 && isBlank2) return -1;
+    if(isBlank1 && isBlank2) return 0;
 
-        let num1 = parseFloat(raw1);
-        let num2 = parseFloat(raw2);
+    let num1 = parseFloat(raw1);
+    let num2 = parseFloat(raw2);
 
-        return num1 - num2; // always lowest first
-    }
+    // Respect sort direction
+    return sortAsc ? num1 - num2 : num2 - num1;
+}
 
     let n1 = parseFloat(raw1);
     let n2 = parseFloat(raw2);
@@ -487,7 +491,13 @@ if(
     let clean = valueStr.replace(/"/g, "");
 
     // HEIGHT (example: 6'2.75)
-    if(i === heightIndex && clean.includes("'")){
+   if(i === heightIndex && clean.includes("'")){
+
+    // If sheet already contains a fraction, keep EXACTLY as-is
+    if(clean.includes("/")){
+        displayValue = clean;
+    }
+    else{
         let parts = clean.split("'");
         let feet = parts[0];
         let inches = parseFloat(parts[1]);
@@ -506,6 +516,7 @@ if(
             displayValue = clean;
         }
     }
+}
     else{
         let num = parseFloat(clean);
 
