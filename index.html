@@ -499,8 +499,8 @@ if(
     }
     else{
         let parts = clean.split("'");
-        let feet = parts[0];
-        let inches = parseFloat(parts[1]);
+let feet = parts[0];
+let inches = fractionToDecimal(parts[1]);
 
         if(!isNaN(inches)){
             let whole = Math.floor(inches);
