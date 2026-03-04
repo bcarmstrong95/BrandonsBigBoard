@@ -71,45 +71,57 @@ tbody tr:hover{
 
     /* Isolate table for proper paint layering */
 
-    /* Make first 5 columns sticky */
-    th:nth-child(-n+5),
+/* ===== Stable Sticky Columns ===== */
+
+.table-wrapper{
+    position: relative;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+table{
+    position: relative;
+}
+
+/* Sticky base */
+th:nth-child(-n+5),
 td:nth-child(-n+5){
     position: sticky;
-    background: inherit;
 }
 
-    /* Individual offsets */
-    th:nth-child(1), td:nth-child(1){ left: 0; }
-    th:nth-child(2), td:nth-child(2){ left: var(--col1); }
-    th:nth-child(3), td:nth-child(3){ left: var(--col2); }
-    th:nth-child(4), td:nth-child(4){ left: var(--col3); }
-    th:nth-child(5), td:nth-child(5){ left: var(--col4); }
+/* Offsets */
+th:nth-child(1), td:nth-child(1){ left: 0px; }
+th:nth-child(2), td:nth-child(2){ left: var(--col1); }
+th:nth-child(3), td:nth-child(3){ left: var(--col2); }
+th:nth-child(4), td:nth-child(4){ left: var(--col3); }
+th:nth-child(5), td:nth-child(5){ left: var(--col4); }
 
-    /* Header paint layer */
-    th:nth-child(-n+5){
+/* Header layer */
+th:nth-child(-n+5){
     background: #ffffff;
-    z-index: 100;
+    z-index: 10;
 }
 
+/* Body layer */
 td:nth-child(-n+5){
     background: #000000;
-    z-index: 50;
+    z-index: 5;
 }
 
-    /* Zebra fix */
-    tbody tr:nth-child(even) td:nth-child(-n+5){
-        background: #111111;
-    }
+/* Zebra rows */
+tbody tr:nth-child(even) td:nth-child(-n+5){
+    background: #111111;
+}
 
-    /* Hover fix */
-    tbody tr:hover td:nth-child(-n+5){
-        background: #1a1a1a;
-    }
+/* Hover state */
+tbody tr:hover td:nth-child(-n+5){
+    background: #1a1a1a;
+}
 
-    /* Divider shadow */
-    td:nth-child(5){
-        box-shadow: 6px 0 8px -6px rgba(0,0,0,0.9);
-    }
+/* Shadow divider */
+td:nth-child(5){
+    box-shadow: 4px 0 6px rgba(0,0,0,0.8);
+}
 }
 /* Mobile logo resize only */
 @media (max-width: 768px){
