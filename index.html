@@ -69,25 +69,24 @@ tbody tr:hover{
 /* ============================= */
 @media (min-width: 900px){
 
-/* ===== HARD FIX: No Transparency / No Stacking ===== */
-
 .table-wrapper{
     position: relative;
     overflow-x: auto;
     overflow-y: auto;
 }
+
 table{
     isolation: isolate;
 }
 
-/* Base sticky behavior */
+/* Sticky base */
 th:nth-child(-n+5),
 td:nth-child(-n+5){
     position: sticky;
     background-clip: padding-box;
 }
 
-/* Header layer (top priority) */
+/* Header layer */
 th:nth-child(-n+5){
     background: #ffffff;
     z-index: 1000;
@@ -105,17 +104,17 @@ th:nth-child(3), td:nth-child(3){ left: var(--col2); }
 th:nth-child(4), td:nth-child(4){ left: var(--col3); }
 th:nth-child(5), td:nth-child(5){ left: var(--col4); }
 
-/* Zebra row correction */
+/* Zebra */
 tbody tr:nth-child(even) td:nth-child(-n+5){
     background: #111;
 }
 
-/* Hover correction */
+/* Hover */
 tbody tr:hover td:nth-child(-n+5){
     background: #1a1a1a;
 }
 
-/* Strong divider so columns never visually merge */
+/* Divider */
 td:nth-child(5){
     box-shadow: 4px 0 8px rgba(0,0,0,0.95);
 }
