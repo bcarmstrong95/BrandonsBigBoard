@@ -14,10 +14,9 @@ body{background:black;color:white;font-family:Arial;margin:0;}
 .top-logos img{height:285px;object-fit:contain;}
 .table-wrapper{overflow:auto;max-height:75vh;margin:20px;}
 table{
-    border-collapse:separate;
-    border-spacing:0;
-    width:auto;              /* shrink to content */
-    table-layout:auto;       /* natural sizing */
+    border-collapse:collapse;   /* 🔥 critical fix */
+    width:max-content;          /* prevents fake spacing */
+    table-layout:auto;
 }
 th, td{
     padding:4px 8px;
@@ -99,6 +98,7 @@ th:nth-child(-n+5){
 td:nth-child(-n+5){
     background:#000;
     z-index:2000;
+    background-clip:padding-box;  /* 🔥 prevents bleed-through */
 }
 
 /* Zebra */
