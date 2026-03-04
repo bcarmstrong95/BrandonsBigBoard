@@ -19,13 +19,12 @@ th{
     background:#ffffff;
     color:#000000;
     font-weight:bold;
-    font-size:1.6em;
+    font-size:1.28em; /* 20% smaller */
     cursor:pointer;
     position:sticky;
     top:0;
     z-index:1000;
 }
-
 th .arrow{
     margin-left:8px;
     font-weight:bold;
@@ -139,11 +138,6 @@ tbody tr:hover td:nth-child(-n+5){
 
 .position-btn:hover{
     background:#222;
-}
-
-.position-btn.active{
-    background:#4169E1;
-    border-color:#4169E1;
 }
 </style>
 </head>
@@ -650,11 +644,25 @@ function initializeFilters(){
 
     if(positionIndex > -1){
 
-        const uniquePositions = [
-            ...new Set(data.map(r => r[positionIndex]).filter(Boolean))
-        ].sort();
+        // Custom Order
+        const orderedPositions = [
+            "QB","RB","WR","TE","IOL","OT",
+            "BREAK1",
+            "DT","EDGE","LB","S","CB",
+            "BREAK2",
+            "K","P","LS"
+        ];
 
-        uniquePositions.forEach(pos => {
+        orderedPositions.forEach(pos => {
+
+            // Insert visual gap
+            if(pos === "BREAK1" || pos === "BREAK2"){
+                const spacer = document.createElement("div");
+                spacer.style.flexBasis = "100%";
+                spacer.style.height = "8px";
+                buttonContainer.appendChild(spacer);
+                return;
+            }
 
             const button = document.createElement("button");
             button.textContent = pos;
@@ -671,16 +679,23 @@ function initializeFilters(){
                 } 
                 else {
                     selectedPositions.push(pos);
-
                     button.classList.add("active");
-                    button.style.background = positionColors[pos] || "#4169E1";
-                    button.style.borderColor = positionColors[pos] || "#4169E1";
+
+                    // Special teams = gray
+                    if(pos === "K" || pos === "P" || pos === "LS"){
+                        button.style.background = "gray";
+                        button.style.borderColor = "gray";
+                    }
+                    else{
+                        button.style.background = positionColors[pos] || "#4169E1";
+                        button.style.borderColor = positionColors[pos] || "#4169E1";
+                    }
                 }
 
                 applyFilters();
             });
 
-            buttonContainer.appendChild(button); // <-- REQUIRED
+            buttonContainer.appendChild(button);
         });
     }
 
