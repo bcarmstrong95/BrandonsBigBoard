@@ -22,7 +22,6 @@ th, td{
     padding:4px 8px;
     text-align:center;
     white-space:nowrap;
-    background-clip:padding-box;
 }
 th{
     background:#ffffff;
@@ -71,18 +70,13 @@ tbody tr:hover{
 @media (min-width: 900px){
 
     /* Isolate table for proper paint layering */
-    .table-wrapper{
-        position: relative;
-        overflow: auto;
-        contain: layout paint;
-    }
 
     /* Make first 5 columns sticky */
     th:nth-child(-n+5),
-    td:nth-child(-n+5){
-        position: sticky;
-        background-clip: padding-box;
-    }
+td:nth-child(-n+5){
+    position: sticky;
+    background: inherit;
+}
 
     /* Individual offsets */
     th:nth-child(1), td:nth-child(1){ left: 0; }
@@ -93,15 +87,14 @@ tbody tr:hover{
 
     /* Header paint layer */
     th:nth-child(-n+5){
-        background: #ffffff;
-        z-index: 5000;
-    }
+    background: #ffffff;
+    z-index: 100;
+}
 
-    /* Body paint layer */
-    td:nth-child(-n+5){
-        background: #000000;
-        z-index: 4000;
-    }
+td:nth-child(-n+5){
+    background: #000000;
+    z-index: 50;
+}
 
     /* Zebra fix */
     tbody tr:nth-child(even) td:nth-child(-n+5){
