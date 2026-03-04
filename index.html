@@ -20,10 +20,9 @@ table{
     table-layout:auto;       /* natural sizing */
 }
 th, td{
-    padding:4px 6px;      /* tighter horizontal spacing */
+    padding:4px 8px;
     text-align:center;
     white-space:nowrap;
-    width:1%;             /* shrink-to-fit */
 }
 th{
     background:#ffffff;
@@ -76,46 +75,46 @@ tbody tr:hover{
     }
 
     /* Make first 5 columns sticky */
-th:nth-child(-n+5){
-    position: sticky;
-    background: #ffffff;
-}
-
+/* Sticky columns */
+th:nth-child(-n+5),
 td:nth-child(-n+5){
     position: sticky;
-    background: #000;
+    left: 0;
 }
 
-/* Proper zebra background for sticky cells */
+/* Individual left offsets */
+th:nth-child(1), td:nth-child(1){ left:0; }
+th:nth-child(2), td:nth-child(2){ left:var(--col1); }
+th:nth-child(3), td:nth-child(3){ left:calc(var(--col1) + var(--col2)); }
+th:nth-child(4), td:nth-child(4){ left:calc(var(--col1) + var(--col2) + var(--col3)); }
+th:nth-child(5), td:nth-child(5){ left:calc(var(--col1) + var(--col2) + var(--col3) + var(--col4)); }
+
+/* Header styling */
+th:nth-child(-n+5){
+    background:#ffffff;
+    z-index:3000;
+}
+
+/* Cell styling */
+td:nth-child(-n+5){
+    background:#000;
+    z-index:2000;
+}
+
+/* Zebra */
 tbody tr:nth-child(even) td:nth-child(-n+5){
     background:#111;
 }
 
-/* Proper hover background for sticky cells */
+/* Hover */
 tbody tr:hover td:nth-child(-n+5){
     background:#1a1a1a;
 }
 
-    /* Left positions now match EXACT column width */
-    th:nth-child(1), td:nth-child(1){ left:0; }
-th:nth-child(2), td:nth-child(2){ left:calc(var(--col1, 0px)); }
-th:nth-child(3), td:nth-child(3){ left:calc(var(--col1, 0px) + var(--col2, 0px)); }
-th:nth-child(4), td:nth-child(4){ left:calc(var(--col1, 0px) + var(--col2, 0px) + var(--col3, 0px)); }
-th:nth-child(5), td:nth-child(5){ left:calc(var(--col1, 0px) + var(--col2, 0px) + var(--col3, 0px) + var(--col4, 0px)); }
-
-    /* Layering */
-    th:nth-child(-n+5){
-        z-index:2000;
-    }
-
-    td:nth-child(-n+5){
-        z-index:1000;
-    }
-
-    /* Clean right divider */
-    td:nth-child(5){
-        box-shadow: 8px 0 10px -6px rgba(0,0,0,0.8);
-    }
+/* Shadow divider */
+td:nth-child(5){
+    box-shadow: 6px 0 8px -5px rgba(0,0,0,0.9);
+}
 }
 /* Mobile logo resize only */
 @media (max-width: 768px){
