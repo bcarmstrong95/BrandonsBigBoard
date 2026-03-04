@@ -76,6 +76,9 @@ tbody tr:hover{
     overflow-x: auto;
     overflow-y: auto;
 }
+table{
+    isolation: isolate;
+}
 
 /* Base sticky behavior */
 th:nth-child(-n+5),
@@ -83,7 +86,7 @@ td:nth-child(-n+5){
     position: sticky;
     background: #000;              /* FORCE solid background */
     background-clip: padding-box;
-    transform: translateZ(0);      /* Fix Chrome repaint bug */
+         /* Fix Chrome repaint bug */
 }
 
 /* Header layer (top priority) */
