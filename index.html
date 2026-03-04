@@ -423,6 +423,7 @@ data = data.map(row => row.map(cell => cell));
 filteredData=[...data];
 
 createHeaders();
+updateStickyOffsets();
 initializeFilters();
 applyFilters();
 
@@ -775,6 +776,7 @@ function updateStickyOffsets(){
         total += width;
     }
 }
+window.addEventListener("resize", updateStickyOffsets);
 </script>
 
 </body>
