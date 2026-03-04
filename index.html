@@ -17,6 +17,7 @@ table{
     border-collapse:collapse;
     width:100%;
     table-layout:auto;
+    isolation: isolate;
 }
 th, td{
     padding:4px 8px;
@@ -24,11 +25,17 @@ th, td{
     white-space:nowrap;
 }
 th{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
     background:#ffffff;
     color:#000000;
     font-weight:bold;
     font-size:1.28em;
     cursor:pointer;
+
+    background-clip: padding-box;
 }
 th .arrow{
     margin-left:8px;
