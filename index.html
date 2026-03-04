@@ -24,9 +24,11 @@ th, td{
     white-space:nowrap;
 }
 th{
-    position:sticky;
-top:0;
-z-index:1000;
+    background:#ffffff;
+    color:#000000;
+    font-weight:bold;
+    font-size:1.28em;
+    cursor:pointer;
 }
 th .arrow{
     margin-left:8px;
@@ -366,7 +368,6 @@ data = data.map(row => row.map(cell => cell));
 filteredData=[...data];
 
 createHeaders();
-updateStickyOffsets();
 initializeFilters();
 applyFilters();
 
