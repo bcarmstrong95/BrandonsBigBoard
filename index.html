@@ -13,7 +13,12 @@ body{background:black;color:white;font-family:Arial;margin:0;}
 .top-logos{display:flex;justify-content:center;align-items:center;gap:80px;padding:40px 0 20px 0;}
 .top-logos img{height:285px;object-fit:contain;}
 .table-wrapper{overflow:auto;max-height:75vh;margin:20px;}
-table{border-collapse:separate;border-spacing:0;width:100%;min-width:max-content;}
+table{
+    border-collapse:separate;
+    border-spacing:0;
+    width:auto;              /* shrink to content */
+    table-layout:auto;       /* natural sizing */
+}
 th,td{padding:8px 14px;text-align:center;white-space:nowrap;}
 th{
     background:#ffffff;
@@ -61,12 +66,8 @@ tbody tr:hover{
 /* ============================= */
 @media (min-width: 900px){
 
-    table{
-        table-layout: fixed;
-    }
-
-    th, td{
-        width:140px;
+        table{
+        table-layout:auto;   /* allow shrink-to-fit */
     }
 
     /* Make first 5 columns sticky */
@@ -91,11 +92,11 @@ tbody tr:hover td:nth-child(-n+5){
 }
 
     /* Left positions now match EXACT column width */
-    th:nth-child(1), td:nth-child(1){ left:0px; }
-    th:nth-child(2), td:nth-child(2){ left:140px; }
-    th:nth-child(3), td:nth-child(3){ left:280px; }
-    th:nth-child(4), td:nth-child(4){ left:420px; }
-    th:nth-child(5), td:nth-child(5){ left:560px; }
+    th:nth-child(1), td:nth-child(1){ left:0; }
+th:nth-child(2), td:nth-child(2){ left:calc(var(--col1, 0px)); }
+th:nth-child(3), td:nth-child(3){ left:calc(var(--col1, 0px) + var(--col2, 0px)); }
+th:nth-child(4), td:nth-child(4){ left:calc(var(--col1, 0px) + var(--col2, 0px) + var(--col3, 0px)); }
+th:nth-child(5), td:nth-child(5){ left:calc(var(--col1, 0px) + var(--col2, 0px) + var(--col3, 0px) + var(--col4, 0px)); }
 
     /* Layering */
     th:nth-child(-n+5){
@@ -135,6 +136,20 @@ tbody tr:hover td:nth-child(-n+5){
     font-size:13px;
     transition:all .2s ease;
 }
+@media (min-width: 900px){
+
+    /* Make filter buttons ~2x larger */
+    .position-btn{
+        font-size:20px;
+        padding:12px 22px;
+    }
+
+    /* Make label 2x larger */
+    #filterLabel{
+        font-size:26px;
+        font-weight:bold;
+    }
+}
 
 .position-btn:hover{
     background:#222;
@@ -167,9 +182,9 @@ tbody tr:hover td:nth-child(-n+5){
 
     <!-- Position Filter -->
 <div style="display:flex;flex-direction:column;align-items:center;">
-    <label style="font-size:13px;margin-bottom:6px;color:#ccc;">
-        Filter by Position
-    </label>
+    <label id="filterLabel" style="font-size:13px;margin-bottom:6px;color:#ccc;">
+    Filter by Position
+</label>
 
     <div id="positionButtons" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;"></div>
 </div>
