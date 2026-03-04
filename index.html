@@ -74,31 +74,34 @@ tbody tr:hover{
     }
 
     /* Make first 5 columns sticky */
-/* Sticky columns */
+/* ============================= */
+/* Desktop Sticky Columns CLEAN */
+/* ============================= */
+
+/* Make first 5 columns sticky */
 th:nth-child(-n+5),
 td:nth-child(-n+5){
     position: sticky;
-    left: 0;
 }
 
-/* Individual left offsets */
+/* Individual left offsets (NO stacking) */
 th:nth-child(1), td:nth-child(1){ left:0; }
 th:nth-child(2), td:nth-child(2){ left:var(--col1); }
 th:nth-child(3), td:nth-child(3){ left:calc(var(--col1) + var(--col2)); }
 th:nth-child(4), td:nth-child(4){ left:calc(var(--col1) + var(--col2) + var(--col3)); }
 th:nth-child(5), td:nth-child(5){ left:calc(var(--col1) + var(--col2) + var(--col3) + var(--col4)); }
 
-/* Header styling */
+/* Force solid paint layer */
 th:nth-child(-n+5){
     background:#ffffff;
     z-index:3000;
+    background-clip:padding-box;
 }
 
-/* Cell styling */
 td:nth-child(-n+5){
     background:#000;
     z-index:2000;
-    background-clip:padding-box;  /* 🔥 prevents bleed-through */
+    background-clip:padding-box;
 }
 
 /* Zebra */
@@ -111,9 +114,9 @@ tbody tr:hover td:nth-child(-n+5){
     background:#1a1a1a;
 }
 
-/* Shadow divider */
+/* Subtle divider */
 td:nth-child(5){
-    box-shadow: 6px 0 8px -5px rgba(0,0,0,0.9);
+    box-shadow: 4px 0 6px -4px rgba(0,0,0,0.8);
 }
 }
 /* Mobile logo resize only */
