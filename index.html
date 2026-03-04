@@ -24,14 +24,9 @@ th, td{
     white-space:nowrap;
 }
 th{
-    background:#ffffff;
-    color:#000000;
-    font-weight:bold;
-    font-size:1.28em; /* 20% smaller */
-    cursor:pointer;
     position:sticky;
-    top:0;
-    z-index:1000;
+top:0;
+z-index:1000;
 }
 th .arrow{
     margin-left:8px;
@@ -64,61 +59,6 @@ tbody tr:nth-child(even){
 
 tbody tr:hover{
     background:#1a1a1a;
-}/* ============================= */
-/* Desktop Sticky Columns FIXED */
-/* ============================= */
-@media (min-width: 900px){
-
-.table-wrapper{
-    position: relative;
-    overflow-x: auto;
-    overflow-y: auto;
-}
-
-table{
-    isolation: isolate;
-}
-
-/* Sticky base */
-th:nth-child(-n+5),
-td:nth-child(-n+5){
-    position: sticky;
-    background-clip: padding-box;
-}
-
-/* Header layer */
-th:nth-child(-n+5){
-    background: #ffffff;
-    z-index: 1000;
-}
-
-/* Body layer */
-td:nth-child(-n+5){
-    z-index: 500;
-}
-
-/* Left offsets */
-th:nth-child(1), td:nth-child(1){ left: 0; }
-th:nth-child(2), td:nth-child(2){ left: var(--col1); }
-th:nth-child(3), td:nth-child(3){ left: var(--col2); }
-th:nth-child(4), td:nth-child(4){ left: var(--col3); }
-th:nth-child(5), td:nth-child(5){ left: var(--col4); }
-
-/* Zebra */
-tbody tr:nth-child(even) td:nth-child(-n+5){
-    background: #111;
-}
-
-/* Hover */
-tbody tr:hover td:nth-child(-n+5){
-    background: #1a1a1a;
-}
-
-/* Divider */
-td:nth-child(5){
-    box-shadow: 4px 0 8px rgba(0,0,0,0.95);
-}
-
 }
 /* Mobile logo resize only */
 @media (max-width: 768px){
@@ -662,7 +602,6 @@ tr.appendChild(td);
 tbody.appendChild(tr);
 });
 
-updateStickyOffsets();
 }
 function initializeFilters(){
 
@@ -767,21 +706,7 @@ row.appendChild(th);
 });
 thead.appendChild(row);
 }
-function updateStickyOffsets(){
-    const table = document.getElementById("data-table");
-    const headerCells = table.querySelectorAll("th");
 
-    if(headerCells.length < 5) return;
-
-    let total = 0;
-
-    for(let i = 0; i < 5; i++){   // 🔥 Now matches 5 sticky columns
-        const width = headerCells[i].offsetWidth;
-        document.documentElement.style.setProperty(`--col${i+1}`, total + "px");
-        total += width;
-    }
-}
-window.addEventListener("resize", updateStickyOffsets);
 </script>
 
 </body>
