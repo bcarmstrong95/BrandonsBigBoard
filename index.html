@@ -550,7 +550,7 @@ else{
     let displayValue = c;
     let header = headers[i].toLowerCase();
 
-// Convert measurement columns (preserve sheet fractions exactly)
+// Convert measurement columns
 if(
     i === heightIndex ||
     i === handIndex ||
@@ -558,15 +558,16 @@ if(
     i === wingspanIndex
 ){
 
-    let valueStr = String(c);
-    let hasQuote = valueStr.includes('"');
-    let clean = valueStr.replace(/"/g, "").trim();
+    let original = String(c);
 
-    // 🔥 RULE 1: If sheet already contains a fraction → KEEP EXACTLY AS-IS
-    if(clean.includes("/")){
-        displayValue = clean;
+    // 🔥 If sheet already contains a fraction → KEEP EXACTLY AS-IS
+    if(original.includes("/")){
+        displayValue = original;
     }
     else{
+
+        let hasQuote = original.includes('"');
+        let clean = original.replace(/"/g,"").trim();
 
         // HEIGHT column (example: 6'2.75)
         if(i === heightIndex && clean.includes("'")){
@@ -580,7 +581,7 @@ if(
                 let decimal = inchesDecimal - whole;
 
                 let fraction = decimal > 0
-                    ? " " + decimalToFraction(decimal.toString())
+                    ? " " + decimalToFraction(decimal)
                     : "";
 
                 displayValue = `${feet}'${whole}${fraction}`;
@@ -590,7 +591,6 @@ if(
             }
         }
         else{
-            // Hand / Arm / Wingspan decimals only
             let num = parseFloat(clean);
 
             if(!isNaN(num)){
@@ -598,7 +598,7 @@ if(
                 let decimal = num - whole;
 
                 let fraction = decimal > 0
-                    ? " " + decimalToFraction(decimal.toString())
+                    ? " " + decimalToFraction(decimal)
                     : "";
 
                 displayValue = `${whole}${fraction}`;
@@ -607,10 +607,10 @@ if(
                 displayValue = clean;
             }
         }
-    }
 
-    if(hasQuote){
-        displayValue += '"';
+        if(hasQuote){
+            displayValue += '"';
+        }
     }
 }
 else{
