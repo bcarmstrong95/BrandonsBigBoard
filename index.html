@@ -69,9 +69,7 @@ tbody tr:hover{
 /* ============================= */
 @media (min-width: 900px){
 
-    /* Isolate table for proper paint layering */
-
-/* ===== Stable Sticky Columns ===== */
+/* ===== HARD FIX: No Transparency / No Stacking ===== */
 
 .table-wrapper{
     position: relative;
@@ -79,50 +77,48 @@ tbody tr:hover{
     overflow-y: auto;
 }
 
-table{
-    position: relative;
-}
-
-/* Sticky base */
+/* Base sticky behavior */
 th:nth-child(-n+5),
 td:nth-child(-n+5){
     position: sticky;
+    background: #000;              /* FORCE solid background */
     background-clip: padding-box;
+    transform: translateZ(0);      /* Fix Chrome repaint bug */
 }
 
-/* Offsets */
-th:nth-child(1), td:nth-child(1){ left: 0px; }
+/* Header layer (top priority) */
+th:nth-child(-n+5){
+    background: #ffffff;
+    z-index: 1000;
+}
+
+/* Body layer */
+td:nth-child(-n+5){
+    z-index: 500;
+}
+
+/* Left offsets */
+th:nth-child(1), td:nth-child(1){ left: 0; }
 th:nth-child(2), td:nth-child(2){ left: var(--col1); }
 th:nth-child(3), td:nth-child(3){ left: var(--col2); }
 th:nth-child(4), td:nth-child(4){ left: var(--col3); }
 th:nth-child(5), td:nth-child(5){ left: var(--col4); }
 
-/* Header layer */
-th:nth-child(-n+5){
-    background: #ffffff;
-    z-index: 10;
-}
-
-/* Body layer */
-td:nth-child(-n+5){
-    background: #000000;
-    z-index: 5;
-}
-
-/* Zebra rows */
+/* Zebra row correction */
 tbody tr:nth-child(even) td:nth-child(-n+5){
-    background: #111111;
+    background: #111;
 }
 
-/* Hover state */
+/* Hover correction */
 tbody tr:hover td:nth-child(-n+5){
     background: #1a1a1a;
 }
 
-/* Shadow divider */
+/* Strong divider so columns never visually merge */
 td:nth-child(5){
-    box-shadow: 4px 0 6px rgba(0,0,0,0.8);
+    box-shadow: 4px 0 8px rgba(0,0,0,0.95);
 }
+
 }
 /* Mobile logo resize only */
 @media (max-width: 768px){
