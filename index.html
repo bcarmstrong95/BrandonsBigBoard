@@ -657,6 +657,8 @@ tr.appendChild(td);
 });
 tbody.appendChild(tr);
 });
+
+updateStickyOffsets();
 }
 function initializeFilters(){
 
@@ -760,6 +762,18 @@ th.addEventListener("click",()=>sortTable(i));
 row.appendChild(th);
 });
 thead.appendChild(row);
+}
+function updateStickyOffsets(){
+    const table = document.getElementById("data-table");
+    const headerCells = table.querySelectorAll("th");
+
+    let total = 0;
+
+    for(let i=0;i<4;i++){
+        const width = headerCells[i].offsetWidth;
+        document.documentElement.style.setProperty(`--col${i+1}`, total + "px");
+        total += width;
+    }
 }
 </script>
 
