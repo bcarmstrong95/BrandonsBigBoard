@@ -637,11 +637,15 @@ else{
     let header = headers[i].toLowerCase();
     if(headers[i] === "B#" || headers[i] === "C#"){
 
-    const colorColIndex = i + 1;   // color stored in next column
+    const colorColIndex = i + 1;
 
-    if(r[colorColIndex]){
-        td.style.color = r[colorColIndex];
+if(r[colorColIndex]){
+    const colorVal = r[colorColIndex].trim();
+
+    if(colorVal.startsWith("#") || colorVal.startsWith("rgb")){
+        td.style.color = colorVal;
     }
+}
 }
 
 // Convert measurement columns
