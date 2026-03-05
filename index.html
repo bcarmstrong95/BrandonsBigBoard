@@ -122,9 +122,32 @@ tbody tr:hover{
 </div>
 
 <div class="top-logos">
-<img src="comby.png">
-<img src="NFLLogo.png">
-<img src="Draft26.jpg">
+
+    <img src="comby.png">
+
+    <img src="NFLLogo.png">
+
+    <div style="display:flex;flex-direction:column;align-items:center;">
+        <img src="Draft26.jpg">
+
+        <div id="draftCountdownBox" style="
+            margin-top:15px;
+            background:#111;
+            border:1px solid #333;
+            padding:15px 25px;
+            border-radius:10px;
+            text-align:center;
+            width:260px;
+        ">
+            <div style="font-weight:bold;margin-bottom:8px;font-size:16px;">
+                Countdown to NFL Draft
+            </div>
+            <div id="draftCountdown" style="font-size:18px;color:#39FF14;">
+                Loading...
+            </div>
+        </div>
+    </div>
+
 </div>
 
     <div style="display:flex;flex-wrap:wrap;gap:15px;align-items:center;justify-content:center;margin:20px;">
@@ -737,6 +760,40 @@ row.appendChild(th);
 thead.appendChild(row);
 }
 
+ /* ================================
+   NFL Draft Countdown Timer
+================================ */
+
+function startDraftCountdown(){
+
+    // April 23, 2026 at 8:00 PM Eastern Time
+    const draftDate = new Date("April 23, 2026 20:00:00 GMT-0400");
+
+    function updateCountdown(){
+
+        const now = new Date();
+        const diff = draftDate - now;
+
+        if(diff <= 0){
+            document.getElementById("draftCountdown").textContent =
+                "The Draft is LIVE!";
+            return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        document.getElementById("draftCountdown").textContent =
+            `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+}
+
+startDraftCountdown();   
 </script>
 
 </body>
