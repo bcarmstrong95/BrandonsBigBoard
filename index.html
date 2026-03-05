@@ -677,12 +677,14 @@ else{
 
     let displayValue = c;
     let header = headers[i].toLowerCase();
-    if(headers[i] === "B#" && bColorIndex > -1){
+    const headerClean = headers[i].trim().toLowerCase();
+
+if(headerClean === "b#" && bColorIndex > -1){
     const colorVal = String(r[bColorIndex] || "").trim();
     if(colorVal) td.style.color = colorVal;
 }
 
-if(headers[i] === "C#" && cColorIndex > -1){
+if(headerClean === "c#" && cColorIndex > -1){
     const colorVal = String(r[cColorIndex] || "").trim();
     if(colorVal) td.style.color = colorVal;
 }
