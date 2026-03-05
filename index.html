@@ -10,7 +10,13 @@
 body{background:black;color:white;font-family:Arial;margin:0;}
 .hero-banner{background:linear-gradient(135deg,#0a0a0a,#1a0a0a);border-top:1px solid #222;border-bottom:1px solid #222;padding:30px 20px;text-align:center;}
 .meta-info{margin-top:12px;font-size:15px;color:#ccc;}
-.top-logos{display:flex;justify-content:center;align-items:center;gap:80px;padding:40px 0 20px 0;}
+.top-logos{
+display:flex;
+justify-content:center;
+align-items:flex-start;
+gap:80px;
+padding:40px 0 20px 0;
+}
 .top-logos img{height:285px;object-fit:contain;}
 .table-wrapper{overflow:auto;max-height:75vh;margin:20px;}
 table{
@@ -69,49 +75,48 @@ tbody tr:nth-child(even){
 tbody tr:hover{
     background:#1a1a1a;
 }
-/* Mobile logo resize only */
-@media (max-width: 768px){
+/* Mobile layout */
+@media (max-width:768px){
 
-    /* Mobile layout */
-@media (max-width: 768px){
-
-    .top-logos{
-        gap:18px;
-        padding:18px 0 8px 0;
-    }
-
-    .top-logos img{
-        height:120px;
-    }
-
-    #draftCountdownBox{
-        width:70px;          /* 3x smaller */
-        aspect-ratio:1/1;
-        padding:6px;
-    }
-
-    .countdown-title{
-        font-size:8px;
-        margin-bottom:4px;
-        text-align:center;
-    }
-
-    .flip-clock{
-        gap:4px;
-    }
-
-    .flip-number{
-        font-size:12px;
-        padding:2px 0;
-    }
-
-    .flip-label{
-        font-size:6px;
-    }
-
-}
+.top-logos{
+    gap:40px;
+    padding:20px 0 10px 0;
 }
 
+.top-logos img{
+    height:120px;
+}
+
+/* Countdown box */
+#draftCountdownBox{
+    width:70px;
+    aspect-ratio:1/1;
+    padding:6px;
+}
+
+/* Title */
+.countdown-title{
+    font-size:8px;
+    margin-bottom:4px;
+    text-align:center;
+}
+
+/* Numbers */
+.flip-number{
+    font-size:12px;
+    padding:2px 0;
+}
+
+/* Labels */
+.flip-label{
+    font-size:6px;
+}
+
+.flip-clock{
+    gap:4px;
+}
+
+}
 /* Position filter buttons */
 .position-btn{
     padding:6px 12px;
