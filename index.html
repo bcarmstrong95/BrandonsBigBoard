@@ -160,6 +160,7 @@ let headers=[], data=[], filteredData=[];
 let currentSort=-1, sortAsc=true;
 let heightIndex=-1, positionIndex=-1;
 let handIndex=-1, armIndex=-1, wingspanIndex=-1;
+let broadIndex=-1;
 
 let searchTerm="";
 let selectedPositions=[];
@@ -366,6 +367,7 @@ positionIndex=headers.findIndex(h=>h.toLowerCase()==="pos");
 handIndex=headers.findIndex(h=>h.toLowerCase()==="hand");
 armIndex=headers.findIndex(h=>h.toLowerCase()==="arm");
 wingspanIndex=headers.findIndex(h=>h.toLowerCase()==="wingspan");
+broadIndex=headers.findIndex(h=>h.toLowerCase()==="broad");
 
 data=results.data.slice(2).filter(r=>r.length===headers.length);
 
@@ -451,6 +453,26 @@ filteredData.sort((a,b)=>{
         let f2 = fractionToDecimal(raw2);
         return sortAsc ? f1 - f2 : f2 - f1;
     }
+    // BROAD sorting (10'5")
+if(col === broadIndex){
+
+    function broadToInches(val){
+        if(!val) return null;
+
+        let match = val.match(/(\d+)'(\d+)"/);
+        if(!match) return null;
+
+        let feet = parseInt(match[1]);
+        let inches = parseInt(match[2]);
+
+        return (feet * 12) + inches;
+    }
+
+    let b1 = broadToInches(raw1);
+    let b2 = broadToInches(raw2);
+
+    return sortAsc ? b1 - b2 : b2 - b1;
+}
 
     // Numeric sort if possible
     let n1 = parseFloat(raw1);
