@@ -72,6 +72,9 @@ tbody tr:hover{
 /* Mobile logo resize only */
 @media (max-width: 768px){
 
+    /* Mobile layout */
+@media (max-width: 768px){
+
     .top-logos{
         gap:20px;
         padding:20px 0 10px 0;
@@ -80,6 +83,35 @@ tbody tr:hover{
     .top-logos img{
         height:120px;
     }
+
+    /* Countdown box smaller + square */
+    #draftCountdownBox{
+        width:110px;
+        min-height:120px;
+        padding:8px;
+        border-radius:8px;
+    }
+
+    .countdown-title{
+        font-size:11px;
+        margin-bottom:6px;
+        text-align:center;
+    }
+
+    .flip-clock{
+        gap:6px;
+    }
+
+    .flip-number{
+        font-size:18px;
+        padding:4px 0;
+    }
+
+    .flip-label{
+        font-size:8px;
+    }
+
+}
 }
 
 /* Position filter buttons */
@@ -557,7 +589,7 @@ if(col === broadIndex){
     function broadToInches(val){
         if(!val) return null;
 
-        let match = val.match(/(\d+)'(\d+)"/);
+        let match = val.match(/(\d+)\s*['’]\s*(\d+)\s*"/);
         if(!match) return null;
 
         let feet = parseInt(match[1]);
@@ -639,13 +671,18 @@ else{
 
     const colorColIndex = i + 1;
 
-if(r[colorColIndex]){
-    const colorVal = r[colorColIndex].trim();
+    if(r[colorColIndex]){
+        const colorVal = r[colorColIndex].trim();
 
-    if(colorVal.startsWith("#") || colorVal.startsWith("rgb")){
-        td.style.color = colorVal;
+        if(
+            colorVal.startsWith("#") ||
+            colorVal.startsWith("rgb") ||
+            colorVal.startsWith("rgba") ||
+            colorVal.startsWith("hsl")
+        ){
+            td.style.color = colorVal;
+        }
     }
-}
 }
 
 // Convert measurement columns
