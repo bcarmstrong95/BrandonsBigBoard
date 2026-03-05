@@ -111,6 +111,70 @@ tbody tr:hover{
 .position-btn:hover{
     background:#222;
 }
+/* Countdown Box */
+
+#draftCountdownBox{
+    margin-top:15px;
+    background:#0c0c0c;
+    border:1px solid #333;
+    border-radius:12px;
+    padding:18px 12px;
+
+    width:220px;       /* narrower */
+    min-height:280px;  /* taller */
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.countdown-title{
+    font-weight:bold;
+    font-size:18px;
+    margin-bottom:12px;
+}
+
+/* Flip Clock */
+
+.flip-clock{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    width:100%;
+}
+
+.flip-unit{
+    text-align:center;
+}
+
+.flip-number{
+    font-size:54px;              /* 3x larger */
+    font-weight:bold;
+    background:#000;
+    color:#39FF14;
+
+    border-radius:6px;
+    padding:8px 0;
+
+    box-shadow:
+        inset 0 -3px 0 #222,
+        0 0 8px rgba(57,255,20,.25);
+
+    animation:flipAnim .6s ease;
+}
+
+.flip-label{
+    font-size:11px;
+    color:#aaa;
+    margin-top:2px;
+}
+
+/* flip animation */
+
+@keyframes flipAnim{
+    0%{transform:rotateX(90deg)}
+    100%{transform:rotateX(0deg)}
+}
 </style>
 </head>
 <body>
@@ -130,22 +194,33 @@ tbody tr:hover{
     <div style="display:flex;flex-direction:column;align-items:center;">
         <img src="Draft26.jpg">
 
-        <div id="draftCountdownBox" style="
-            margin-top:15px;
-            background:#111;
-            border:1px solid #333;
-            padding:15px 25px;
-            border-radius:10px;
-            text-align:center;
-            width:260px;
-        ">
-            <div style="font-weight:bold;margin-bottom:8px;font-size:16px;">
-                Countdown to NFL Draft
-            </div>
-            <div id="draftCountdown" style="font-size:18px;color:#39FF14;">
-                Loading...
-            </div>
+        <div id="draftCountdownBox">
+    <div class="countdown-title">Countdown to NFL Draft</div>
+
+    <div class="flip-clock">
+
+        <div class="flip-unit">
+            <div id="days" class="flip-number">00</div>
+            <div class="flip-label">DAYS</div>
         </div>
+
+        <div class="flip-unit">
+            <div id="hours" class="flip-number">00</div>
+            <div class="flip-label">HRS</div>
+        </div>
+
+        <div class="flip-unit">
+            <div id="minutes" class="flip-number">00</div>
+            <div class="flip-label">MIN</div>
+        </div>
+
+        <div class="flip-unit">
+            <div id="seconds" class="flip-number">00</div>
+            <div class="flip-label">SEC</div>
+        </div>
+
+    </div>
+</div>
     </div>
 
 </div>
@@ -560,6 +635,9 @@ else{
 
     let displayValue = c;
     let header = headers[i].toLowerCase();
+    if(headers[i] === "B#" || headers[i] === "C#"){
+    td.style.color = c;
+}
 
 // Convert measurement columns
 if(
@@ -766,8 +844,7 @@ thead.appendChild(row);
 
 function startDraftCountdown(){
 
-    // April 23, 2026 at 8:00 PM Eastern Time
-    const draftDate = new Date("April 23, 2026 20:00:00 GMT-0400");
+    const draftDate = new Date("2026-04-23T20:00:00-04:00");
 
     function updateCountdown(){
 
@@ -775,25 +852,29 @@ function startDraftCountdown(){
         const diff = draftDate - now;
 
         if(diff <= 0){
-            document.getElementById("draftCountdown").textContent =
-                "The Draft is LIVE!";
+            document.getElementById("days").textContent="00";
+            document.getElementById("hours").textContent="00";
+            document.getElementById("minutes").textContent="00";
+            document.getElementById("seconds").textContent="00";
             return;
         }
 
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
+        const days = Math.floor(diff/(1000*60*60*24));
+        const hours = Math.floor((diff/(1000*60*60))%24);
+        const minutes = Math.floor((diff/(1000*60))%60);
+        const seconds = Math.floor((diff/1000)%60);
 
-        document.getElementById("draftCountdown").textContent =
-            `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        document.getElementById("days").textContent = days;
+        document.getElementById("hours").textContent = hours.toString().padStart(2,"0");
+        document.getElementById("minutes").textContent = minutes.toString().padStart(2,"0");
+        document.getElementById("seconds").textContent = seconds.toString().padStart(2,"0");
     }
 
     updateCountdown();
-    setInterval(updateCountdown, 1000);
+    setInterval(updateCountdown,1000);
 }
 
-startDraftCountdown();   
+startDraftCountdown();
 </script>
 
 </body>
