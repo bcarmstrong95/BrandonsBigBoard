@@ -160,7 +160,7 @@ tbody tr:hover{
         inset 0 -3px 0 #222,
         0 0 8px rgba(57,255,20,.25);
 
-    animation:flipAnim .6s ease;
+    transition:transform .4s ease;
 }
 
 .flip-label{
@@ -636,7 +636,12 @@ else{
     let displayValue = c;
     let header = headers[i].toLowerCase();
     if(headers[i] === "B#" || headers[i] === "C#"){
-    td.style.color = c;
+
+    const colorColIndex = i + 1;   // color stored in next column
+
+    if(r[colorColIndex]){
+        td.style.color = r[colorColIndex];
+    }
 }
 
 // Convert measurement columns
