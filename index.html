@@ -235,14 +235,21 @@ align-items:center;
 
 font-size:24px;
 font-weight:bold;
-
-background:black;
 color:red;
 
+background:black;
+
 border-radius:6px;
-padding:8px 10px;
+
+width:60px;
+height:40px;
+
+display:flex;
+align-items:center;
+justify-content:center;
 
 position:relative;
+perspective:400px;
 
 box-shadow:
 inset 0 -4px 0 #222,
@@ -285,11 +292,15 @@ font-weight:bold;
 .flip-number{
 transform-origin:bottom;
 }
-
 @keyframes flipAnim{
 
-0%{transform:rotateX(90deg)}
-100%{transform:rotateX(0deg)}
+0%{
+transform:rotateX(-90deg);
+}
+
+100%{
+transform:rotateX(0deg);
+}
 
 }
     
@@ -778,10 +789,16 @@ if(headerClean === "b#"){
     let pos = r[positionIndex];
     let circleColor = positionColors[pos] || "#444";
 
+    let textColor = "white";
+
+    if(pos === "IOL" || pos === "OT"){
+        textColor = "black";
+    }
+
     td.innerHTML =
     `<div style="
         background:${circleColor};
-        color:white;
+        color:${textColor};
         font-weight:bold;
         font-size:1.5em;
 width:54px;
@@ -1027,17 +1044,19 @@ function startDraftCountdown(){
         const minutes = Math.floor((diff/(1000*60))%60);
         const seconds = Math.floor((diff/1000)%60);
 
-        function flipUpdate(id,val){
+       function flipUpdate(id,val){
 
 const el=document.getElementById(id);
 
-if(el.textContent!=val){
+if(el.dataset.val != val){
+
+el.dataset.val = val;
 
 el.style.animation="none";
-el.offsetHeight;
-el.style.animation="flipAnim .6s ease";
+void el.offsetWidth;
+el.style.animation="flipAnim .5s ease";
 
-el.textContent=val;
+el.textContent = val;
 
 }
 
