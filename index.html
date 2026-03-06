@@ -13,11 +13,11 @@ body{background:black;color:white;font-family:Arial;margin:0;}
 .top-logos{
 display:flex;
 justify-content:center;
-align-items:flex-start;
+align-items:center;
 gap:80px;
 padding:40px 0 20px 0;
 }
-.top-logos img{height:285px;object-fit:contain;}
+. img{height:285px;object-fit:contain;}
 .table-wrapper{overflow:auto;max-height:75vh;margin:20px;}
 table{
     border-collapse:collapse;
@@ -237,7 +237,6 @@ font-weight:bold;
 
 .flip-number{
 transform-origin:bottom;
-animation:flipAnim .6s ease;
 }
 
 @keyframes flipAnim{
@@ -630,7 +629,11 @@ if(col === broadIndex){
     let b1 = broadToInches(raw1);
     let b2 = broadToInches(raw2);
 
-    return sortAsc ? b1 - b2 : b2 - b1;
+if(b1 === null && b2 === null) return 0;
+if(b1 === null) return 1;
+if(b2 === null) return -1;
+
+return sortAsc ? b1 - b2 : b2 - b1;
 }
 
     // Numeric sort if possible
