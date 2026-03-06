@@ -236,9 +236,7 @@ animation:flipAnim .6s ease;
 100%{transform:rotateX(0deg)}
 
 }
-    0%{transform:rotateX(90deg)}
-    100%{transform:rotateX(0deg)}
-}
+    
 </style>
 </head>
 <body>
@@ -984,7 +982,6 @@ el.textContent=val;
 flipUpdate("days",days);
 flipUpdate("hours",hours.toString().padStart(2,"0"));
 flipUpdate("minutes",minutes.toString().padStart(2,"0"));
-flipUpdate("seconds",seconds.toString().padStart(2,"0"));
     }
 
     updateCountdown();
