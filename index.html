@@ -111,8 +111,8 @@ tbody tr:hover{
 /* Countdown box */
 #draftCountdownBox{
 
-width:110px;
-padding:6px 4px;
+width:120px;
+padding:6px;
 
 display:flex;
 flex-direction:column;
@@ -188,7 +188,7 @@ gap:6px;
 
 margin-top:8px;
 
-width:120px;
+width:285px;
 
 background:#0c0c0c;
 border:2px solid #333;
@@ -197,8 +197,11 @@ border-radius:10px;
 display:flex;
 flex-direction:column;
 align-items:center;
+justify-content:center;
 
-padding:6px;
+padding:12px 10px;
+
+text-align:center;
 
 }
 
@@ -226,9 +229,17 @@ font-weight:bold;
 }
 
 .flip-bottom-row{
+
 display:flex;
-gap:30px;
+justify-content:center;
+align-items:center;
+
+gap:26px;
+
 margin-top:10px;
+
+width:100%;
+
 }
 
 .flip-unit{
@@ -401,8 +412,20 @@ margin-top:4px;
 <div class="countdown-subtitle">2026 NFL Draft</div>
 
 <div class="flip-days">
-<div id="days" class="flip-number flip-days-num">00</div>
+
+<div id="days" class="flip-number flip-days-num">
+
+<div class="flip-card">
+
+<div class="flip-top">00</div>
+<div class="flip-bottom">00</div>
+
+</div>
+
+</div>
+
 <div class="flip-label">DAYS</div>
+
 </div>
 
 <div class="flip-bottom-row">
@@ -1166,14 +1189,14 @@ top.classList.add("flip");
 bottom.classList.add("flip");
 
 }
-flipUpdate("days",days);
+flipUpdate("days",days.toString());
 flipUpdate("hours",hours.toString().padStart(2,"0"));
 flipUpdate("minutes",minutes.toString().padStart(2,"0"));
 flipUpdate("seconds",seconds.toString().padStart(2,"0"));
     }
 
-    updateCountdown();
-    setInterval(updateCountdown,1000);
+updateCountdown();
+setInterval(updateCountdown,1000);
 }
 
 startDraftCountdown();
