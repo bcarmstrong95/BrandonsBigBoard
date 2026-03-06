@@ -89,7 +89,7 @@ tbody tr:hover{
 
 /* Countdown box */
 #draftCountdownBox{
-    width:70px;
+    width:25px;
     aspect-ratio:1/1;
     padding:6px;
 }
@@ -103,7 +103,7 @@ tbody tr:hover{
 
 /* Numbers */
 .flip-number{
-    font-size:12px;
+    font-size:5px;
     padding:2px 0;
 }
 
@@ -149,15 +149,15 @@ tbody tr:hover{
 /* Countdown Box */
 
 #draftCountdownBox{
-    margin-top:10px;
+    margin-top:6px;
     background:#0c0c0c;
     border:1px solid #333;
-    border-radius:10px;
+    border-radius:8px;
 
-    width:140px;        /* 2x smaller */
-    aspect-ratio:1/1;   /* square box */
+    width:45px;
+    aspect-ratio:1/1;
 
-    padding:10px;
+    padding:4px;
 
     display:flex;
     flex-direction:column;
@@ -167,25 +167,19 @@ tbody tr:hover{
 
 .countdown-title{
     font-weight:bold;
-    font-size:18px;
-    margin-bottom:12px;
+    font-size:6px;
+    margin-bottom:3px;
 }
-
-/* Flip Clock */
 
 .flip-clock{
     display:flex;
     flex-direction:column;
-    gap:10px;
+    gap:2px;
     width:100%;
 }
 
-.flip-unit{
-    text-align:center;
-}
-
 .flip-number{
-    font-size:26px;       /* 2x smaller desktop */
+    font-size:9px;
     font-weight:bold;
     background:#000;
     color:#39FF14;
@@ -304,7 +298,7 @@ let searchTerm="";
 let selectedPositions=[];
 
 const positionColors={
-"EDGE":"orange","OT":"#39FF14","IOL":"yellow","WR":"#B8860B",
+"EDGE":"#e84a27","OT":"#39FF14","IOL":"yellow","WR":"#B8860B",
 "RB":"darkgreen","S":"magenta","TE":"#800080","DT":"turquoise",
 "CB":"red","LB":"royalblue","QB":"gray"
 };
@@ -679,9 +673,26 @@ else{
     let header = headers[i].toLowerCase();
     const headerClean = headers[i].trim().toLowerCase();
 
-if(headerClean === "b#" && bColorIndex > -1){
-    const colorVal = String(r[bColorIndex] || "").trim();
-    if(colorVal) td.style.color = colorVal;
+if(headerClean === "b#"){
+
+    let pos = r[positionIndex];
+    let circleColor = positionColors[pos] || "#444";
+
+    td.innerHTML =
+    `<div style="
+        background:${circleColor};
+        color:white;
+        font-weight:bold;
+        font-size:1.5em;
+        width:32px;
+        height:32px;
+        border-radius:50%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        margin:auto;
+    ">${c}</div>`;
+
 }
 
 if(headerClean === "c#" && cColorIndex > -1){
