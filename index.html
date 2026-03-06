@@ -111,13 +111,17 @@ tbody tr:hover{
 /* Countdown box */
 #draftCountdownBox{
 
-width:120px;
+width:100%;
+max-width:120px;
+
 padding:6px;
 
 display:flex;
 flex-direction:column;
 align-items:center;
 gap:3px;
+
+overflow:hidden;
 }
 
 /* Title */
@@ -188,7 +192,8 @@ gap:6px;
 
 margin-top:8px;
 
-width:285px;
+width:100%;
+max-width:285px;
 
 background:#0c0c0c;
 border:2px solid #333;
@@ -199,9 +204,11 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 
-padding:12px 10px;
+padding:16px 10px;
 
 text-align:center;
+
+overflow:hidden;
 
 }
 
@@ -255,19 +262,20 @@ REAL SPLIT FLAP CLOCK
 .flip-number{
 
 width:24px;
-height:18px;
+height:22px;
 
 position:relative;
 
 font-size:10px;
 font-weight:bold;
 
-color:#ff3b3b;
+color:white;
 
 perspective:200px;
 
-}
+overflow:hidden;
 
+}
 .flip-card{
 
 position:relative;
@@ -375,9 +383,10 @@ margin-top:2px;
 .flip-days-num{
 
 width:42px;
-height:30px;
+height:34px;
 
 font-size:16px;
+color:white;
 
 }
 
@@ -403,7 +412,7 @@ margin-top:4px;
 
     <img src="NFLLogo.png">
 
-    <div style="display:flex;flex-direction:column;align-items:center;">
+   <div style="display:flex;flex-direction:column;align-items:center;width:285px;">
         <img src="Draft26.jpg">
 
 <div id="draftCountdownBox">
