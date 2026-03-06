@@ -64,8 +64,18 @@ th.sorted{
 }
 
 .logo-large{
-    transform: scale(1.7);
-    transform-origin: center;
+transform:scale(1.7);
+transform-origin:center;
+}
+
+.logo-medium{
+transform:scale(1.4);
+transform-origin:center;
+}
+
+.logo-xlarge{
+transform:scale(1.7);
+transform-origin:center;
 }
 
 tbody tr:nth-child(even){
@@ -89,9 +99,7 @@ tbody tr:hover{
 
 /* Countdown box */
 #draftCountdownBox{
-    width:25px;
-    aspect-ratio:1/1;
-    padding:6px;
+    padding:5px 6px;
 }
 
 /* Title */
@@ -155,16 +163,12 @@ background:#0c0c0c;
 border:2px solid #333;
 border-radius:10px;
 
-width:285px;
-aspect-ratio:1/1;
-
-display:flex;
+display:inline-flex;
 flex-direction:column;
 align-items:center;
-justify-content:flex-start;
 
-padding:10px;
-gap:8px;
+padding:6px 8px;
+gap:4px;
 }
 
 .countdown-title{
@@ -186,7 +190,8 @@ align-items:center;
 }
 
 .flip-days-num{
-font-size:48px;
+font-size:72px;
+font-weight:bold;
 }
 
 .flip-bottom-row{
@@ -221,6 +226,11 @@ inset 0 -4px 0 #222,
 .flip-label{
 font-size:12px;
 color:white;
+}
+
+.flip-days .flip-label{
+font-size:24px;
+font-weight:bold;
 }
 
 /* flip animation */
@@ -276,6 +286,11 @@ animation:flipAnim .6s ease;
 <div class="flip-unit">
 <div id="minutes" class="flip-number">00</div>
 <div class="flip-label">MIN</div>
+</div>
+
+<div class="flip-unit">
+<div id="seconds" class="flip-number">00</div>
+<div class="flip-label">SEC</div>
 </div>
 
 </div>
@@ -425,49 +440,23 @@ const schoolLogos = {
     "Wake Forest": "wf.png"
     
 };
-    const largeLogos = [
-    "Indiana",
-    "Texas Tech",
-    "Utah",
-    "Arizona",
-    "Arizona St.",
-    "Baylor",
-    "Clemson",
-    "Illinois",
-    "Nebraska",
-    "Northwestern",
-    "S. Carolina",
-    "SDSU",
-    "Texas A&M",
-    "UConn",
-    "Wyoming",
-    "Wisconsin",
-    "Boise St.",
-    "Buffalo",
-    "FSU",
-    "Georgia St.",
-    "Inc. Word",
-    "Kansas",
-    "Maryland",
-    "Memphis",
-    "Navy",
-    "NC State",
-    "New Mexico",
-    "S. Alabama",
-    "SFAU",
-    "SLU",
-    "Stanford",
-    "Tennessee",
-    "UCF",
-    "UCLA",
-    "Miss. St.",
-    "Iowa",
-    "BYU",
-    "Ole Miss",
-    "UTSA",
-    "Vanderbilt",
-    "Virginia"
-        
+const largeLogos = [
+"Indiana","Texas Tech","Utah","Arizona","Arizona St.","Baylor",
+"Clemson","Illinois","Nebraska","Northwestern","S. Carolina",
+"SDSU","Texas A&M","UConn","Wisconsin","Boise St.","Buffalo",
+"FSU","Georgia St.","Inc. Word","Kansas","Maryland","Memphis",
+"Navy","NC State","New Mexico","S. Alabama","SFAU","SLU",
+"Stanford","Tennessee","UCF","UCLA","BYU","Ole Miss",
+"UTSA","Vanderbilt","Virginia"
+];
+
+const mediumLogos = [
+"Florida","Navy","NC State","NDSU","Pitt","GT",
+"TCU","SMU","Texas","Toledo","Wyoming"
+];
+
+const extraLargeLogos = [
+"Arkansas"
 ];
 
 function gcd(a,b){ return b?gcd(b,a%b):a; }
@@ -693,7 +682,10 @@ if(headers[i].toLowerCase().includes("school")){
 
     if(schoolLogos[cleanSchool]){
 
-    const extraClass = largeLogos.includes(cleanSchool)
+   let extraClass = largeLogos.includes(cleanSchool)
+if(cleanSchool === "Miss. St."){
+extraClass = "school-logo";
+}
         ? "school-logo logo-large"
         : "school-logo";
 
@@ -719,14 +711,14 @@ if(headerClean === "b#"){
         background:${circleColor};
         color:white;
         font-weight:bold;
-        font-size:2.55em;
-        width:54px;
-        height:50px;
-        border-radius:50%;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        margin:auto;
+        font-size:1.5em;
+width:54px;
+height:54px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:auto;
     ">${c}</div>`;
 
     tr.appendChild(td);
