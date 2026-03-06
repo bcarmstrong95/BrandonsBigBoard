@@ -682,12 +682,23 @@ if(headers[i].toLowerCase().includes("school")){
 
     if(schoolLogos[cleanSchool]){
 
-   let extraClass = largeLogos.includes(cleanSchool)
-if(cleanSchool === "Miss. St."){
-extraClass = "school-logo";
+  let extraClass = "school-logo";
+
+if(largeLogos.includes(cleanSchool)){
+    extraClass = "school-logo logo-large";
 }
-        ? "school-logo logo-large"
-        : "school-logo";
+
+if(mediumLogos.includes(cleanSchool)){
+    extraClass = "school-logo logo-medium";
+}
+
+if(extraLargeLogos.includes(cleanSchool)){
+    extraClass = "school-logo logo-xlarge";
+}
+
+if(cleanSchool === "Miss. St."){
+    extraClass = "school-logo";
+}
 
     td.innerHTML = `<img src="${schoolLogos[cleanSchool]}" class="${extraClass}">`;
 }
@@ -974,6 +985,7 @@ el.textContent=val;
 flipUpdate("days",days);
 flipUpdate("hours",hours.toString().padStart(2,"0"));
 flipUpdate("minutes",minutes.toString().padStart(2,"0"));
+flipUpdate("seconds",seconds.toString().padStart(2,"0"));
     }
 
     updateCountdown();
