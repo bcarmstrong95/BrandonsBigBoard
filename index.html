@@ -80,7 +80,15 @@ transform-origin:center;
 transform:scale(1.7);
 transform-origin:center;
 }
+.logo-custom130{
+transform:scale(1.3);
+transform-origin:center;
+}
 
+.logo-custom120{
+transform:scale(1.2);
+transform-origin:center;
+}
 tbody tr:nth-child(even){
     background:#111;
 }
@@ -102,29 +110,43 @@ tbody tr:hover{
 
 /* Countdown box */
 #draftCountdownBox{
-    padding:5px 6px;
+
+width:120px;
+padding:6px 6px;
+
+display:flex;
+flex-direction:column;
+align-items:center;
 }
 
 /* Title */
 .countdown-title{
-    font-size:8px;
-    margin-bottom:4px;
-    text-align:center;
+font-size:9px;
+text-align:center;
+}
+
+.countdown-subtitle{
+font-size:10px;
+text-align:center;
 }
 
 /* Numbers */
 .flip-number{
-    font-size:5px;
-    padding:2px 0;
+font-size:14px;
+padding:4px 6px;
 }
 
 /* Labels */
 .flip-label{
-    font-size:6px;
+font-size:7px;
 }
 
-.flip-clock{
-    gap:4px;
+.flip-days-num{
+font-size:28px;
+}
+
+.flip-bottom-row{
+gap:10px;
 }
 
 }
@@ -218,11 +240,33 @@ background:black;
 color:red;
 
 border-radius:6px;
-padding:6px 10px;
+padding:8px 10px;
+
+position:relative;
 
 box-shadow:
 inset 0 -4px 0 #222,
 0 0 8px rgba(255,0,0,.35);
+
+}
+
+/* Flip hinge divider */
+
+.flip-number::after{
+
+content:"";
+
+position:absolute;
+left:0;
+right:0;
+top:50%;
+
+height:2px;
+background:#111;
+
+box-shadow:
+0 -1px 0 #444,
+0 1px 0 #000;
 
 }
 
@@ -702,10 +746,21 @@ if(extraLargeLogos.includes(cleanSchool)){
     extraClass = "school-logo logo-xlarge";
 }
 
-if(cleanSchool === "Miss. St."){
-    extraClass = "school-logo";
+/* Custom size adjustments */
+
+if(
+    cleanSchool === "Iowa" ||
+    cleanSchool === "Missouri" ||
+    cleanSchool === "Navy" ||
+    cleanSchool === "NC State" ||
+    cleanSchool === "Wyoming"
+){
+    extraClass = "school-logo logo-custom130";
 }
 
+if(cleanSchool === "Miss. St."){
+    extraClass = "school-logo logo-custom120";
+}
     td.innerHTML = `<img src="${schoolLogos[cleanSchool]}" class="${extraClass}">`;
 }
     else{
