@@ -408,7 +408,10 @@ margin-top:4px;
 <img src="Draft26.jpg">
 </div>
 
-    <div style="display:flex;flex-wrap:wrap;gap:15px;align-items:center;justify-content:center;margin:20px;">
+<div style="display:flex;flex-wrap:wrap;gap:25px;align-items:flex-start;justify-content:center;margin:20px;">
+
+<!-- LEFT SIDE (search + filters) -->
+<div style="display:flex;flex-wrap:wrap;gap:15px;align-items:center;">
 
     <!-- Search Bar -->
     <input 
@@ -419,13 +422,87 @@ margin-top:4px;
     >
 
     <!-- Position Filter -->
-<div style="display:flex;flex-direction:column;align-items:center;">
-    <label id="filterLabel" style="font-size:13px;margin-bottom:6px;color:#ccc;">
-    Filter by Position
-</label>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+        <label id="filterLabel" style="font-size:13px;margin-bottom:6px;color:#ccc;">
+        Filter by Position
+        </label>
 
-    <div id="positionButtons" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;"></div>
+        <div id="positionButtons" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;"></div>
+    </div>
+
 </div>
+
+<!-- RIGHT SIDE (countdown box) -->
+<div id="draftCountdownBox">
+
+<div class="countdown-title">Countdown to</div>
+<div class="countdown-subtitle">2026 NFL Draft</div>
+
+<div class="flip-days">
+
+<div id="days" class="flip-number flip-days-num">
+
+<div class="flip-card">
+
+<div class="flip-top">00</div>
+<div class="flip-bottom">00</div>
+
+</div>
+
+</div>
+
+<div class="flip-label">DAYS</div>
+
+</div>
+
+<div class="flip-bottom-row">
+
+<div class="flip-unit">
+<div id="hours" class="flip-number">
+
+<div class="flip-card">
+
+<div class="flip-top">00</div>
+<div class="flip-bottom">00</div>
+
+</div>
+
+</div>
+<div class="flip-label">HRS</div>
+</div>
+
+<div class="flip-unit">
+<div id="minutes" class="flip-number">
+
+<div class="flip-card">
+
+<div class="flip-top">00</div>
+<div class="flip-bottom">00</div>
+
+</div>
+
+</div>
+<div class="flip-label">MIN</div>
+</div>
+
+<div class="flip-unit">
+<div id="seconds" class="flip-number">
+
+<div class="flip-card">
+
+<div class="flip-top">00</div>
+<div class="flip-bottom">00</div>
+
+</div>
+
+</div>
+<div class="flip-label">SEC</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="table-wrapper">
 <table id="data-table">
@@ -1069,6 +1146,69 @@ row.appendChild(th);
 });
 thead.appendChild(row);
 }
+/* ================================
+   NFL Draft Countdown Timer
+================================ */
+
+function startDraftCountdown(){
+
+    const draftDate = new Date("2026-04-23T20:00:00-04:00");
+
+    function updateCountdown(){
+
+        const now = new Date();
+        const diff = draftDate - now;
+
+        if(diff <= 0){
+            document.getElementById("days").textContent="00";
+            document.getElementById("hours").textContent="00";
+            document.getElementById("minutes").textContent="00";
+            document.getElementById("seconds").textContent="00";
+            return;
+        }
+
+        const days = Math.floor(diff/(1000*60*60*24));
+        const hours = Math.floor((diff/(1000*60*60))%24);
+        const minutes = Math.floor((diff/(1000*60))%60);
+        const seconds = Math.floor((diff/1000)%60);
+
+function flipUpdate(id,val){
+
+const el=document.getElementById(id);
+
+if(el.dataset.val == val) return;
+
+el.dataset.val = val;
+
+const top = el.querySelector(".flip-top");
+const bottom = el.querySelector(".flip-bottom");
+
+top.textContent = val;
+bottom.textContent = val;
+
+top.classList.remove("flip");
+bottom.classList.remove("flip");
+
+void top.offsetWidth;
+
+top.classList.add("flip");
+bottom.classList.add("flip");
+
+}
+
+flipUpdate("days",days.toString());
+flipUpdate("hours",hours.toString().padStart(2,"0"));
+flipUpdate("minutes",minutes.toString().padStart(2,"0"));
+flipUpdate("seconds",seconds.toString().padStart(2,"0"));
+
+    }
+
+updateCountdown();
+setInterval(updateCountdown,1000);
+
+}
+
+startDraftCountdown();
 </script>
 
 </body>
