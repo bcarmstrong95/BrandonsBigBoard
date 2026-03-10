@@ -11,23 +11,22 @@ body{background:black;color:white;font-family:Arial;margin:0;}
 .hero-banner{background:linear-gradient(135deg,#0a0a0a,#1a0a0a);border-top:1px solid #222;border-bottom:1px solid #222;padding:30px 20px;text-align:center;}
 .meta-info{margin-top:12px;font-size:15px;color:#ccc;}
 .top-logos{
-
 display:grid;
-
 grid-template-columns:1fr 1fr 1fr;
-
 align-items:center;
-
 justify-items:center;
-
-padding:40px 0  0;
-
+padding:40px 0 20px 0;
 }
 .top-logos img{
 height:285px;
 object-fit:contain;
 }
-.table-wrapper{overflow:auto;max-height:75vh;margin:20px;}
+.table-wrapper{
+    overflow-x:auto;  /* allows horizontal scroll on mobile */
+    overflow-y:auto;  /* keeps vertical scroll if needed */
+    max-height:75vh;
+    margin:20px;
+}
 table{
     border-collapse:collapse;
     width:100%;
@@ -143,7 +142,7 @@ tbody tr:hover{
     padding:8px 12px;
 }
   #filterLabel{
-      font-size:14px;
+      font-size:18px;
       margin-bottom:6px;
       color:#ccc;
       text-align:center;
