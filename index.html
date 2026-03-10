@@ -11,11 +11,17 @@ body{background:black;color:white;font-family:Arial;margin:0;}
 .hero-banner{background:linear-gradient(135deg,#0a0a0a,#1a0a0a);border-top:1px solid #222;border-bottom:1px solid #222;padding:30px 20px;text-align:center;}
 .meta-info{margin-top:12px;font-size:15px;color:#ccc;}
 .top-logos{
-display:flex;
-justify-content:center;
+
+display:grid;
+
+grid-template-columns:1fr auto 1fr;
+
 align-items:center;
-gap:80px;
+
+justify-items:center;
+
 padding:40px 0 20px 0;
+
 }
 .top-logos img{
 height:285px;
@@ -437,14 +443,15 @@ opacity:1;
 
 <div class="top-logos">
 
-    <img src="comby.png">
+<img src="comby.png" style="grid-column:1;">
 
-    <img src="NFLLogo.png">
+<img src="NFLLogo.png" style="grid-column:2;">
 
-<img src="Draft26.jpg">
+<img src="Draft26.jpg" style="grid-column:3;">
+
 </div>
 
-<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:start;margin:20px;">
+<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:start;justify-items:center;margin:20px;">
 
 <!-- COLUMN 1 (empty under combine logo) -->
 <div></div>
