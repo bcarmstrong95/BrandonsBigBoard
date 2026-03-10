@@ -120,23 +120,30 @@ tbody tr:hover{
       object-fit:contain;
   }
 
-  /* Center timer under NFL logo */
-  .top-logos ~ div{ /* the 3-column grid below logos */
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      align-items:start;
-      justify-items:center;
-      margin:20px;
-  }
+  /* Mobile grid under logos */
+.top-logos ~ div{ 
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    align-items:start;
+    justify-items:center;
+    gap:10px;
+    margin:10px 0 20px 0;
+}
 
-  /* Center position filter under NFL logo */
-  #positionButtons{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      justify-content:center;
-      max-width:100%;
-  }
+/* Position filter and search bar centered under NFL logo */
+#positionButtons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    justify-content:center;
+    max-width:100%;
+}
+
+#searchInput{
+    width:180px; /* slightly smaller on mobile */
+    font-size:12px;
+    padding:6px 8px;
+}
 
   #filterLabel{
       font-size:14px;
@@ -145,46 +152,46 @@ tbody tr:hover{
       text-align:center;
   }
 
-  /* Countdown box */
-  #draftCountdownBox{
-      width:120px;
-      padding:6px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:4px;
-      margin-top:10px;
-  }
+  /* Countdown box for mobile (half size) */
+#draftCountdownBox{
+    width:75px; /* roughly half the desktop size */
+    padding:3px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    margin-top:10px;
+}
 
-  .countdown-title{
-      font-size:14px;
-      text-align:center;
-  }
+.countdown-title{
+    font-size:10px;
+    text-align:center;
+}
 
-  .countdown-subtitle{
-      font-size:14px;
-      text-align:center;
-  }
+.countdown-subtitle{
+    font-size:10px;
+    text-align:center;
+}
 
-  .flip-days-num{
-      font-size:48px;
-  }
+.flip-days-num{
+    font-size:24px; /* half of desktop 48px */
+}
 
-  .flip-number{
-      font-size:10px;
-      width:30px;
-      height:22px;
-      padding:2px 2px;
-  }
+.flip-number{
+    font-size:6px;
+    width:15px;
+    height:11px;
+    padding:1px 1px;
+}
 
-  .flip-label{
-      font-size:6px;
-  }
+.flip-label{
+    font-size:5px;
+}
 
-  .flip-bottom-row{
-      gap:6px;
-      justify-content:center;
-  }
+.flip-bottom-row{
+    gap:4px;
+    justify-content:center;
+}
 
   /* Limit filter buttons to 3 rows max */
   #positionButtons button{
