@@ -114,7 +114,7 @@ tbody tr:hover{
 }
 
 .top-logos img{
-    height:180px; /* slightly smaller than desktop 285px */
+    height:140px; /* slightly smaller than desktop 285px */
     object-fit:contain;
 }
 
@@ -126,21 +126,7 @@ tbody tr:hover{
     gap:20px;
     margin:20px 0;
 }
-
 /* Position filter and search bar centered under NFL logo */
-#positionButtons{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px; /* match desktop gap */
-    justify-content:center;
-    max-width:1200px;
-}
-
-#searchInput{
-    width:220px; /* match desktop width */
-    font-size:14px;
-    padding:8px 12px;
-}
   #filterLabel{
       font-size:18px;
       margin-bottom:6px;
@@ -150,13 +136,15 @@ tbody tr:hover{
 
   /* Countdown box for mobile (half size) */
 #draftCountdownBox{
-    width:150px; /* desktop size */
+    width:150px;
     padding:4px;
     display:flex;
     flex-direction:column;
     align-items:center;
     text-align:center;
     margin-top:6px;
+    margin-left:auto;
+    margin-right:0;
 }
 .countdown-title{
     font-size:16px;
@@ -192,10 +180,21 @@ tbody tr:hover{
     margin-top:4px;
 }
   /* Limit filter buttons to 3 rows max */
-  #positionButtons button{
-      font-size:12px;
-      padding:6px 10px;
-  }
+ /* MOBILE position buttons layout */
+/* MOBILE POSITION GRID (exact 3 rows) */
+#positionButtons{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:6px;
+    max-width:360px;
+    margin:auto;
+}
+
+/* button sizing for mobile */
+#positionButtons button{
+    font-size:11px;
+    padding:6px 4px;
+}
 
 }
 /* Position filter buttons */
