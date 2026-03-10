@@ -422,12 +422,12 @@ margin-top:4px;
         Filter by Position
         </label>
 
-       <div id="positionButtons" style="
+<div id="positionButtons" style="
 display:flex;
 flex-wrap:wrap;
 gap:8px;
 justify-content:center;
-max-width:720px;
+max-width:900px;
 "></div>
     </div>
 
@@ -447,7 +447,7 @@ max-width:720px;
 <div id="draftCountdownBox">
 
 <div class="countdown-title">Countdown to</div>
-<div class="countdown-subtitle">2026 NFL Draft</div>
+<div class="countdown-subtitle">2026 NFL Draft:</div>
 
 <div class="flip-days">
 
@@ -1153,16 +1153,42 @@ return matchesSearch && matchesPosition && matchesSchool;
 
 document.getElementById("prospectCount").textContent = filteredData.length;
 }
+const columnDescriptions = {
+    // Fill these in later
+    // Example:
+    // "Height": "Player height measurement"
+};
+
 function createHeaders(){
+
 const thead=document.querySelector("#data-table thead");
 const row=document.createElement("tr");
+
 headers.forEach((h,i)=>{
+
 const th=document.createElement("th");
-th.innerHTML=h+' <span class="arrow"></span>';
+
+th.innerHTML = h + ' <span class="arrow"></span>';
+
 th.addEventListener("click",()=>sortTable(i));
+
+/* Hover Description */
+
+const cleanHeader = h.trim();
+
+if(columnDescriptions[cleanHeader]){
+    th.title = columnDescriptions[cleanHeader];
+}
+else{
+    th.title = "";  // leave blank for now
+}
+
 row.appendChild(th);
+
 });
+
 thead.appendChild(row);
+
 }
 /* ================================
    NFL Draft Countdown Timer
