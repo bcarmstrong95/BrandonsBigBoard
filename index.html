@@ -422,7 +422,13 @@ margin-top:4px;
         Filter by Position
         </label>
 
-        <div id="positionButtons" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;"></div>
+       <div id="positionButtons" style="
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+justify-content:center;
+max-width:720px;
+"></div>
     </div>
 
     <!-- Search Bar -->
@@ -518,6 +524,7 @@ let cColorIndex=-1;
 
 let searchTerm="";
 let selectedPositions=[];
+let selectedSchool=null;
 
 const positionColors={
 "EDGE":"#FF8200",  // Tennessee orange
@@ -894,7 +901,22 @@ if(
 if(cleanSchool === "Miss. St."){
     extraClass = "school-logo logo-custom120";
 }
-    td.innerHTML = `<img src="${schoolLogos[cleanSchool]}" class="${extraClass}">`;
+td.innerHTML = `<img src="${schoolLogos[cleanSchool]}" 
+class="${extraClass}" 
+title="${cleanSchool}" 
+style="cursor:pointer;">`;
+
+td.querySelector("img").addEventListener("click",()=>{
+
+    if(selectedSchool === cleanSchool){
+        selectedSchool = null;
+    } else{
+        selectedSchool = cleanSchool;
+    }
+
+    applyFilters();
+
+});
 }
     else{
         td.textContent = c;
@@ -1115,8 +1137,11 @@ function applyFilters(){
     positionIndex === -1 ||
     selectedPositions.length === 0 ||
     selectedPositions.includes(row[positionIndex]);
+    const matchesSchool =
+selectedSchool === null ||
+row.some(cell => String(cell).trim() === selectedSchool);
 
-        return matchesSearch && matchesPosition;
+return matchesSearch && matchesPosition && matchesSchool;
     });
 
     // Re-apply current sort if one exists
