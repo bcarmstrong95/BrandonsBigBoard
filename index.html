@@ -49,19 +49,16 @@ height:285px;
 object-fit:contain;
 }
 .table-wrapper{
-    overflow-x:auto;
-    overflow-y:auto;
+    overflow-x:auto;  /* allows horizontal scroll on mobile */
+    overflow-y:auto;  /* keeps vertical scroll if needed */
     max-height:75vh;
     margin:20px;
-    width:100%;
-    -webkit-overflow-scrolling:touch;
 }
 table{
     border-collapse:collapse;
-    width:max-content;
-    min-width:100%;
+    width:100%;
     table-layout:auto;
-    isolation:isolate;
+    isolation: isolate;
 }
 th, td{
     padding:4px 8px;
@@ -136,16 +133,15 @@ tbody tr:hover{
 
   .top-logos{
     display:grid;
-    grid-template-columns:1fr 1fr 1fr;
+grid-template-columns:1fr 1fr 1fr;
     align-items:center;
     justify-items:center;
-    gap:8px;
-    padding:10px 0 4px 0;
+    gap:20px;
+    padding:20px 0 10px 0;
 }
 
 .top-logos img{
-    height:28px;
-    width:auto;
+    height:11px;
     object-fit:contain;
 }
   #filterLabel{
@@ -163,7 +159,8 @@ tbody tr:hover{
     flex-direction:column;
     align-items:center;
     text-align:center;
-    margin-top:2px;
+    margin-top:6px;
+    margin-left:0;
 }
 .countdown-title{
     font-size:16px;
@@ -202,10 +199,14 @@ tbody tr:hover{
  /* MOBILE position buttons layout */
 #positionButtons{
     display:grid;
-    grid-template-columns:repeat(6, max-content);
-    justify-content:center;
+    grid-template-columns: repeat(6, auto); /* max columns in the longest row */
+    grid-template-areas:
+        "QB RB WR TE IOL OT"
+        "DT EDGE LB S CB ."
+        "K P LS . . .";
     gap:6px;
-    margin-top:20px;
+    justify-content:center;  /* centers all rows under NFL logo */
+    margin:20px auto 0 auto; /* auto left/right to center overall */
 }
 
 /* Assign each button to its grid area on mobile */
@@ -226,9 +227,8 @@ tbody tr:hover{
 
 /* button sizing for mobile */
 #positionButtons button{
-    font-size:13px;
-    padding:6px 12px;
-    border-radius:6px;
+    font-size:11px;
+    padding:6px 4px;
 }
 }
 /* Position filter buttons */
@@ -1359,19 +1359,14 @@ top.classList.add("flip");
 bottom.classList.add("flip");
 
 }
-
 flipUpdate("days",days.toString());
 flipUpdate("hours",hours.toString().padStart(2,"0"));
 flipUpdate("minutes",minutes.toString().padStart(2,"0"));
 flipUpdate("seconds",seconds.toString().padStart(2,"0"));
-
     }
-
 updateCountdown();
 setInterval(updateCountdown,1000);
-
 }
-
 startDraftCountdown();
 </script>
 
