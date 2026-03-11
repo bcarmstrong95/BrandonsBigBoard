@@ -49,16 +49,18 @@ height:285px;
 object-fit:contain;
 }
 .table-wrapper{
-    overflow-x:auto;  /* allows horizontal scroll on mobile */
-    overflow-y:auto;  /* keeps vertical scroll if needed */
+    overflow-x:auto;
+    overflow-y:auto;
     max-height:75vh;
     margin:20px;
+    width:100%;
 }
 table{
     border-collapse:collapse;
-    width:100%;
+    width:max-content;
+    min-width:100%;
     table-layout:auto;
-    isolation: isolate;
+    isolation:isolate;
 }
 th, td{
     padding:4px 8px;
@@ -133,15 +135,16 @@ tbody tr:hover{
 
   .top-logos{
     display:grid;
-grid-template-columns:1fr 1fr 1fr;
+    grid-template-columns:1fr 1fr 1fr;
     align-items:center;
     justify-items:center;
-    gap:20px;
-    padding:20px 0 10px 0;
+    gap:8px;
+    padding:10px 0 4px 0;
 }
 
 .top-logos img{
-    height:11px;
+    height:28px;
+    width:auto;
     object-fit:contain;
 }
   #filterLabel{
@@ -199,14 +202,10 @@ grid-template-columns:1fr 1fr 1fr;
  /* MOBILE position buttons layout */
 #positionButtons{
     display:grid;
-    grid-template-columns: repeat(6, auto); /* max columns in the longest row */
-    grid-template-areas:
-        "QB RB WR TE IOL OT"
-        "DT EDGE LB S CB ."
-        "K P LS . . .";
+    grid-template-columns:repeat(6, max-content);
+    justify-content:center;
     gap:6px;
-    justify-content:center;  /* centers all rows under NFL logo */
-    margin:20px auto 0 auto; /* auto left/right to center overall */
+    margin-top:20px;
 }
 
 /* Assign each button to its grid area on mobile */
