@@ -10,6 +10,33 @@
 body{background:black;color:white;font-family:Arial;margin:0;}
 .hero-banner{background:linear-gradient(135deg,#0a0a0a,#1a0a0a);border-top:1px solid #222;border-bottom:1px solid #222;padding:30px 20px;text-align:center;}
 .meta-info{margin-top:12px;font-size:15px;color:#ccc;}
+.header-grid{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+justify-items:center;
+align-items:start;
+max-width:1200px;
+margin:auto;
+padding:30px 0;
+}
+
+.header-logo{
+height:285px;
+object-fit:contain;
+}
+
+.filter-column{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:10px;
+}
+
+.timer-column{
+display:flex;
+justify-content:center;
+width:100%;
+}
 .top-logos{
 display:grid;
 grid-template-columns:1fr 1fr 1fr;
@@ -117,18 +144,6 @@ grid-template-columns:1fr 1fr 1fr;
     height:140px; /* slightly smaller than desktop 285px */
     object-fit:contain;
 }
-
-/* MOBILE alignment under logos */
-.top-logos + div{
-display:grid;
-grid-template-columns:1fr 1fr 1fr;
-align-items:start;
-justify-items:center;
-max-width:900px;
-margin:20px auto;
-width:100%;
-}
-/* Position filter and search bar centered under NFL logo */
   #filterLabel{
       font-size:18px;
       margin-bottom:6px;
@@ -481,17 +496,7 @@ opacity:1;
 <div class="meta-info">Prospects: <span id="prospectCount">Loading...</span></div>
 </div>
 
-<div class="top-logos">
 
-<img src="comby.png" style="grid-column:1;">
-
-<img src="NFLLogo.png" style="grid-column:2;">
-
-<img src="Draft26.jpg" style="grid-column:3;">
-
-</div>
-
-<div style="
 display:grid;
 grid-template-columns:1fr 1fr 1fr;
 align-items:start;
@@ -541,6 +546,90 @@ width:100%;
 <div class="flip-bottom">00</div>
 </div>
 
+</div>
+
+<div class="flip-label">DAYS</div>
+
+</div>
+
+<div class="flip-bottom-row">
+
+<div class="flip-unit">
+<div id="hours" class="flip-number">
+<div class="flip-card">
+<div class="flip-top">00</div>
+<div class="flip-bottom">00</div>
+</div>
+</div>
+<div class="flip-label">HRS</div>
+</div>
+
+<div class="flip-unit">
+<div id="minutes" class="flip-number">
+<div class="flip-card">
+<div class="flip-top">00</div>
+<div class="flip-bottom">00</div>
+</div>
+</div>
+<div class="flip-label">MIN</div>
+</div>
+
+<div class="flip-unit">
+<div id="seconds" class="flip-number">
+<div class="flip-card">
+<div class="flip-top">00</div>
+<div class="flip-bottom">00</div>
+</div>
+</div>
+<div class="flip-label">SEC</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="header-grid">
+
+<!-- ROW 1 (LOGOS) -->
+
+<img src="comby.png" class="header-logo">
+<img src="NFLLogo.png" class="header-logo">
+<img src="Draft26.jpg" class="header-logo">
+
+<!-- ROW 2 -->
+
+<div></div>
+
+<div class="filter-column">
+
+<label id="filterLabel">Filter by Position</label>
+
+<div id="positionButtons"></div>
+
+<input 
+type="text" 
+id="searchInput" 
+placeholder="Search players..." 
+style="padding:8px 12px;border-radius:6px;border:none;font-size:14px;width:220px;"
+>
+
+</div>
+
+<div class="timer-column">
+
+<div id="draftCountdownBox">
+
+<div class="countdown-title">Countdown to</div>
+<div class="countdown-subtitle">2026 NFL Draft:</div>
+
+<div class="flip-days">
+
+<div id="days" class="flip-number flip-days-num">
+<div class="flip-card">
+<div class="flip-top">00</div>
+<div class="flip-bottom">00</div>
+</div>
 </div>
 
 <div class="flip-label">DAYS</div>
