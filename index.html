@@ -141,7 +141,7 @@ grid-template-columns:1fr 1fr 1fr;
 }
 
 .top-logos img{
-    height:140px; /* slightly smaller than desktop 285px */
+    height:95px; /* 1/3 of desktop 285px */
     object-fit:contain;
 }
   #filterLabel{
@@ -200,7 +200,7 @@ grid-template-columns:1fr 1fr 1fr;
 /* MOBILE POSITION GRID (exact 3 rows) */
 #positionButtons{
     display:grid;
-    grid-template-columns:repeat(6,max-content);
+grid-template-columns:repeat(auto-fit, minmax(max-content, 1fr));
     gap:6px;
     justify-content:center;
     margin:auto;
