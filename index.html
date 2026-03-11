@@ -59,7 +59,8 @@ object-fit:contain;
 table{
     border-collapse:collapse;
     width:max-content;
-    min-width:100%;
+    min-width:1200px;
+}
     table-layout:auto;
     isolation:isolate;
 }
@@ -216,20 +217,7 @@ tbody tr:hover{
 }
 
 /* Assign each button to its grid area on mobile */
-#positionButtons button:nth-child(1){ grid-area: QB; }
-#positionButtons button:nth-child(2){ grid-area: RB; }
-#positionButtons button:nth-child(3){ grid-area: WR; }
-#positionButtons button:nth-child(4){ grid-area: TE; }
-#positionButtons button:nth-child(5){ grid-area: IOL; }
-#positionButtons button:nth-child(6){ grid-area: OT; }
-#positionButtons button:nth-child(7){ grid-area: DT; }
-#positionButtons button:nth-child(8){ grid-area: EDGE; }
-#positionButtons button:nth-child(9){ grid-area: LB; }
-#positionButtons button:nth-child(10){ grid-area: S; }
-#positionButtons button:nth-child(11){ grid-area: CB; }
-#positionButtons button:nth-child(12){ grid-area: K; }
-#positionButtons button:nth-child(13){ grid-area: P; }
-#positionButtons button:nth-child(14){ grid-area: LS; }
+
 
 /* button sizing for mobile */
 #positionButtons button{
@@ -524,9 +512,11 @@ opacity:1;
 
 <!-- ROW 1 (LOGOS) -->
 
-<img src="comby.png" class="header-logo">
-<img src="NFLLogo.png" class="header-logo">
-<img src="Draft26.jpg" class="header-logo">
+<div class="top-logos">
+<img src="comby.png">
+<img src="NFLLogo.png">
+<img src="Draft26.jpg">
+</div>
 
 <!-- ROW 2 -->
 
