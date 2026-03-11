@@ -138,15 +138,14 @@ width:100%;
 
   /* Countdown box for mobile (half size) */
 #draftCountdownBox{
-    width:150px;
-    padding:4px;
+    width:90px;
+    padding:2px;
     display:flex;
     flex-direction:column;
     align-items:center;
     text-align:center;
     margin-top:6px;
     margin-left:auto;
-    margin-right:0;
 }
 .countdown-title{
     font-size:16px;
@@ -159,7 +158,7 @@ width:100%;
     color:white;
 }
 .flip-days-num{
-    font-size:72px; /* match desktop */
+    font-size:40px;
     font-weight:bold;
 }
 .flip-number{
@@ -186,8 +185,9 @@ width:100%;
 /* MOBILE POSITION GRID (exact 3 rows) */
 #positionButtons{
     display:grid;
-    grid-template-columns:repeat(6,1fr);
+    grid-template-columns:repeat(6,max-content);
     gap:6px;
+    justify-content:center;
     max-width:360px;
     margin:auto;
 }
@@ -517,10 +517,8 @@ opacity:1;
     >
 
 </div>
-
 <!-- COLUMN 3 (timer under Draft logo) -->
-<div style="display:flex;justify-content:center;">
-
+<div style="display:flex;justify-content:flex-end;width:100%;">
 <div id="draftCountdownBox">
 
 <div class="countdown-title">Countdown to</div>
