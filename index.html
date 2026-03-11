@@ -133,6 +133,13 @@ tbody tr:hover{
 }
 /* Mobile layout */
 @media (max-width:768px){
+.header-grid{
+    grid-template-columns:1fr;
+    text-align:center;
+}
+    .header-logo{
+    height:90px;
+}
 
   .top-logos{
     display:grid;
@@ -1174,12 +1181,8 @@ function initializeFilters(){
 
             // Insert visual gap
             if(pos === "BREAK1" || pos === "BREAK2"){
-                const spacer = document.createElement("div");
-                spacer.style.flexBasis = "100%";
-                spacer.style.height = "8px";
-                buttonContainer.appendChild(spacer);
-                return;
-            }
+    return;
+}
 
             const button = document.createElement("button");
             button.textContent = pos;
