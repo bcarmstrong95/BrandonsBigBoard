@@ -53,6 +53,7 @@ object-fit:contain;
     overflow-y:auto;  /* keeps vertical scroll if needed */
     max-height:75vh;
     margin:20px;
+    -webkit-overflow-scrolling:touch;
 }
 table{
     border-collapse:collapse;
@@ -130,19 +131,6 @@ tbody tr:hover{
 }
 /* Mobile layout */
 @media (max-width:768px){
-
-  .top-logos{
-    display:grid;
-grid-template-columns:1fr 1fr 1fr;
-    align-items:center;
-    justify-items:center;
-    gap:20px;
-    padding:20px 0 10px 0;
-}
-
-.top-logos img{
-    height:11px;
-    object-fit:contain;
 }
   #filterLabel{
       font-size:18px;
@@ -459,27 +447,12 @@ height:34px;
 
 font-size:16px;
 color:white;
-
 }
-
-.flip-bottom-row{
-display:flex;
-gap:8px;
-margin-top:4px;
-}
-/* ==============================
-Professional Dark Tooltips
-============================== */
-
 .custom-tooltip{
-
 position:fixed;
-
 background:#111;
 color:white;
-
 padding:8px 10px;
-
 border-radius:6px;
 
 font-size:13px;
