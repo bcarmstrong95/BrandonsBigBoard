@@ -7,7 +7,14 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 
 <style>
-body{background:black;color:white;font-family:Arial;margin:0;}
+body{
+background:black;
+color:white;
+font-family:Arial;
+margin:0;
+width:100%;
+overflow-x:hidden;
+}
 .hero-banner{background:linear-gradient(135deg,#0a0a0a,#1a0a0a);border-top:1px solid #222;border-bottom:1px solid #222;padding:30px 20px;text-align:center;}
 .meta-info{margin-top:12px;font-size:15px;color:#ccc;}
 .header-grid{
@@ -15,7 +22,7 @@ display:grid;
 grid-template-columns:1fr 1fr 1fr;
 justify-items:center;
 align-items:start;
-max-width:1200px;
+width:100%;
 margin:auto;
 padding:30px 0;
 }
@@ -47,7 +54,7 @@ gap:10px;
     overflow-x:auto;  /* allows horizontal scroll on mobile */
     overflow-y:auto;  /* keeps vertical scroll if needed */
     max-height:75vh;
-    margin:20px;
+    margin:20px 0;
     -webkit-overflow-scrolling:touch;
 }
 table{
