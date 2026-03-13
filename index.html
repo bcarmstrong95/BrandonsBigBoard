@@ -131,7 +131,6 @@ tbody tr:hover{
 }
 /* Mobile layout */
 @media (max-width:768px){
-}
   #filterLabel{
       font-size:18px;
       margin-bottom:6px;
@@ -716,12 +715,6 @@ const extraLargeLogos = [
 ];
 
 function gcd(a,b){ return b?gcd(b,a%b):a; }
-
-function roundThousandth(val){
-let num=parseFloat(val);
-if(isNaN(num)) return val;
-return Math.round(num*1000)/1000;
-}
 
 function decimalToFraction(decimal){
 
