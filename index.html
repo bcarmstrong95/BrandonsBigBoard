@@ -704,13 +704,7 @@ style="padding:8px 12px;border-radius:6px;border:none;font-size:14px;width:220px
 const params = new URLSearchParams(window.location.search);
 const path = params.get("p") || window.location.pathname;
 
-if(path.startsWith("/2026")) {
-window.history.replaceState({}, "", window.location.origin);
-
-    window.addEventListener("DOMContentLoaded", () => {
-      loadProspectPage();
-    });
-  }
+window.__PLAYER_PATH__ = path;
 })();
 const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
@@ -1509,7 +1503,7 @@ updateCountdown();
 setInterval(updateCountdown,1000);
 }
 function loadProspectPage(){
-  const path=window.location.pathname;
+  const path = window.__PLAYER_PATH__ || window.location.pathname;
   if(!path.startsWith("/2026")) return;
 
   const slug=path.replace("/2026","");
