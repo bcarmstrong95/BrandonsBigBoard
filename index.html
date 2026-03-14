@@ -701,7 +701,8 @@ style="padding:8px 12px;border-radius:6px;border:none;font-size:14px;width:220px
 <script>
 // GitHub Pages routing fix for /2026playername URLs
 (function() {
-  const path = window.location.pathname;
+const params = new URLSearchParams(window.location.search);
+const path = params.get("p") || window.location.pathname;
 
 if(path.startsWith("/2026")) {
 window.history.replaceState({}, "", window.location.origin);
