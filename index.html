@@ -699,6 +699,18 @@ style="padding:8px 12px;border-radius:6px;border:none;font-size:14px;width:220px
 </div>
 
 <script>
+// GitHub Pages routing fix for /2026playername URLs
+(function() {
+  const path = window.location.pathname;
+
+  if(path.startsWith("/2026") && path !== "/index.html") {
+    window.history.replaceState({}, "", "/");
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadProspectPage();
+    });
+  }
+})();
 const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
 let headers=[], data=[], filteredData=[];
@@ -1375,10 +1387,11 @@ return matchesSearch && matchesPosition && matchesSchool;
 document.getElementById("prospectCount").textContent = filteredData.length;
 }
 function createPlayerURL(name){
-  return "/2026" + name
+  const slug = name
     .toLowerCase()
-    .replace(/[^a-z0-9 ]/g,"")
-    .replace(/\s+/g,"");
+    .replace(/[^a-z0-9]/g,"");
+
+  return "/2026" + slug;
 }
 const columnDescriptions = {
     // Fill these in later
@@ -1502,12 +1515,13 @@ function loadProspectPage(){
   if(!path.startsWith("/2026")) return;
 
   const slug=path.replace("/2026","");
-  const player=data.find(row=>{
-    return row[nameIndex]
-      .toLowerCase()
-      .replace(/[^a-z0-9 ]/g,"")
-      .replace(/\s+/g,"") === slug;
-  });
+ const player=data.find(row=>{
+  const cleanName = row[nameIndex]
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g,"");
+
+  return cleanName === slug;
+});
   if(!player) return;
 
   document.body.innerHTML = `
