@@ -53,6 +53,9 @@ grid-template-areas:
 "K P LS . . .";
 gap:10px;
 justify-content:center;
+justify-items:center;
+width:fit-content;
+margin:auto;
 }
 #positionButtons button:nth-child(1){ grid-area: QB; }
 #positionButtons button:nth-child(2){ grid-area: RB; }
@@ -152,13 +155,22 @@ tbody tr:hover{
 /* Mobile layout */
 @media (max-width:768px){
 .header-grid{
-display:flex;
-flex-direction:column;
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+justify-items:center;
 align-items:center;
 }
- .header-logo{
+.header-logo{
 height:120px;
-}   
+}
+
+.header-logo:first-child{
+height:90px;
+}
+
+.header-logo:last-child{
+height:180px;
+}
  #filterLabel{
       font-size:18px;
       margin-bottom:6px;
@@ -214,14 +226,16 @@ height:120px;
  /* MOBILE position buttons layout */
 #positionButtons{
     display:grid;
-    grid-template-columns: repeat(6, auto); /* max columns in the longest row */
+    grid-template-columns: repeat(6, auto);
     grid-template-areas:
         "QB RB WR TE IOL OT"
         "DT EDGE LB S CB ."
         "K P LS . . .";
     gap:6px;
-    justify-content:center;  /* centers all rows under NFL logo */
-    margin:20px auto 0 auto; /* auto left/right to center overall */
+    justify-content:center;
+    justify-items:center;
+    width:fit-content;
+    margin:20px auto 0 auto;
 }
 
 /* Assign each button to its grid area on mobile */
