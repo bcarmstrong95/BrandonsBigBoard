@@ -45,11 +45,29 @@ justify-content:center;
 width:100%;
 }
 #positionButtons{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
+display:grid;
+grid-template-columns: repeat(6, auto);
+grid-template-areas:
+"QB RB WR TE IOL OT"
+"DT EDGE LB S CB ."
+"K P LS . . .";
 gap:10px;
+justify-content:center;
 }
+#positionButtons button:nth-child(1){ grid-area: QB; }
+#positionButtons button:nth-child(2){ grid-area: RB; }
+#positionButtons button:nth-child(3){ grid-area: WR; }
+#positionButtons button:nth-child(4){ grid-area: TE; }
+#positionButtons button:nth-child(5){ grid-area: IOL; }
+#positionButtons button:nth-child(6){ grid-area: OT; }
+#positionButtons button:nth-child(7){ grid-area: DT; }
+#positionButtons button:nth-child(8){ grid-area: EDGE; }
+#positionButtons button:nth-child(9){ grid-area: LB; }
+#positionButtons button:nth-child(10){ grid-area: S; }
+#positionButtons button:nth-child(11){ grid-area: CB; }
+#positionButtons button:nth-child(12){ grid-area: K; }
+#positionButtons button:nth-child(13){ grid-area: P; }
+#positionButtons button:nth-child(14){ grid-area: LS; }
 .table-wrapper{
     overflow-x:auto;  /* allows horizontal scroll on mobile */
     overflow-y:auto;  /* keeps vertical scroll if needed */
@@ -133,7 +151,12 @@ tbody tr:hover{
 }
 /* Mobile layout */
 @media (max-width:768px){
-  #filterLabel{
+.header-grid{
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+ #filterLabel{
       font-size:18px;
       margin-bottom:6px;
       color:#ccc;
