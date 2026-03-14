@@ -703,7 +703,7 @@ style="padding:8px 12px;border-radius:6px;border:none;font-size:14px;width:220px
 (function() {
   const path = window.location.pathname;
 
-  if(path.startsWith("/2026") && path !== "/index.html") {
+if(path.startsWith("/2026")) {
     window.history.replaceState({}, "", "/");
 
     window.addEventListener("DOMContentLoaded", () => {
@@ -1080,13 +1080,10 @@ tr.addEventListener("mouseenter",(e)=>{
   if(schoolLogos[school]){
     document.getElementById("popupSchoolLogo").src = schoolLogos[school];
   }
-
   document.getElementById("popupHeadshot").src =
-    "headshots/" + playerName.toLowerCase().replace(/ /g,"") + ".jpg";
-
+  "headshots/" + playerName.toLowerCase().replace(/[^a-z0-9]/g,"") + ".jpg";
   popup.style.display="block";
 });
-
 tr.addEventListener("mousemove",(e)=>{
   const popup=document.getElementById("prospectPopup");
   popup.style.left=(e.pageX+18)+"px";
@@ -1372,7 +1369,7 @@ function applyFilters(){
     selectedPositions.includes(row[positionIndex]);
     const matchesSchool =
 selectedSchool === null ||
-row.some(cell => String(cell).trim() === selectedSchool);
+row[schoolIndex].trim() === selectedSchool;
 
 return matchesSearch && matchesPosition && matchesSchool;
     });
