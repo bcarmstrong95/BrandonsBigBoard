@@ -702,19 +702,18 @@ const largeLogos = [
 "Indiana","Texas Tech","Utah","Arizona","Arizona St.","Baylor",
 "Clemson","Illinois","Nebraska","Northwestern","S. Carolina",
 "SDSU","Texas A&M","UConn","Wisconsin","Boise St.","Buffalo",
-"FSU","Georgia St.","Inc. Word","Kansas","Maryland","Memphis",
-"Navy","NC State","New Mexico","S. Alabama","SFAU","SLU",
+"FSU","Georgia St.","Inc. Word","Kansas","Maryland","Memphis","New Mexico","S. Alabama","SFAU","SLU",
 "Stanford","Tennessee","UCF","UCLA","BYU","Ole Miss",
 "UTSA","Vanderbilt","Virginia", "Purdue"
 ];
 
 const mediumLogos = [
-"Florida","Navy","NC State","NDSU","Pitt","GT",
-"TCU","SMU","Texas","Toledo","Wyoming", "Rutgers"
+"Florida","NDSU","Pitt","GT",
+"TCU","SMU","Texas","Toledo","Wyoming","Rutgers","Iowa
 ];
 
 const extraLargeLogos = [
-"Arkansas"
+"Arkansas","Navy","NC State",
 ];
 
 function gcd(a,b){ return b?gcd(b,a%b):a; }
@@ -961,7 +960,7 @@ if(
     cleanSchool === "NC State" ||
     cleanSchool === "Wyoming"
 ){
-    extraClass = "school-logo logo-custom180";
+    extraClass = "school-logo logo-custom130";
 }
 
 if(cleanSchool === "Miss. St."){
