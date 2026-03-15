@@ -623,14 +623,8 @@ Prospects: <span id="prospectCount">Loading...</span>
 </div>
 <div class="header-grid">
 
-<!-- ROW 1 (LOGOS) -->
-
-<img src="comby.png" class="header-logo">
-<img src="NFLLogo.png" class="header-logo">
-<img src="Draft26.jpg" class="header-logo">
-
-<!-- ROW 2 -->
-
+<div></div>
+<div></div>
 <div></div>
 
 <div class="filter-column">
@@ -1123,7 +1117,7 @@ tr.addEventListener("click", (e) => {
     sessionStorage.setItem("selectedPlayer", JSON.stringify(playerData));
 
     // Redirect to the dedicated player profile page
-    window.location.href = "player.html";
+window.location.href = playerURL;
 });
 
 // HOVER popup on desktop
