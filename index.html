@@ -1060,46 +1060,53 @@ filteredData.forEach(r=>{
 const tr=document.createElement("tr");
 const playerName = r[nameIndex];
 const playerURL = createPlayerURL(playerName);
-tr.addEventListener("mouseenter",(e)=>{
-  if(window.innerWidth < 900) return; // desktop only
+// HOVER to show popup (desktop only)
+tr.addEventListener("mouseenter", (e) => {
+    if (window.innerWidth < 900) return;
 
-  const popup=document.getElementById("prospectPopup");
+    const popup = document.getElementById("prospectPopup");
 
-  document.getElementById("popupName").textContent = playerName;
-  document.getElementById("popupPos").textContent = r[positionIndex];
-  document.getElementById("popupHeight").textContent = r[heightIndex];
-  document.getElementById("popupWeight").textContent = r[weightIndex];
-  document.getElementById("popupAVG").textContent = r[avgIndex];
-  document.getElementById("popupBNum").textContent = r[bIndex];
+    document.getElementById("popupName").textContent = playerName;
+    document.getElementById("popupPos").textContent = r[positionIndex];
+    document.getElementById("popupHeight").textContent = r[heightIndex];
+    document.getElementById("popupWeight").textContent = r[weightIndex];
+    document.getElementById("popupAVG").textContent = r[avgIndex];
+    document.getElementById("popupBNum").textContent = r[bIndex];
 
-  const school=r[schoolIndex];
-  if(schoolLogos[school]){
-    document.getElementById("popupSchoolLogo").src = schoolLogos[school];
-  }
-  const img = document.getElementById("popupHeadshot");
-img.src = "headshots/" + playerName.toLowerCase().replace(/[^a-z0-9]/g,"") + ".jpg";
+    const school = r[schoolIndex];
+    if (schoolLogos[school]) {
+        document.getElementById("popupSchoolLogo").src = schoolLogos[school];
+    }
 
-img.onerror = () => {
-img.src = "headshots/default.jpg";
-};
-// NEW: Fix popup size to match timer box
-popup.style.width = document.getElementById("draftCountdownBox").offsetWidth + "px";
-popup.style.height = document.getElementById("draftCountdownBox").offsetHeight + "px";
-  popup.style.display="block";
-});
-tr.addEventListener("mousemove",(e)=>{
-  const popup=document.getElementById("prospectPopup");
-  popup.style.left=(e.pageX+18)+"px";
-  popup.style.top=(e.pageY+18)+"px";
+    const img = document.getElementById("popupHeadshot");
+    img.src = "headshots/" + playerName.toLowerCase().replace(/[^a-z0-9]/g, "") + ".jpg";
+    img.onerror = () => { img.src = "headshots/default.jpg"; };
+
+    // Match popup size to timer box
+    popup.style.width = document.getElementById("draftCountdownBox").offsetWidth + "px";
+    popup.style.height = document.getElementById("draftCountdownBox").offsetHeight + "px";
+
+    popup.style.display = "block";
 });
 
-tr.addEventListener("mouseleave",()=>{
-  document.getElementById("prospectPopup").style.display="none";
+// MOVE popup with mouse
+tr.addEventListener("mousemove", (e) => {
+    const popup = document.getElementById("prospectPopup");
+    popup.style.left = (e.pageX + 18) + "px";
+    popup.style.top = (e.pageY + 18) + "px";
 });
 
-tr.addEventListener("click",(e)=>{
-  if(e.target.closest("img")) return;
-  window.location.href = playerURL;
+// HIDE popup on mouse leave
+tr.addEventListener("mouseleave", () => {
+    document.getElementById("prospectPopup").style.display = "none";
+});
+
+// CLICK to go to player profile page (ignore clicks on school logos)
+tr.addEventListener("click", (e) => {
+    if (e.target.closest("img") && headers[Array.from(tr.children).indexOf(e.target.parentElement)].toLowerCase() === "school") {
+        return; // clicked on school logo → do nothing
+    }
+    window.location.href = playerURL;
 });
 
 if(positionIndex>-1){
