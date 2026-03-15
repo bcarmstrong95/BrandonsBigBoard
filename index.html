@@ -1082,6 +1082,8 @@ img.src = "headshots/" + playerName.toLowerCase().replace(/[^a-z0-9]/g,"") + ".j
 img.onerror = () => {
 img.src = "headshots/default.jpg";
 };
+popup.style.width = "150px";   // match timer box width
+popup.style.height = "150px";  // adjust as needed
   popup.style.display="block";
 });
 tr.addEventListener("mousemove",(e)=>{
@@ -1511,34 +1513,24 @@ function loadProspectPage(){
   const path = window.__PLAYER_PATH__ || window.location.pathname;
   if(!path.startsWith("/2026")) return;
 
-  const slug=path.replace("/2026","");
- const player=data.find(row=>{
-  const cleanName = row[nameIndex]
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g,"");
+  const slug = path.replace("/2026","");
+  const playerIndex = data.findIndex(row=>{
+    const cleanName = row[nameIndex]
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g,"");
+    return cleanName === slug;
+  });
+  
+  if(playerIndex === -1) return;
 
-  return cleanName === slug;
-});
-  if(!player) return;
-
-  document.body.innerHTML = `
-    <div style="max-width:900px;margin:40px auto;font-family:Arial;color:white">
-      <h1>${player[nameIndex]}</h1>
-      <div style="display:flex;gap:40px;margin-top:30px">
-        <div style="width:200px;height:260px;background:#111;border:1px solid #333">
-          <img src="headshots/${player[nameIndex].toLowerCase().replace(/[^a-z0-9]/g,"")}.jpg" 
-               style="width:100%;height:100%;object-fit:cover">
-        </div>
-        <div>
-          <div>POS: ${player[positionIndex]}</div>
-          <div>Height: ${player[heightIndex]}</div>
-          <div>Weight: ${player[weightIndex]}</div>
-          <div>AVG Score: ${player[avgIndex]}</div>
-          <div>B#: ${player[bIndex]}</div>
-        </div>
-      </div>
-    </div>
-  `;
+  // Highlight row
+  const tbody = document.querySelector("#data-table tbody");
+  const rowEl = tbody.children[playerIndex];
+  if(rowEl){
+    rowEl.scrollIntoView({behavior:"smooth", block:"center"});
+    rowEl.style.background = "#222"; // highlight for a second
+    setTimeout(()=>rowEl.style.background="", 2000);
+  }
 }
 startDraftCountdown();
 </script>
