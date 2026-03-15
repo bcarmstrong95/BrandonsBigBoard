@@ -41,7 +41,7 @@ display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:flex-start;
-padding:380px 20px 50px 20px;
+padding:380px 20px 85px 20px;
 box-sizing:border-box;
 }
 
@@ -274,24 +274,26 @@ transform:none;
     margin:0 0 22px 0;
 }
 
+        .filter-column{
+        top:350px;
+        transform:translateX(-120%) scale(1.4);
+        transform-origin:top center;
+    }
+
     .position-btn{
-        font-size:16px;
-        padding:8px 12px;
+        font-size:22px;
+        padding:11px 17px;
     }
 
     #filterLabel{
-        font-size:26px;
+        font-size:36px;
         font-weight:bold;
+        margin-bottom:10px;
     }
 
     .header-grid{
         height:520px;
         margin-top:150px;
-    }
-
-    .filter-column{
-        top:350px;
-        transform:translateX(-120%);
     }
 
   .timer-column{
@@ -545,6 +547,70 @@ font-size:1.2em;
 letter-spacing:4px;
 }
 }
+.search-bar-wrap{
+position:absolute;
+left:50%;
+bottom:0;
+transform:translateX(-50%);
+z-index:3;
+}
+
+#searchInput{
+padding:8px 12px;
+border-radius:8px;
+border:1px solid #555;
+font-size:14px;
+width:220px;
+background:black;
+color:white;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+outline:none;
+box-sizing:border-box;
+}
+
+#searchInput::placeholder{
+color:white;
+opacity:1;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+}
+
+@media (max-width:768px){
+.search-bar-wrap{
+position:static;
+transform:none;
+margin:14px auto 0 auto;
+display:flex;
+justify-content:center;
+width:100%;
+}
+
+#searchInput{
+width:220px;
+font-size:14px;
+padding:8px 12px;
+}
+}
+
+@media (min-width:900px){
+.search-bar-wrap{
+position:absolute;
+left:50%;
+bottom:0;
+transform:translateX(-50%);
+z-index:3;
+}
+
+#searchInput{
+width:330px;
+font-size:21px;
+padding:12px 18px;
+border-radius:10px;
+}
+}
 .custom-tooltip{
 position:fixed;
 background:#111;
@@ -662,13 +728,6 @@ opacity:1;
 
       <div id="positionButtons"></div>
 
-      <input 
-      type="text" 
-      id="searchInput" 
-      placeholder="Search players..." 
-      style="padding:8px 12px;border-radius:6px;border:none;font-size:14px;width:220px;"
-      >
-
     </div>
 
     <div class="timer-column">
@@ -710,6 +769,14 @@ opacity:1;
 
     </div>
 
+    </div>
+
+  <div class="search-bar-wrap">
+    <input 
+      type="text" 
+      id="searchInput" 
+      placeholder="Search players..."
+    >
   </div>
 
 </div>
