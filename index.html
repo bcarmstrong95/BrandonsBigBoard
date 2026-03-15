@@ -47,12 +47,12 @@ margin:0 0 22px 0;
 }
 
 .header-grid{
-display:block;
+position:relative;
 width:100%;
+height:260px;
 margin:120px auto 0 auto;
 padding:0;
 background:transparent;
-position:relative;
 z-index:2;
 }
 .header-logo{
@@ -68,15 +68,20 @@ gap:8px;
 text-align:center;
 width:75%;
 max-width:540px;
-margin-left:-300px;
+position:absolute;
+left:50%;
+top:120px;
+transform:translateX(-185%);
 }
 .timer-column{
 display:flex;
 justify-content:center;
 align-items:flex-start;
 width:100%;
-margin-top:-165px;
-margin-left:0;
+position:absolute;
+left:50%;
+top:20px;
+transform:translateX(-50%);
 }
 #positionButtons{
 display:grid;
@@ -207,15 +212,21 @@ padding:0;
 flex-wrap:nowrap;
 margin-top:58px;
 transform:none;
+position:static;
+height:auto;
 }
 .filter-column{
 margin-left:0;
+position:static;
+transform:none;
 }
 
 .timer-column{
 width:auto;
 margin-top:0;
 margin-left:0;
+position:static;
+transform:none;
 }
 .header-logo{
 height:120px;
@@ -338,16 +349,18 @@ height:180px;
     padding:8px 12px;
 }
 .header-grid{
+    height:260px;
     margin-top:120px;
 }
 
 .filter-column{
-    margin-left:-300px;
+    top:120px;
+    transform:translateX(-185%);
 }
 
 .timer-column{
-    margin-top:-165px;
-    margin-left:0;
+    top:20px;
+    transform:translateX(-50%);
 }
 
 #draftCountdownBox{
@@ -367,29 +380,19 @@ height:180px;
 /* Countdown Box */
 
 #draftCountdownBox{
-
-#draftCountdownBox{
-
 margin-top:6px;
-
 width:150px;
 max-width:150px;
-
 background:rgba(12,12,12,.72);
 backdrop-filter:blur(4px);
 border:2px solid #333;
 border-radius:10px;
-
 display:flex;
 flex-direction:column;
 align-items:center;
-
 padding:2px 4px;
-
 text-align:center;
-
 }
-
 .countdown-title{
 font-size:15px;
 font-weight:bold;
