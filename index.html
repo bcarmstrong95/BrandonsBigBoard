@@ -893,7 +893,9 @@ let inches = parts[1] ? fractionToDecimal(parts[1]) : 0;
 
 return (feet*12) + (inches || 0);
 }
-
+if(window.__PLAYER_PATH__?.startsWith("/2026")){
+    // Skip loading full board first
+}
 Papa.parse(csvUrl,{
 download:true,
 skipEmptyLines:true,
@@ -1075,8 +1077,12 @@ tr.addEventListener("mouseenter",(e)=>{
   if(schoolLogos[school]){
     document.getElementById("popupSchoolLogo").src = schoolLogos[school];
   }
-  document.getElementById("popupHeadshot").src =
-  "headshots/" + playerName.toLowerCase().replace(/[^a-z0-9]/g,"") + ".jpg";
+  const img = document.getElementById("popupHeadshot");
+img.src = "headshots/" + playerName.toLowerCase().replace(/[^a-z0-9]/g,"") + ".jpg";
+
+img.onerror = () => {
+img.src = "headshots/default.jpg";
+};
   popup.style.display="block";
 });
 tr.addEventListener("mousemove",(e)=>{
@@ -1091,7 +1097,7 @@ tr.addEventListener("mouseleave",()=>{
 
 tr.addEventListener("click",(e)=>{
   if(e.target.closest("img")) return; // ignore clicks on school logo
-  window.location.href = playerURL;
+  history.pushState = playerURL;
 });
 
 if(positionIndex>-1){
