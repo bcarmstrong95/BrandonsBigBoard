@@ -18,7 +18,6 @@ overflow-x:hidden;
 .prospect-counter,
 #filterLabel,
 .position-btn,
-#draftCountdownBox,
 .countdown-title,
 .countdown-subtitle,
 .flip-label{
@@ -246,16 +245,7 @@ transform:none;
   }
  /* MOBILE position buttons layout */
 #positionButtons{
-    display:grid;
-    grid-template-columns: repeat(6, auto);
-    grid-template-areas:
-        "QB RB WR TE IOL OT"
-        "DT EDGE LB S CB ."
-        "K P LS . . .";
     gap:6px;
-    justify-content:center;
-    justify-items:center;
-    width:fit-content;
     margin:20px auto 0 auto;
 }
 
@@ -658,7 +648,7 @@ opacity:1;
 
   <div class="prospect-counter">
   Brandon's Top
-  <span id="prospectCountWrap" class="scoreboard-inline">
+<span id="prospectCountWrap">
     <span id="prospectCount">000</span>
   </span>
   Prospects
@@ -691,7 +681,7 @@ opacity:1;
   <div class="countdown-grid">
 
     <div class="countdown-unit countdown-unit-days">
-      <div id="days" class="scoreboard-number scoreboard-number-large">000</div>
+      <div id="days" class="scoreboard-number scoreboard-number-large">00</div>
       <div class="flip-label">DAYS</div>
     </div>
 
@@ -770,7 +760,6 @@ let heightIndex=-1, positionIndex=-1;
 let handIndex=-1, armIndex=-1, wingspanIndex=-1;
 let broadIndex=-1;
 
-let bColorIndex=-1;
 let cColorIndex=-1;
 
 let searchTerm="";
@@ -949,9 +938,6 @@ let inches = parts[1] ? fractionToDecimal(parts[1]) : 0;
 
 return (feet*12) + (inches || 0);
 }
-if(window.__PLAYER_PATH__?.startsWith("/2026")){
-    // Skip loading full board first
-}
 Papa.parse(csvUrl,{
 download:true,
 skipEmptyLines:true,
@@ -969,7 +955,6 @@ handIndex=headers.findIndex(h=>h.toLowerCase()==="hand");
 armIndex=headers.findIndex(h=>h.toLowerCase()==="arm");
 wingspanIndex=headers.findIndex(h=>h.toLowerCase()==="wingspan");
 broadIndex=headers.findIndex(h=>h.toLowerCase()==="broad");
-bColorIndex = headers.findIndex(h=>h.toLowerCase().includes("b# color"));
 cColorIndex = headers.findIndex(h=>h.toLowerCase().includes("c# color"));
 
 data=results.data.slice(2).filter(r=>r.length===headers.length);
