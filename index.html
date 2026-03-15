@@ -20,7 +20,7 @@ position:relative;
 width:100%;
 height:360px;
 
-background-image:url("banner1.png");
+background-image:url("banner2.png");
 background-size:cover;
 background-position:center;
 
@@ -34,14 +34,16 @@ border-bottom:2px solid #222;
 /* Prospect counter overlay */
 .prospect-counter{
 position:absolute;
-bottom:48px;
+bottom:28px;
+left:50%;
+transform:translateX(-50%);
 
 font-size:28px;
 font-weight:bold;
-
 color:white;
-
 text-shadow:0 0 10px rgba(0,0,0,.8);
+
+white-space:nowrap;
 }
 .header-grid{
 display:grid;
@@ -180,6 +182,15 @@ tbody tr:hover{
 }
 /* Mobile layout */
 @media (max-width:768px){
+.hero-banner{
+height:220px;
+background-position:center;
+}
+
+.prospect-counter{
+font-size:16px;
+bottom:16px;
+}
 .header-grid{
 display:grid;
 grid-template-columns:1fr 1fr 1fr;
