@@ -1083,9 +1083,8 @@ tr.addEventListener("click", (e) => {
     };
     sessionStorage.setItem("selectedPlayer", JSON.stringify(playerData));
 
-    // Redirect to player page using 2026-playername URL
-    const playerURL = createPlayerURL(r[nameIndex]);
-    window.location.href = playerURL;
+    // Redirect to the dedicated player profile page
+    window.location.href = "player.html";
 });
 
 // HOVER popup on desktop
