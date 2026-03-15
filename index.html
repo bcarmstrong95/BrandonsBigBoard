@@ -1082,8 +1082,9 @@ img.src = "headshots/" + playerName.toLowerCase().replace(/[^a-z0-9]/g,"") + ".j
 img.onerror = () => {
 img.src = "headshots/default.jpg";
 };
-popup.style.width = "150px";   // match timer box width
-popup.style.height = "150px";  // adjust as needed
+// NEW: Fix popup size to match timer box
+popup.style.width = document.getElementById("draftCountdownBox").offsetWidth + "px";
+popup.style.height = document.getElementById("draftCountdownBox").offsetHeight + "px";
   popup.style.display="block";
 });
 tr.addEventListener("mousemove",(e)=>{
