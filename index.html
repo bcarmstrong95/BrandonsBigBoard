@@ -50,14 +50,14 @@ margin:0 0 22px 0;
 display:flex;
 justify-content:center;
 align-items:flex-start;
-gap:170px;
+gap:120px;
 width:100%;
-margin:95px auto 0 auto;
+margin:70px auto 0 auto;
 padding:0;
 background:transparent;
 position:relative;
 z-index:2;
-transform:translateX(-150px);
+transform:translateX(-120px);
 }
 .header-logo{
 height:240px;
@@ -68,8 +68,10 @@ object-fit:contain;
 display:flex;
 flex-direction:column;
 align-items:center;
-gap:10px;
+gap:8px;
 text-align:center;
+width:75%;
+max-width:540px;
 }
 .timer-column{
 display:flex;
@@ -77,6 +79,8 @@ justify-content:center;
 align-items:flex-start;
 width:auto;
 flex:0 0 auto;
+margin-top:-22px;
+margin-left:35px;
 }
 #positionButtons{
 display:grid;
@@ -85,7 +89,7 @@ grid-template-areas:
 "QB RB WR TE IOL OT"
 "DT EDGE LB S CB ."
 "K P LS . . .";
-gap:10px;
+gap:4px 6px;
 justify-content:center;
 justify-items:center;
 width:fit-content;
@@ -325,9 +329,9 @@ height:180px;
 
     /* Slightly smaller buttons so OT stays on top row */
     .position-btn{
-        font-size:18px;
-        padding:10px 18px;
-    }
+    font-size:16px;
+    padding:8px 12px;
+}
 
     /* Keep large label */
     #filterLabel{
@@ -723,12 +727,13 @@ opacity:1;
       <div class="prospect-school">
         <img id="popupSchoolLogo" class="popup-school-logo">
       </div>
-      <div class="prospect-details">
-        <div>POS: <span id="popupPos"></span></div>
-        <div>Height: <span id="popupHeight"></span></div>
-        <div>Weight: <span id="popupWeight"></span></div>
-        <div>AVG Score: <span id="popupAVG"></span></div>
-      </div>
+     <div class="prospect-details">
+  <div>POS: <span id="popupPos"></span></div>
+  <div>Height: <span id="popupHeight"></span></div>
+  <div>Weight: <span id="popupWeight"></span></div>
+  <div>Age: <span id="popupAge"></span></div>
+  <div>AVG Score: <span id="popupAVG"></span></div>
+</div>
       <div class="prospect-bnum">
         <span id="popupBNum"></span>
       </div>
@@ -1138,23 +1143,63 @@ tr.addEventListener("mouseenter", (e) => {
     const popup = document.getElementById("prospectPopup");
     popup.style.display = "block";
 
-    // Populate popup content
     const img = document.getElementById("popupHeadshot");
     img.src = "headshots/default.jpg";
     img.onerror = () => { img.src = "headshots/default.jpg"; };
 
+    let popupHeightValue = String(r[heightIndex] ?? "");
+    if(popupHeightValue.includes("/")){
+        // keep exactly as-is
+    } else {
+        let hasQuote = popupHeightValue.includes('"');
+        let clean = popupHeightValue.replace(/"/g,"").trim();
+
+        if(clean.includes("'")){
+            let parts = clean.split("'");
+            let feet = parts[0];
+            let inchesDecimal = parseFloat(parts[1]);
+
+            if(!isNaN(inchesDecimal)){
+                let whole = Math.floor(inchesDecimal);
+                let decimal = inchesDecimal - whole;
+
+                let fraction = decimal > 0
+                    ? " " + decimalToFraction(decimal)
+                    : "";
+
+                popupHeightValue = `${feet}'${whole}${fraction}`;
+            } else {
+                popupHeightValue = clean;
+            }
+        }
+
+        if(hasQuote){
+            popupHeightValue += '"';
+        }
+    }
+
+    let popupAVGValue = String(r[avgIndex] ?? "").trim();
+    let avgNum = parseFloat(popupAVGValue);
+    if(!isNaN(avgNum)){
+        popupAVGValue = (Math.round(avgNum * 1000) / 1000).toFixed(3);
+        popupAVGValue = popupAVGValue.replace(/\.?0+$/, '');
+    }
+
+    const ageIndex = headers.findIndex(h => h.toLowerCase() === "age");
+    let popupAgeValue = ageIndex > -1 ? String(r[ageIndex] ?? "") : "";
+
     document.getElementById("popupName").textContent = r[nameIndex];
     document.getElementById("popupSchoolLogo").src = schoolLogos[r[schoolIndex]] || "";
     document.getElementById("popupPos").textContent = r[positionIndex];
-    document.getElementById("popupHeight").textContent = r[heightIndex];
+    document.getElementById("popupHeight").textContent = popupHeightValue;
     document.getElementById("popupWeight").textContent = r[weightIndex];
-    document.getElementById("popupAVG").textContent = r[avgIndex];
+    document.getElementById("popupAge").textContent = popupAgeValue;
+    document.getElementById("popupAVG").textContent = popupAVGValue;
     document.getElementById("popupBNum").textContent = r[bIndex];
 
     popup.style.left = (e.clientX + 14) + "px";
     popup.style.top = (e.clientY + 14) + "px";
 });
-
 // Move popup with mouse
 tr.addEventListener("mousemove", (e) => {
     const popup = document.getElementById("prospectPopup");
