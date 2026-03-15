@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Player Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  background:black;
+  color:white;
+  font-family:Arial;
+  margin:0;
+  padding:20px;
+}
+.profile-container {
+  max-width:700px;
+  margin:auto;
+  background:#0b0b0b;
+  padding:20px;
+  border-radius:10px;
+  border:1px solid #444;
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+.headshot {
+  width:160px;
+  height:200px;
+  background:#111;
+  border:1px solid #333;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.headshot img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.info {
+  flex:1;
+  min-width:250px;
+}
+.info h1 {
+  font-size:28px;
+  margin:0 0 10px 0;
+}
+.info .school-logo {
+  height:60px;
+  margin-bottom:12px;
+}
+.info .details {
+  font-size:16px;
+  line-height:1.5;
+}
+.info .circle-bnum {
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:bold;
+  margin-top:12px;
+}
+</style>
+</head>
+<body>
+
+<div class="profile-container">
+  <div class="headshot">
+    <img id="playerHeadshot" src="" alt="Headshot">
+  </div>
+  <div class="info">
+    <h1 id="playerName">Player Name</h1>
+    <img id="playerSchoolLogo" class="school-logo" src="" alt="School Logo">
+    <div class="details">
+      <div>B#: <span id="playerBNum"></span></div>
+      <div>C#: <span id="playerCNum"></span></div>
+      <div>POS: <span id="playerPOS"></span></div>
+      <div>Height: <span id="playerHeight"></span></div>
+      <div>Weight: <span id="playerWeight"></span></div>
+      <div>Age: <span id="playerAge"></span></div>
+      <div>AVG: <span id="playerAVG"></span></div>
+      <div>40: <span id="player40"></span></div>
+      <div>Vertical: <span id="playerVertical"></span></div>
+      <div>Broad: <span id="playerBroad"></span></div>
+    </div>
+    <div class="circle-bnum" id="playerBNumCircle"></div>
+  </div>
+</div>
+
+<script>
+const playerData = JSON.parse(sessionStorage.getItem("selectedPlayer") || "{}");
+
+// If no data, show a message
+if(!playerData.name) {
+    document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:50px;'>No player data found. Go back to the board.</h2>";
+} else {
+    // Fill in all player info
+    document.getElementById("playerName").textContent = playerData.name;
+    document.getElementById("playerHeadshot").src = "headshots/default.jpg";
+    document.getElementById("playerSchoolLogo").src = playerData.school && "school-logos/" + playerData.school.replace(/\s/g,'') + ".png";
+    document.getElementById("playerBNum").textContent = playerData.bnum;
+    document.getElementById("playerCNum").textContent = playerData.cnum;
+    document.getElementById("playerPOS").textContent = playerData.pos;
+    document.getElementById("playerHeight").textContent = playerData.height;
+    document.getElementById("playerWeight").textContent = playerData.weight;
+    document.getElementById("playerAge").textContent = playerData.age;
+    document.getElementById("playerAVG").textContent = playerData.avg;
+    document.getElementById("player40").textContent = playerData.forty;
+    document.getElementById("playerVertical").textContent = playerData.vertical;
+    document.getElementById("playerBroad").textContent = playerData.broad;
+
+    // Circle B# color
+    const circle = document.getElementById("playerBNumCircle");
+    circle.textContent = playerData.bnum;
+    const colors = {
+        "EDGE":"#FF8200","OT":"#39FF14","IOL":"yellow","WR":"#B8860B","RB":"darkgreen",
+        "S":"magenta","TE":"#4E2A84","DT":"turquoise","CB":"red","LB":"royalblue","QB":"gray"
+    };
+    circle.style.background = colors[playerData.pos] || "#444";
+    circle.style.color = (playerData.pos==="OT"||playerData.pos==="IOL")?"black":"white";
+}
+</script>
+
+</body>
+</html>
