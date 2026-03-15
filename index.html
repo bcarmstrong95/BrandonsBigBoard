@@ -384,12 +384,12 @@ height:180px;
         transform:translateX(-120%);
     }
 
-    .timer-column{
-        width:auto;
-        top:350px;
-        left:50%;
-        transform:translateX(120%);
-    }
+  .timer-column{
+    width:auto;
+    top:350px;
+    left:50%;
+    transform:translateX(145%);
+}
 
     #draftCountdownBox{
         width:225px;
@@ -645,11 +645,11 @@ margin-bottom:8px;
 }
 
 .scoreboard-number{
-min-width:68px;
-height:62px;
-padding:0 10px;
-font-size:42px;
-letter-spacing:4px;
+min-width:34px;
+height:31px;
+padding:0 5px;
+font-size:21px;
+letter-spacing:2px;
 }
 
 .scoreboard-number-large{
@@ -660,7 +660,7 @@ letter-spacing:6px;
 }
 
 .countdown-row{
-gap:14px;
+gap:10px;
 margin-top:8px;
 }
 
@@ -1722,42 +1722,42 @@ function startDraftCountdown(){
 
     const draftDate = new Date("2026-04-23T20:00:00-04:00");
 
-    function scoreboardUpdate(id,val,padLength=2){
-        const el = document.getElementById(id);
-        const nextVal = String(val).padStart(padLength,"0");
+  function scoreboardUpdate(id,val,padLength=2){
+    const el = document.getElementById(id);
+    const nextVal = padLength === 0 ? String(val) : String(val).padStart(padLength,"0");
 
-        if(el.dataset.val === nextVal) return;
+    if(el.dataset.val === nextVal) return;
 
-        el.dataset.val = nextVal;
-        el.textContent = nextVal;
+    el.dataset.val = nextVal;
+    el.textContent = nextVal;
 
-        el.classList.remove("scoreboard-flash");
-        void el.offsetWidth;
-        el.classList.add("scoreboard-flash");
-    }
+    el.classList.remove("scoreboard-flash");
+    void el.offsetWidth;
+    el.classList.add("scoreboard-flash");
+}
 
     function updateCountdown(){
 
         const now = new Date();
         const diff = draftDate - now;
 
-        if(diff <= 0){
-            scoreboardUpdate("days",0,3);
-            scoreboardUpdate("hours",0,2);
-            scoreboardUpdate("minutes",0,2);
-            scoreboardUpdate("seconds",0,2);
-            return;
-        }
+       if(diff <= 0){
+    scoreboardUpdate("days",0,0);
+    scoreboardUpdate("hours",0,2);
+    scoreboardUpdate("minutes",0,2);
+    scoreboardUpdate("seconds",0,2);
+    return;
+}
 
         const days = Math.floor(diff/(1000*60*60*24));
         const hours = Math.floor((diff/(1000*60*60))%24);
         const minutes = Math.floor((diff/(1000*60))%60);
         const seconds = Math.floor((diff/1000)%60);
 
-        scoreboardUpdate("days",days,3);
-        scoreboardUpdate("hours",hours,2);
-        scoreboardUpdate("minutes",minutes,2);
-        scoreboardUpdate("seconds",seconds,2);
+scoreboardUpdate("days",days,0);
+scoreboardUpdate("hours",hours,2);
+scoreboardUpdate("minutes",minutes,2);
+scoreboardUpdate("seconds",seconds,2);
     }
 
     updateCountdown();
