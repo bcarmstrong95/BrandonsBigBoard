@@ -1096,8 +1096,8 @@ tr.addEventListener("mouseleave",()=>{
 });
 
 tr.addEventListener("click",(e)=>{
-  if(e.target.closest("img")) return; // ignore clicks on school logo
-  history.pushState = playerURL;
+  if(e.target.closest("img")) return;
+  window.location.href = playerURL;
 });
 
 if(positionIndex>-1){
