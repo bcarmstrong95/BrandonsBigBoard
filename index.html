@@ -46,6 +46,10 @@ text-align:center;
 margin:0 0 22px 0;
 }
 
+#prospectCount{
+color:red;
+}
+
 .header-grid{
 position:relative;
 width:100%;
@@ -693,8 +697,19 @@ opacity:1;
 
 .prospect-bnum{
   margin-top:8px;
-  font-size:20px;
+  display:flex;
+  justify-content:flex-start;
+}
+
+.popup-bnum-circle{
   font-weight:bold;
+  font-size:1.5em;
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 </style>
 </head>
@@ -703,8 +718,8 @@ opacity:1;
 <div class="hero-banner">
 
   <div class="prospect-counter">
-    Prospects: <span id="prospectCount">Loading...</span>
-  </div>
+  Brandon's Top <span id="prospectCount">Loading...</span> Prospects
+</div>
 
   <div class="header-grid">
 
@@ -1263,7 +1278,20 @@ tr.addEventListener("mouseenter", (e) => {
     document.getElementById("popupWeight").textContent = r[weightIndex];
     document.getElementById("popupAge").textContent = popupAgeValue;
     document.getElementById("popupAVG").textContent = popupAVGValue;
-    document.getElementById("popupBNum").textContent = r[bIndex];
+    let popupPosValue = r[positionIndex];
+let popupCircleColor = positionColors[popupPosValue] || "#444";
+let popupTextColor = "white";
+
+if(popupPosValue === "IOL" || popupPosValue === "OT"){
+    popupTextColor = "black";
+}
+
+document.getElementById("popupBNum").innerHTML = `
+  <div class="popup-bnum-circle" style="
+    background:${popupCircleColor};
+    color:${popupTextColor};
+  ">${r[bIndex]}</div>
+`;
 
     popup.style.left = (e.clientX + 14) + "px";
     popup.style.top = (e.clientY + 14) + "px";
