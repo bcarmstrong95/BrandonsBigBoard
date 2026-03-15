@@ -94,11 +94,9 @@ body {
 <script>
 const playerData = JSON.parse(sessionStorage.getItem("selectedPlayer") || "{}");
 
-// If no data, show a message
-if(!playerData.name) {
+if(!playerData.name){
     document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:50px;'>No player data found. Go back to the board.</h2>";
 } else {
-    // Fill in all player info
     document.getElementById("playerName").textContent = playerData.name;
     document.getElementById("playerHeadshot").src = "headshots/default.jpg";
     document.getElementById("playerSchoolLogo").src = playerData.school && "school-logos/" + playerData.school.replace(/\s/g,'') + ".png";
