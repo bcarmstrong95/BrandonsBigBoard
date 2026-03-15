@@ -1060,53 +1060,65 @@ filteredData.forEach(r=>{
 const tr=document.createElement("tr");
 const playerName = r[nameIndex];
 const playerURL = createPlayerURL(playerName);
-// HOVER to show popup (desktop only)
-tr.addEventListener("mouseenter", (e) => {
+// CLICK to go to player profile page (ignore school logo column)
+tr.addEventListener("click", (e) => {
+    const cellIndex = Array.from(tr.children).indexOf(e.target.closest("td"));
+    const headerName = headers[cellIndex].toLowerCase();
+    if (headerName === "school") return; // ignore school column
+
+    // Save player data to sessionStorage so profile page can load it
+    const playerData = {
+        name: r[nameIndex],
+        school: r[schoolIndex],
+        pos: r[positionIndex],
+        height: r[heightIndex],
+        weight: r[weightIndex],
+        age: r[headers.findIndex(h => h.toLowerCase()==="age")],
+        avg: r[avgIndex],
+        bnum: r[bIndex],
+        cnum: r[headers.findIndex(h => h.toLowerCase()==="c#")],
+        forty: r[headers.findIndex(h => h.toLowerCase()==="40")],
+        vertical: r[headers.findIndex(h => h.toLowerCase()==="vertical")],
+        broad: r[broadIndex]
+    };
+    sessionStorage.setItem("selectedPlayer", JSON.stringify(playerData));
+
+    // Redirect to player page
+    window.location.href = "/player.html";
+});
+
+// HOVER popup on desktop
+tr.addEventListener("mouseenter", () => {
     if (window.innerWidth < 900) return;
 
     const popup = document.getElementById("prospectPopup");
+    popup.style.display = "block";
 
-    document.getElementById("popupName").textContent = playerName;
+    // Populate popup content
+    const img = document.getElementById("popupHeadshot");
+    img.src = "headshots/default.jpg"; // generic headshot
+    img.onerror = () => { img.src = "headshots/default.jpg"; };
+
+    document.getElementById("popupName").textContent = r[nameIndex];
+    document.getElementById("popupSchoolLogo").src = schoolLogos[r[schoolIndex]] || "";
     document.getElementById("popupPos").textContent = r[positionIndex];
     document.getElementById("popupHeight").textContent = r[heightIndex];
     document.getElementById("popupWeight").textContent = r[weightIndex];
     document.getElementById("popupAVG").textContent = r[avgIndex];
     document.getElementById("popupBNum").textContent = r[bIndex];
-
-    const school = r[schoolIndex];
-    if (schoolLogos[school]) {
-        document.getElementById("popupSchoolLogo").src = schoolLogos[school];
-    }
-
-    const img = document.getElementById("popupHeadshot");
-    img.src = "headshots/" + playerName.toLowerCase().replace(/[^a-z0-9]/g, "") + ".jpg";
-    img.onerror = () => { img.src = "headshots/default.jpg"; };
-
-    // Match popup size to timer box
-    popup.style.width = document.getElementById("draftCountdownBox").offsetWidth + "px";
-    popup.style.height = document.getElementById("draftCountdownBox").offsetHeight + "px";
-
-    popup.style.display = "block";
 });
 
-// MOVE popup with mouse
+// Move popup with mouse
 tr.addEventListener("mousemove", (e) => {
     const popup = document.getElementById("prospectPopup");
-    popup.style.left = (e.pageX + 18) + "px";
-    popup.style.top = (e.pageY + 18) + "px";
+    popup.style.left = (e.pageX + 12) + "px";
+    popup.style.top = (e.pageY + 12) + "px";
 });
 
-// HIDE popup on mouse leave
+// Hide popup on mouse leave
 tr.addEventListener("mouseleave", () => {
-    document.getElementById("prospectPopup").style.display = "none";
-});
-
-// CLICK to go to player profile page (ignore clicks on school logos)
-tr.addEventListener("click", (e) => {
-    if (e.target.closest("img") && headers[Array.from(tr.children).indexOf(e.target.parentElement)].toLowerCase() === "school") {
-        return; // clicked on school logo → do nothing
-    }
-    window.location.href = playerURL;
+    const popup = document.getElementById("prospectPopup");
+    popup.style.display = "none";
 });
 
 if(positionIndex>-1){
