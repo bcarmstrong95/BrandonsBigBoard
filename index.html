@@ -18,15 +18,11 @@ overflow-x:hidden;
 .hero-banner{
 position:relative;
 width:100%;
-height:360px;
 
 background-image:url("banner2.png");
 background-size:cover;
-background-position:center;
-
-display:flex;
-justify-content:center;
-align-items:flex-end;
+background-position:center top;
+background-repeat:no-repeat;
 
 border-bottom:2px solid #222;
 }
@@ -52,7 +48,8 @@ justify-items:center;
 align-items:start;
 width:100%;
 margin:auto;
-padding:30px 0;
+padding:30px 0 40px 0;
+background:transparent;
 }
 
 .header-logo{
@@ -183,8 +180,7 @@ tbody tr:hover{
 /* Mobile layout */
 @media (max-width:768px){
 .hero-banner{
-height:220px;
-background-position:center;
+background-position:center top;
 }
 
 .prospect-counter{
@@ -336,7 +332,8 @@ margin-top:6px;
 width:150px;
 max-width:150px;
 
-background:#0c0c0c;
+background:rgba(12,12,12,.72);
+backdrop-filter:blur(4px);
 border:2px solid #333;
 border-radius:10px;
 
@@ -620,7 +617,6 @@ opacity:1;
 Prospects: <span id="prospectCount">Loading...</span>
 </div>
 
-</div>
 <div class="header-grid">
 
 <div></div>
@@ -700,6 +696,7 @@ style="padding:8px 12px;border-radius:6px;border:none;font-size:14px;width:220px
 
 </div>
 
+</div>
 </div>
 <div id="tooltip" class="custom-tooltip"></div>
 <div id="prospectPopup" class="prospect-popup">
