@@ -70,11 +70,6 @@ padding:0;
 background:transparent;
 z-index:2;
 }
-.header-logo{
-height:240px;
-object-fit:contain;
-}
-
 .filter-column{
 display:flex;
 flex-direction:column;
@@ -243,71 +238,12 @@ margin-left:0;
 position:static;
 transform:none;
 }
-.header-logo{
-height:120px;
-}
-
-.header-logo:first-child{
-height:90px;
-}
-
-.header-logo:last-child{
-height:180px;
-}
  #filterLabel{
       font-size:18px;
       margin-bottom:6px;
       color:#ccc;
       text-align:center;
   }
-
-  /* Countdown box for mobile (half size) */
-#draftCountdownBox{
-    width:45px;
-    padding:1px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-    margin-top:6px;
-    margin-left:0;
-    transform:scale(0.5);
-    transform-origin:top center;
-}
-.countdown-title{
-    font-size:16px;
-    font-weight:bold;
-    color:white;
-}
-.countdown-subtitle{
-    font-size:18px;
-    font-weight:bold;
-    color:white;
-}
-.flip-days-num{
-    font-size:40px;
-    font-weight:bold;
-}
-.flip-number{
-    width:16px;
-    height:38px;
-    font-size:12px;
-    font-weight:bold;
-    color:white;
-    perspective:200px;
-    overflow:visible;
-}
-.flip-label{
-    font-size:7px;
-    color:white;
-    margin-top:2px;
-}
-.flip-bottom-row{
-    display:flex;
-    gap:8px;
-    margin-top:4px;
-}
-  /* Limit filter buttons to 3 rows max */
  /* MOBILE position buttons layout */
 #positionButtons{
     display:grid;
@@ -322,22 +258,6 @@ height:180px;
     width:fit-content;
     margin:20px auto 0 auto;
 }
-
-/* Assign each button to its grid area on mobile */
-#positionButtons button:nth-child(1){ grid-area: QB; }
-#positionButtons button:nth-child(2){ grid-area: RB; }
-#positionButtons button:nth-child(3){ grid-area: WR; }
-#positionButtons button:nth-child(4){ grid-area: TE; }
-#positionButtons button:nth-child(5){ grid-area: IOL; }
-#positionButtons button:nth-child(6){ grid-area: OT; }
-#positionButtons button:nth-child(7){ grid-area: DT; }
-#positionButtons button:nth-child(8){ grid-area: EDGE; }
-#positionButtons button:nth-child(9){ grid-area: LB; }
-#positionButtons button:nth-child(10){ grid-area: S; }
-#positionButtons button:nth-child(11){ grid-area: CB; }
-#positionButtons button:nth-child(12){ grid-area: K; }
-#positionButtons button:nth-child(13){ grid-area: P; }
-#positionButtons button:nth-child(14){ grid-area: LS; }
 
 /* button sizing for mobile */
 #positionButtons button{
@@ -390,46 +310,7 @@ height:180px;
     left:50%;
     transform:translateX(145%);
 }
-
-    #draftCountdownBox{
-        width:225px;
-        max-width:225px;
-        padding:6px 8px;
-    }
-
-    .countdown-title{
-        font-size:23px;
-        line-height:1.05;
-    }
-
-    .countdown-subtitle{
-        font-size:24px;
-        line-height:1.05;
-    }
-
-    .flip-days-num{
-        font-size:108px;
-        width:63px;
-        height:51px;
-    }
-
-    .flip-number{
-        width:24px;
-        height:57px;
-        font-size:18px;
-    }
-
-    .flip-bottom-row{
-        gap:15px;
-        margin-top:2px;
-    }
-
-    .flip-label{
-        font-size:11px;
-        margin-top:3px;
-    }
 }
-
 .position-btn:hover{
     background:#222;
 }
@@ -452,7 +333,6 @@ box-shadow:
 0 0 20px rgba(0,0,0,.45),
 inset 0 0 18px rgba(255,255,255,.03);
 }
-
 .countdown-title{
 font-size:15px;
 font-weight:bold;
@@ -500,7 +380,6 @@ color:white;
 margin-top:4px;
 letter-spacing:1px;
 }
-
 #prospectCountWrap,
 .scoreboard-number{
 display:inline-flex;
@@ -1637,7 +1516,7 @@ return matchesSearch && matchesPosition && matchesSchool;
 }
 
 const prospectCountEl = document.getElementById("prospectCount");
-const newProspectCount = String(filteredData.length).padStart(3,"0");
+const newProspectCount = String(filteredData.length);
 
 if(prospectCountEl.textContent !== newProspectCount){
     prospectCountEl.textContent = newProspectCount;
