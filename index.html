@@ -42,14 +42,16 @@ text-shadow:0 0 10px rgba(0,0,0,.8);
 white-space:nowrap;
 }
 .header-grid{
-display:grid;
-grid-template-columns:1fr 1fr 1fr;
-justify-items:center;
-align-items:start;
+display:flex;
+justify-content:center;
+align-items:flex-start;
+gap:28px;
 width:100%;
-margin:auto;
-padding:30px 0 40px 0;
+margin:0 auto;
+padding:150px 0 40px 0;
 background:transparent;
+position:relative;
+z-index:2;
 }
 
 .header-logo{
@@ -188,10 +190,12 @@ font-size:16px;
 bottom:16px;
 }
 .header-grid{
-display:grid;
-grid-template-columns:1fr 1fr 1fr;
-justify-items:center;
-align-items:center;
+display:flex;
+justify-content:center;
+align-items:flex-start;
+gap:14px;
+padding:105px 10px 24px 10px;
+flex-wrap:nowrap;
 }
 .header-logo{
 height:120px;
@@ -618,10 +622,6 @@ Prospects: <span id="prospectCount">Loading...</span>
 </div>
 
 <div class="header-grid">
-
-<div></div>
-<div></div>
-<div></div>
 
 <div class="filter-column">
 
