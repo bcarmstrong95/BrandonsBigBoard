@@ -19,6 +19,8 @@ overflow-x:hidden;
 position:relative;
 width:100%;
 
+min-height:520px;
+
 background-image:url("banner2.png");
 background-size:cover;
 background-position:center top;
@@ -69,7 +71,9 @@ gap:10px;
 .timer-column{
 display:flex;
 justify-content:center;
-width:100%;
+align-items:flex-start;
+width:auto;
+flex:0 0 auto;
 }
 #positionButtons{
 display:grid;
@@ -182,9 +186,9 @@ tbody tr:hover{
 /* Mobile layout */
 @media (max-width:768px){
 .hero-banner{
+min-height:320px;
 background-position:center top;
 }
-
 .prospect-counter{
 font-size:16px;
 bottom:16px;
