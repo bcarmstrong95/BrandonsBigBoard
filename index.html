@@ -1010,7 +1010,7 @@ download:true,
 skipEmptyLines:true,
 complete:function(results){
 
-headers=results.data[0].map(h=>h.trim());
+headers=results.data[1].map(h=>h.trim());
 heightIndex=headers.findIndex(h=>h.toLowerCase()==="height");
 positionIndex=headers.findIndex(h=>h.toLowerCase()==="pos");
 nameIndex=headers.findIndex(h=>h.toLowerCase()==="name");
@@ -1024,8 +1024,7 @@ wingspanIndex=headers.findIndex(h=>h.toLowerCase()==="wingspan");
 broadIndex=headers.findIndex(h=>h.toLowerCase()==="broad");
 cColorIndex = headers.findIndex(h=>h.toLowerCase().includes("c# color"));
 
-data=results.data.slice(1).filter(r=>r.length===headers.length);
-
+data=results.data.slice(2).filter(r=>r.length===headers.length);
 // Keep sheet values exactly as-is
 data = data.map(row => row.map(cell => cell));
 
