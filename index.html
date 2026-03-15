@@ -21,9 +21,7 @@ overflow-x:hidden;
 #draftCountdownBox,
 .countdown-title,
 .countdown-subtitle,
-.flip-number,
-.flip-label,
-.flip-days-num{
+.flip-label{
 font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
 font-style:italic;
 font-weight:bold;
@@ -441,16 +439,20 @@ height:180px;
 margin-top:0;
 width:150px;
 max-width:150px;
-background:rgba(12,12,12,.72);
+background:rgba(12,12,12,.78);
 backdrop-filter:blur(4px);
 border:2px solid #333;
 border-radius:10px;
 display:flex;
 flex-direction:column;
 align-items:center;
-padding:2px 4px;
+padding:6px 6px 8px 6px;
 text-align:center;
+box-shadow:
+0 0 20px rgba(0,0,0,.45),
+inset 0 0 18px rgba(255,255,255,.03);
 }
+
 .countdown-title{
 font-size:15px;
 font-weight:bold;
@@ -463,171 +465,216 @@ font-size:16px;
 font-weight:bold;
 color:white;
 line-height:1.05;
+margin-bottom:6px;
 }
 
-.flip-days{
+.countdown-grid{
 display:flex;
 flex-direction:column;
 align-items:center;
+width:100%;
 }
 
-.flip-days-num{
-font-size:72px;
-font-weight:bold;
-}
-
-.flip-bottom-row{
-
+.countdown-row{
 display:flex;
 justify-content:center;
-align-items:center;
-
+align-items:flex-start;
 gap:10px;
-
-margin-top:1px;
-
 width:100%;
-
+margin-top:6px;
 }
 
-.flip-unit{
+.countdown-unit{
 display:flex;
 flex-direction:column;
 align-items:center;
 }
 
-/* ==============================
-REAL SPLIT FLAP CLOCK
-============================== */
-
-.flip-number{
-
-width:16px;
-height:38px;
-
-position:relative;
-
-font-size:12px;
-font-weight:bold;
-
-color:white;
-
-perspective:200px;
-
-overflow:visible;
-
+.countdown-unit-days{
+margin-bottom:2px;
 }
-.flip-card{
-
-position:relative;
-width:100%;
-height:100%;
-
-transform-style:preserve-3d;
-
-}
-
-.flip-top,
-.flip-bottom{
-
-position:absolute;
-left:0;
-right:0;
-
-height:50%;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-background:#000;
-
-overflow:hidden;
-
-border:1px solid #222;
-
-}
-
-.flip-top{
-
-top:0;
-border-bottom:1px solid #111;
-
-transform-origin:bottom;
-
-}
-
-.flip-bottom{
-
-bottom:0;
-border-top:1px solid #111;
-
-transform-origin:top;
-
-}
-
-/* airport hinge line */
-
-.flip-number::after{
-
-content:"";
-
-position:absolute;
-left:0;
-right:0;
-top:50%;
-
-height:1px;
-
-background:#111;
-
-}
-
-/* flip animation */
-
-.flip-top.flip{
-
-animation:flipTop .35s ease-in forwards;
-
-}
-
-.flip-bottom.flip{
-
-animation:flipBottom .35s ease-out forwards;
-
-}
-
-@keyframes flipTop{
-
-0%{transform:rotateX(0)}
-100%{transform:rotateX(-90deg)}
-
-}
-
-@keyframes flipBottom{
-
-0%{transform:rotateX(90deg)}
-100%{transform:rotateX(0)}
-
-}
-
-/* labels */
 
 .flip-label{
 font-size:7px;
 color:white;
-margin-top:2px;
+margin-top:4px;
+letter-spacing:1px;
 }
 
-/* DAYS big number */
+#prospectCountWrap,
+.scoreboard-number{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+background:#050505;
+border:2px solid #1c1c1c;
+border-radius:6px;
+box-shadow:
+inset 0 0 0 1px #2b2b2b,
+inset 0 0 20px rgba(255,0,0,.10),
+0 0 12px rgba(0,0,0,.45);
+}
 
-.flip-days-num{
+#prospectCount{
+display:inline-block;
+min-width:72px;
+padding:4px 10px 2px 10px;
+color:#ff1a1a;
+font-family:"DS-Digital","Digital-7","Digital-7 Mono","Courier New",monospace;
+font-style:normal;
+font-weight:bold;
+font-size:1.15em;
+line-height:1;
+letter-spacing:3px;
+text-shadow:
+0 0 4px rgba(255,0,0,.85),
+0 0 10px rgba(255,0,0,.45);
+}
 
-width:42px;
-height:34px;
+.scoreboard-number{
+min-width:54px;
+height:50px;
+padding:0 8px;
+color:#ff1a1a;
+font-family:"DS-Digital","Digital-7","Digital-7 Mono","Courier New",monospace;
+font-style:normal;
+font-weight:bold;
+font-size:34px;
+line-height:1;
+letter-spacing:4px;
+text-shadow:
+0 0 4px rgba(255,0,0,.9),
+0 0 10px rgba(255,0,0,.45);
+}
 
-font-size:16px;
-color:white;
+.scoreboard-number-large{
+min-width:100px;
+height:64px;
+font-size:46px;
+letter-spacing:5px;
+}
+
+.scoreboard-flash{
+animation:scoreboardFlash .28s ease;
+}
+
+@keyframes scoreboardFlash{
+0%{
+transform:scale(1);
+filter:brightness(1);
+}
+25%{
+transform:scale(1.08);
+filter:brightness(1.85);
+}
+100%{
+transform:scale(1);
+filter:brightness(1);
+}
+}
+
+/* mobile scoreboard sizing */
+@media (max-width:768px){
+#prospectCount{
+min-width:44px;
+padding:2px 6px 1px 6px;
+font-size:0.95em;
+letter-spacing:2px;
+}
+
+#draftCountdownBox{
+width:132px;
+max-width:132px;
+padding:5px 5px 6px 5px;
+transform:none;
+}
+
+.countdown-title{
+font-size:10px;
+}
+
+.countdown-subtitle{
+font-size:11px;
+margin-bottom:4px;
+}
+
+.scoreboard-number{
+min-width:32px;
+height:30px;
+padding:0 4px;
+font-size:18px;
+letter-spacing:2px;
+border-radius:4px;
+}
+
+.scoreboard-number-large{
+min-width:58px;
+height:38px;
+font-size:24px;
+letter-spacing:3px;
+}
+
+.countdown-row{
+gap:6px;
+margin-top:4px;
+}
+
+.flip-label{
+font-size:6px;
+margin-top:3px;
+}
+}
+
+/* desktop scoreboard sizing */
+@media (min-width:900px){
+#draftCountdownBox{
+width:225px;
+max-width:225px;
+padding:8px 10px 10px 10px;
+}
+
+.countdown-title{
+font-size:23px;
+line-height:1.05;
+}
+
+.countdown-subtitle{
+font-size:24px;
+line-height:1.05;
+margin-bottom:8px;
+}
+
+.scoreboard-number{
+min-width:68px;
+height:62px;
+padding:0 10px;
+font-size:42px;
+letter-spacing:4px;
+}
+
+.scoreboard-number-large{
+min-width:126px;
+height:78px;
+font-size:60px;
+letter-spacing:6px;
+}
+
+.countdown-row{
+gap:14px;
+margin-top:8px;
+}
+
+.flip-label{
+font-size:11px;
+margin-top:5px;
+}
+
+#prospectCount{
+min-width:92px;
+padding:5px 12px 3px 12px;
+font-size:1.2em;
+letter-spacing:4px;
+}
 }
 .custom-tooltip{
 position:fixed;
@@ -731,7 +778,11 @@ opacity:1;
 <div class="hero-banner">
 
   <div class="prospect-counter">
-  Brandon's Top <span id="prospectCount">Loading...</span> Prospects
+  Brandon's Top
+  <span id="prospectCountWrap" class="scoreboard-inline">
+    <span id="prospectCount">000</span>
+  </span>
+  Prospects
 </div>
 
   <div class="header-grid">
@@ -753,59 +804,40 @@ opacity:1;
 
     <div class="timer-column">
 
-      <div id="draftCountdownBox">
+     <div id="draftCountdownBox">
 
-        <div class="countdown-title">Countdown to</div>
-        <div class="countdown-subtitle">2026 NFL Draft:</div>
+  <div class="countdown-title">Countdown to</div>
+  <div class="countdown-subtitle">2026 NFL Draft:</div>
 
-        <div class="flip-days">
+  <div class="countdown-grid">
 
-          <div id="days" class="flip-number flip-days-num">
-            <div class="flip-card">
-              <div class="flip-top">00</div>
-              <div class="flip-bottom">00</div>
-            </div>
-          </div>
+    <div class="countdown-unit countdown-unit-days">
+      <div id="days" class="scoreboard-number scoreboard-number-large">000</div>
+      <div class="flip-label">DAYS</div>
+    </div>
 
-          <div class="flip-label">DAYS</div>
+    <div class="countdown-row">
 
-        </div>
-
-        <div class="flip-bottom-row">
-
-          <div class="flip-unit">
-            <div id="hours" class="flip-number">
-              <div class="flip-card">
-                <div class="flip-top">00</div>
-                <div class="flip-bottom">00</div>
-              </div>
-            </div>
-            <div class="flip-label">HRS</div>
-          </div>
-
-          <div class="flip-unit">
-            <div id="minutes" class="flip-number">
-              <div class="flip-card">
-                <div class="flip-top">00</div>
-                <div class="flip-bottom">00</div>
-              </div>
-            </div>
-            <div class="flip-label">MIN</div>
-          </div>
-
-          <div class="flip-unit">
-            <div id="seconds" class="flip-number">
-              <div class="flip-card">
-                <div class="flip-top">00</div>
-                <div class="flip-bottom">00</div>
-              </div>
-            </div>
-            <div class="flip-label">SEC</div>
-          </div>
-
-        </div>
-
+      <div class="countdown-unit">
+        <div id="hours" class="scoreboard-number">00</div>
+        <div class="flip-label">HRS</div>
       </div>
+
+      <div class="countdown-unit">
+        <div id="minutes" class="scoreboard-number">00</div>
+        <div class="flip-label">MIN</div>
+      </div>
+
+      <div class="countdown-unit">
+        <div id="seconds" class="scoreboard-number">00</div>
+        <div class="flip-label">SEC</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
     </div>
 
@@ -1604,7 +1636,14 @@ return matchesSearch && matchesPosition && matchesSchool;
     displayRows();
 }
 
-document.getElementById("prospectCount").textContent = filteredData.length;
+const prospectCountEl = document.getElementById("prospectCount");
+const newProspectCount = String(filteredData.length).padStart(3,"0");
+
+if(prospectCountEl.textContent !== newProspectCount){
+    prospectCountEl.textContent = newProspectCount;
+    prospectCountEl.classList.remove("scoreboard-flash");
+    void prospectCountEl.offsetWidth;
+    prospectCountEl.classList.add("scoreboard-flash");
 }
 function createPlayerURL(name){
   const slug = name
@@ -1681,16 +1720,30 @@ function startDraftCountdown(){
 
     const draftDate = new Date("2026-04-23T20:00:00-04:00");
 
+    function scoreboardUpdate(id,val,padLength=2){
+        const el = document.getElementById(id);
+        const nextVal = String(val).padStart(padLength,"0");
+
+        if(el.dataset.val === nextVal) return;
+
+        el.dataset.val = nextVal;
+        el.textContent = nextVal;
+
+        el.classList.remove("scoreboard-flash");
+        void el.offsetWidth;
+        el.classList.add("scoreboard-flash");
+    }
+
     function updateCountdown(){
 
         const now = new Date();
         const diff = draftDate - now;
 
         if(diff <= 0){
-            document.getElementById("days").textContent="00";
-            document.getElementById("hours").textContent="00";
-            document.getElementById("minutes").textContent="00";
-            document.getElementById("seconds").textContent="00";
+            scoreboardUpdate("days",0,3);
+            scoreboardUpdate("hours",0,2);
+            scoreboardUpdate("minutes",0,2);
+            scoreboardUpdate("seconds",0,2);
             return;
         }
 
@@ -1699,36 +1752,14 @@ function startDraftCountdown(){
         const minutes = Math.floor((diff/(1000*60))%60);
         const seconds = Math.floor((diff/1000)%60);
 
-function flipUpdate(id,val){
-
-const el=document.getElementById(id);
-
-if(el.dataset.val == val) return;
-
-el.dataset.val = val;
-
-const top = el.querySelector(".flip-top");
-const bottom = el.querySelector(".flip-bottom");
-
-top.textContent = val;
-bottom.textContent = val;
-
-top.classList.remove("flip");
-bottom.classList.remove("flip");
-
-void top.offsetWidth;
-
-top.classList.add("flip");
-bottom.classList.add("flip");
-
-}
-flipUpdate("days",days.toString());
-flipUpdate("hours",hours.toString().padStart(2,"0"));
-flipUpdate("minutes",minutes.toString().padStart(2,"0"));
-flipUpdate("seconds",seconds.toString().padStart(2,"0"));
+        scoreboardUpdate("days",days,3);
+        scoreboardUpdate("hours",hours,2);
+        scoreboardUpdate("minutes",minutes,2);
+        scoreboardUpdate("seconds",seconds,2);
     }
-updateCountdown();
-setInterval(updateCountdown,1000);
+
+    updateCountdown();
+    setInterval(updateCountdown,1000);
 }
 function loadProspectPage(){
   const path = window.__PLAYER_PATH__ || window.location.pathname;
