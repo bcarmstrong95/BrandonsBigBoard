@@ -429,11 +429,12 @@ function slugifySchool(school){
 }
 
 function getPlayerInfoFromURL(){
-  const path = window.location.pathname.replace(/\/+$/,"");
+  const url = new URL(window.location.href);
+  const rawPath = url.searchParams.get("p") || window.location.pathname;
+  const path = rawPath.replace(/\/+$/,"");
   const parts = path.split("/").filter(Boolean);
 
   if(parts.length < 3) return null;
-
   if(parts[0] !== "2026") return null;
 
   return {
