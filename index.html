@@ -145,11 +145,11 @@ td{
 }
 
 .compact-text{
-    font-size:0.88em;
+    font-size:1.32em;
 }
 
 .ultra-compact-text{
-    font-size:0.78em;
+    font-size:1.18em;
 }
 .fraction-part{
     font-size:0.6em;
@@ -227,7 +227,7 @@ overflow:hidden;
 .prospect-counter{
 position:absolute;
 left:50%;
-top:95px;
+top:112px;
 transform:translateX(-50%);
 font-size:16px;
 margin:0;
@@ -1465,12 +1465,12 @@ if(headerClean === "b#"){
         textColor = "black";
     }
 
-    td.innerHTML =
-    `<div style="
-        background:${circleColor};
-        color:${textColor};
-        font-weight:bold;
-        font-size:1.5em;
+   td.innerHTML =
+`<div style="
+    background:${circleColor};
+    color:${textColor};
+    font-weight:bold;
+    font-size:1em;
 width:54px;
 height:54px;
 border-radius:50%;
@@ -1478,7 +1478,7 @@ display:flex;
 align-items:center;
 justify-content:center;
 margin:auto;
-    ">${c}</div>`;
+">${c}</div>`;
 
     tr.appendChild(td);
     return;
