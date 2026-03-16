@@ -439,10 +439,10 @@ function getPlayerInfoFromURL(){
   if(parts.length < 3) return null;
   if(parts[0] !== "2026") return null;
 
-  return {
-    schoolSlug: parts[1].toLowerCase(),
-    playerSlug: parts[2]
-  };
+ return {
+  schoolSlug: parts[1].toLowerCase(),
+  playerSlug: parts[2].toLowerCase()
+};
 }
 
 function getValue(row, headers, headerName){
