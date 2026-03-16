@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Redirecting...</title>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <script>
+    (function () {
+      var path = window.location.pathname;
+      var search = window.location.search || "";
+      var hash = window.location.hash || "";
 
-<script>
-const path = window.location.pathname;
+      // Send pretty player URLs back to player.html
+      if (/^\/2026\/[^\/]+\/[^\/]+\/?$/.test(path)) {
+        window.location.replace("/player.html?p=" + encodeURIComponent(path) + search + hash);
+        return;
+      }
 
-// redirect back to homepage but preserve the path
-window.location.replace("/?p=" + path);
-</script>
-
+      // Fallback: send everything else to index.html
+      window.location.replace("/index.html");
+    })();
+  </script>
 </head>
-<body></body>
+<body>
+  Redirecting...
+</body>
 </html>
