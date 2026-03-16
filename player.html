@@ -419,22 +419,27 @@ function formatMeasurement(value, isHeight = false){
 }
 
 function slugify(name){
-  return String(name || "").toLowerCase().replace(/[^a-z0-9]/g,"");
+  return String(name || "").replace(/[^A-Za-z0-9]/g,"");
 }
 
-function getSlugFromURL(){
-  const url = new URL(window.location.href);
+function slugifySchool(school){
+  return String(school || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g,"");
+}
 
-  const p = url.searchParams.get("p");
-  if(p && p.startsWith("/2026")){
-    return p.replace("/2026", "");
-  }
+function getPlayerInfoFromURL(){
+  const path = window.location.pathname.replace(/\/+$/,"");
+  const parts = path.split("/").filter(Boolean);
 
-  const path = window.location.pathname;
-  const match = path.match(/\/2026([a-z0-9]+)$/i);
-  if(match) return match[1].toLowerCase();
+  if(parts.length < 3) return null;
 
-  return "";
+  if(parts[0] !== "2026") return null;
+
+  return {
+    schoolSlug: parts[1].toLowerCase(),
+    playerSlug: parts[2]
+  };
 }
 
 function getValue(row, headers, headerName){
@@ -580,9 +585,9 @@ function renderNotFound(){
   `;
 }
 
-const slug = getSlugFromURL();
+const playerInfo = getPlayerInfoFromURL();
 
-if(!slug){
+if(!playerInfo){
   renderNotFound();
 } else {
   Papa.parse(csvUrl, {
@@ -598,7 +603,13 @@ if(!slug){
           return r.slice(0, headers.length);
         });
 
-      const row = data.find(r => slugify(getValue(r, headers, "name")) === slug);
+      const row = data.find(r => {
+        const rowNameSlug = slugify(getValue(r, headers, "name"));
+        const rowSchoolSlug = slugifySchool(getValue(r, headers, "school"));
+
+        return rowNameSlug === playerInfo.playerSlug &&
+               rowSchoolSlug === playerInfo.schoolSlug;
+      });
 
       if(row){
         renderPlayer(row, headers);
