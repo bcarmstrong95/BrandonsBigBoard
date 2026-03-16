@@ -137,6 +137,20 @@ th, td{
     font-style:italic;
     font-weight:bold;
 }
+
+td{
+    overflow:hidden;
+    text-overflow:clip;
+    line-height:1;
+}
+
+.compact-text{
+    font-size:0.88em;
+}
+
+.ultra-compact-text{
+    font-size:0.78em;
+}
 .fraction-part{
     font-size:0.6em;
     vertical-align:0.25em;
@@ -213,11 +227,14 @@ overflow:hidden;
 .prospect-counter{
 position:absolute;
 left:50%;
-top:165px;
+top:95px;
 transform:translateX(-50%);
 font-size:16px;
 margin:0;
 z-index:4;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
 }
 
 .header-grid{
@@ -731,6 +748,36 @@ opacity:1;
   align-items:center;
   justify-content:center;
 }
+/* DESKTOP table text sizing */
+@media (min-width:900px){
+tbody td{
+    font-size:1.5em;
+    padding-top:2px;
+    padding-bottom:2px;
+    line-height:0.95;
+}
+
+thead th{
+    font-weight:900;
+}
+}
+
+/* MOBILE font settings */
+@media (max-width:768px){
+tbody td,
+#searchInput,
+#searchInput::placeholder,
+#filterLabel,
+.position-btn,
+.prospect-counter,
+.countdown-title,
+.countdown-subtitle,
+.flip-label{
+    font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+    font-style:italic;
+    font-weight:bold;
+}
+}
 </style>
 </head>
 <body>
@@ -1040,6 +1087,14 @@ const safe = escapeHtml(value);
 return safe.replace(/(\d+\s+)?(\d+\/\d+)/g, (match, whole = "", frac) => {
     return `${whole}<span class="fraction-part">${frac}</span>`;
 });
+}
+function getCompactTextClass(value){
+const str = String(value ?? "").trim();
+
+if(str.length >= 12) return "ultra-compact-text";
+if(str.length >= 9) return "compact-text";
+
+return "";
 }
 Papa.parse(csvUrl,{
 download:true,
@@ -1519,11 +1574,16 @@ else{
     }
 }
 
-    if(String(displayValue).includes("/")){
-        td.innerHTML = formatFractionCell(displayValue);
-    } else{
-        td.textContent = displayValue;
-    }
+   const compactClass = getCompactTextClass(displayValue);
+if(compactClass){
+    td.classList.add(compactClass);
+}
+
+if(String(displayValue).includes("/")){
+    td.innerHTML = formatFractionCell(displayValue);
+} else{
+    td.textContent = displayValue;
+}
 }
 
 if(i===currentSort) td.classList.add("active-col");
