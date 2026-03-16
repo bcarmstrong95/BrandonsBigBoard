@@ -26,15 +26,16 @@ font-style:italic;
 font-weight:bold;
 }
 .hero-banner{
-.banner-img{
-display:block;
-width:100%;
-height:auto;
-}
 position:relative;
 width:100%;
 box-sizing:border-box;
 overflow:hidden;
+}
+
+.banner-img{
+display:block;
+width:100%;
+height:auto;
 }
 
 .prospect-counter{
@@ -132,6 +133,12 @@ th, td{
     padding:4px 8px;
     text-align:center;
     white-space:nowrap;
+    font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+    font-style:italic;
+    font-weight:bold;
+}
+.fraction-part{
+    font-size:0.6em;
 }
 th{
     position: sticky;
@@ -1024,6 +1031,21 @@ let inches = parts[1] ? fractionToDecimal(parts[1]) : 0;
 
 return (feet*12) + (inches || 0);
 }
+function escapeHtml(str){
+return String(str)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#39;");
+}
+
+function formatFractionCell(value){
+const safe = escapeHtml(value);
+return safe.replace(/(\d+\s+)?(\d+\/\d+)/g, (match, whole = "", frac) => {
+    return `${whole}<span class="fraction-part">${frac}</span>`;
+});
+}
 Papa.parse(csvUrl,{
 download:true,
 skipEmptyLines:true,
@@ -1500,7 +1522,11 @@ else{
     }
 }
 
-    td.textContent = displayValue;
+    if(String(displayValue).includes("/")){
+        td.innerHTML = formatFractionCell(displayValue);
+    } else{
+        td.textContent = displayValue;
+    }
 }
 
 if(i===currentSort) td.classList.add("active-col");
