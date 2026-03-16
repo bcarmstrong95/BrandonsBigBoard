@@ -37,23 +37,23 @@ background-repeat:no-repeat;
 
 border-bottom:none;
 
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:flex-start;
-padding:320px 20px 0 20px;
 box-sizing:border-box;
+overflow:hidden;
 }
 
 .prospect-counter{
-position:static;
+position:absolute;
+left:50%;
+top:320px;
+transform:translateX(-50%);
 font-size:28px;
 font-weight:bold;
 color:white;
 text-shadow:0 0 10px rgba(0,0,0,.8);
 white-space:nowrap;
 text-align:center;
-margin:0 0 22px 0;
+margin:0;
+z-index:4;
 }
 
 #prospectCount{
@@ -206,11 +206,17 @@ tbody tr:hover{
 aspect-ratio:12 / 10;
 background-size:100% auto;
 background-position:center top;
-padding:165px 10px 0 10px;
+overflow:hidden;
 }
+
 .prospect-counter{
+position:absolute;
+left:50%;
+top:165px;
+transform:translateX(-50%);
 font-size:16px;
-margin:0 0 14px 0;
+margin:0;
+z-index:4;
 }
 
 .header-grid{
@@ -270,9 +276,11 @@ transform:none;
 @media (min-width: 900px){
 
    .prospect-counter{
-    position:relative;
-    top:40px;
-    margin:0 0 22px 0;
+    position:absolute;
+    left:50%;
+    top:320px;
+    transform:translateX(-50%);
+    margin:0;
 }
 
    .filter-column{
