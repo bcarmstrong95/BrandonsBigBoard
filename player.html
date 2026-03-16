@@ -245,7 +245,7 @@ font-size:22px;
 
 <div class="page-wrap">
   <div class="top-bar">
-    <a class="back-link" href="index.html">← Back to Big Board</a>
+    <a class="back-link" href="/">← Back to Big Board</a>
     <h2 class="page-title">2026 Prospect Profile</h2>
   </div>
 
@@ -419,7 +419,9 @@ function formatMeasurement(value, isHeight = false){
 }
 
 function slugify(name){
-  return String(name || "").replace(/[^A-Za-z0-9]/g,"");
+  return String(name || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g,"");
 }
 
 function slugifySchool(school){
