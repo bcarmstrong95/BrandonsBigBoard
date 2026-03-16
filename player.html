@@ -2,130 +2,611 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Player Profile</title>
+<title>Brandon's Prospect Profile</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 
 <style>
 body{
-    background:black;
-    color:white;
-    font-family:Arial,sans-serif;
-    margin:0;
-    padding:0;
+background:black;
+color:white;
+font-family:Arial, sans-serif;
+margin:0;
+width:100%;
+overflow-x:hidden;
 }
-.header{
-    padding:20px;
-    text-align:center;
-    border-bottom:1px solid #222;
+.page-wrap{
+max-width:1200px;
+margin:0 auto;
+padding:20px;
+box-sizing:border-box;
 }
-.player-container{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    padding:20px;
-    gap:20px;
+.top-bar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:16px;
+margin-bottom:20px;
+flex-wrap:wrap;
 }
-.player-headshot{
-    width:200px;
-    height:250px;
-    background:#111;
-    border:1px solid #333;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+.back-link{
+display:inline-block;
+background:#111;
+color:white;
+text-decoration:none;
+border:1px solid #444;
+border-radius:10px;
+padding:10px 16px;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
 }
-.player-headshot img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+.back-link:hover{
+background:#1d1d1d;
 }
-.player-info{
-    max-width:400px;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
+.page-title{
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+font-size:30px;
+margin:0;
+text-align:right;
 }
-.player-info h1{
-    margin:0;
-    font-size:28px;
-    font-weight:bold;
+.profile-card{
+background:#0b0b0b;
+border:1px solid #333;
+border-radius:18px;
+padding:24px;
+box-shadow:0 0 25px rgba(0,0,0,.45);
 }
-.player-info img{
-    height:60px;
-    width:auto;
+.profile-header{
+display:grid;
+grid-template-columns:160px 1fr auto;
+gap:22px;
+align-items:center;
+margin-bottom:24px;
 }
-.stats-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px 20px;
-    font-size:16px;
+.headshot-box{
+width:160px;
+height:200px;
+background:#111;
+border:1px solid #333;
+border-radius:12px;
+overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
 }
-.stats-grid div{
-    padding:6px 0;
+.headshot-box img{
+width:100%;
+height:100%;
+object-fit:cover;
 }
-.bnum-circle{
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:24px;
-    font-weight:bold;
-    margin:10px 0;
+.player-main h1{
+margin:0 0 8px 0;
+font-size:40px;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+line-height:1.05;
+}
+.player-school-row{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:10px;
+flex-wrap:wrap;
+}
+.player-school{
+font-size:24px;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+}
+.player-pos{
+font-size:20px;
+color:#ccc;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+}
+.school-logo{
+height:54px;
+width:auto;
+max-width:54px;
+object-fit:contain;
+display:block;
+}
+.rank-circle{
+font-weight:bold;
+font-size:2em;
+width:88px;
+height:88px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:auto;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+}
+.info-grid{
+display:grid;
+grid-template-columns:repeat(4, minmax(0,1fr));
+gap:16px;
+margin-bottom:24px;
+}
+.info-box{
+background:#111;
+border:1px solid #2e2e2e;
+border-radius:14px;
+padding:16px;
+text-align:center;
+}
+.info-label{
+font-size:14px;
+color:#aaa;
+margin-bottom:8px;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+}
+.info-value{
+font-size:28px;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+}
+.section-title{
+font-size:24px;
+margin:0 0 14px 0;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+}
+.metrics-grid{
+display:grid;
+grid-template-columns:repeat(3, minmax(0,1fr));
+gap:16px;
+}
+.metric-box{
+background:#111;
+border:1px solid #2e2e2e;
+border-radius:14px;
+padding:16px;
+}
+.metric-name{
+font-size:14px;
+color:#aaa;
+margin-bottom:8px;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+}
+.metric-value{
+font-size:26px;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+}
+.not-found{
+text-align:center;
+padding:60px 20px;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+font-size:24px;
+}
+@media (max-width:900px){
+.profile-header{
+grid-template-columns:1fr;
+text-align:center;
+}
+.headshot-box{
+margin:0 auto;
+}
+.player-school-row{
+justify-content:center;
+}
+.info-grid{
+grid-template-columns:repeat(2, minmax(0,1fr));
+}
+.metrics-grid{
+grid-template-columns:1fr;
+}
+.page-title{
+text-align:left;
+font-size:22px;
+}
+.player-main h1{
+font-size:30px;
+}
+}
+@media (max-width:600px){
+.page-wrap{
+padding:14px;
+}
+.profile-card{
+padding:16px;
+}
+.info-grid{
+grid-template-columns:1fr;
+}
+.info-value{
+font-size:24px;
+}
+.metric-value{
+font-size:22px;
+}
 }
 </style>
 </head>
 <body>
 
-<div class="header">
-    <h2>Brandon's Big Board 2026 - Player Profile</h2>
-</div>
+<div class="page-wrap">
+  <div class="top-bar">
+    <a class="back-link" href="index.html">← Back to Big Board</a>
+    <h2 class="page-title">2026 Prospect Profile</h2>
+  </div>
 
-<div class="player-container">
-    <div class="player-headshot">
-        <img id="headshot" src="" alt="Player Headshot">
-    </div>
-    <div class="player-info">
-        <h1 id="playerName"></h1>
-        <img id="schoolLogo" src="" alt="School Logo">
-        <div class="bnum-circle" id="bnum"></div>
-        <div class="stats-grid">
-            <div>POS: <span id="pos"></span></div>
-            <div>C#: <span id="cnum"></span></div>
-            <div>Height: <span id="height"></span></div>
-            <div>Weight: <span id="weight"></span></div>
-            <div>Age: <span id="age"></span></div>
-            <div>AVG: <span id="avg"></span></div>
-            <div>40-Yard: <span id="forty"></span></div>
-            <div>Vertical: <span id="vertical"></span></div>
-            <div>Broad: <span id="broad"></span></div>
-        </div>
-    </div>
+  <div id="playerProfile"></div>
 </div>
 
 <script>
-// Load selected player from sessionStorage
-const playerData = JSON.parse(sessionStorage.getItem("selectedPlayer"));
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
-if(!playerData){
-    document.body.innerHTML = "<h2 style='text-align:center;margin-top:50px;'>No player selected. Go back to <a href='index.html'>Big Board</a></h2>";
+const positionColors = {
+  "EDGE":"#FF8200",
+  "OT":"#39FF14",
+  "IOL":"yellow",
+  "WR":"#B8860B",
+  "RB":"darkgreen",
+  "S":"magenta",
+  "TE":"#4E2A84",
+  "DT":"turquoise",
+  "CB":"red",
+  "LB":"royalblue",
+  "QB":"gray"
+};
+
+const schoolLogos = {
+    "Michigan": "michigan.png",
+    "Ohio St.": "osu1.png",
+    "Alabama": "bama.svg",
+    "Central Michigan": "cmu.png",
+    "Indiana": "iu1.png",
+    "LSU": "lsu2.png",
+    "Iowa": "iowa2.png",
+    "Kansas St.": "ksu2.png",
+    "Utah": "utah.png",
+    "Miami": "miami.png",
+    "Texas Tech": "texastech.png",
+    "Tennessee": "tennessee.png",
+    "UCF": "ucf5.png",
+    "Notre Dame": "notredame.png",
+    "Arizona St.": "arizonast2.png",
+    "Washington": "washington.png",
+    "Penn St.": "pennst.png",
+    "Oklahoma": "oklahoma.png",
+    "Oregon": "oregon.png",
+    "Texas A&M": "atm.png",
+    "Auburn": "auburn.png",
+    "USC": "usc.png",
+    "Georgia": "georgia.png",
+    "Clemson": "clemson.png",
+    "Florida": "florida.png",
+    "UConn": "uconn.png",
+    "Missouri": "mizz.png",
+    "Texas": "texas.png",
+    "SDSU": "sdsu.png",
+    "S. Carolina": "sc.png",
+    "Toledo": "toledo.png",
+    "Louisville": "louis.png",
+    "Pitt": "pitt.png",
+    "Northwestern": "nw.png",
+    "Cincinnati": "cin2.png",
+    "Duke": "duke.png",
+    "Illinois": "ill.png",
+    "Arkansas": "ark.png",
+    "Kentucky": "uk.png",
+    "Ole Miss": "ole.png",
+    "SMU": "smu4.png",
+    "TCU": "tcu.png",
+    "Wisconsin": "wis.png",
+    "Wyoming": "wyo.png",
+    "Arizona": "zona.png",
+    "Baylor": "bay.png",
+    "BC": "bc.svg",
+    "BYU": "byu.png",
+    "GT": "gt.png",
+    "NC State": "ncst.png",
+    "Nebraska": "neb.png",
+    "JCU": "jcu2.png",
+    "JMU": "jmu.png",
+    "Kansas": "ku.png",
+    "Boise St.": "boi.png",
+    "Buffalo": "buff.png",
+    "Cal": "cal.png",
+    "FIU": "fiu.png",
+    "FSU": "fsu.png",
+    "Georgia St.": "gsu.png",
+    "Houston": "uh2.png",
+    "Inc. Word": "icu2.png",
+    "Iowa St.": "isu.png",
+    "NDSU": "ndsu.png",
+    "New Mexico": "nm.png",
+    "SFAU": "sfa.png",
+    "S. Alabama": "sa.png",
+    "Miami (OH)": "miamioh.png",
+    "Minnesota": "minn.png",
+    "Memphis": "mem.png",
+    "Michigan St.": "msu.png",
+    "Maryland": "md.png",
+    "Miss. St.": "missst.png",
+    "Montana": "mont.png",
+    "Navy": "navy.png",
+    "Purdue": "pur.png",
+    "Slippery Rock": "sr2.png",
+    "Syracuse": "syr.png",
+    "Stanford": "stan.png",
+    "SLU": "slu.png",
+    "South Carolina State": "scsu.png",
+    "ULL": "ull.png",
+    "UCLA": "ucla.png",
+    "UNC": "unc.png",
+    "UTSA": "utsa.png",
+    "Vanderbilt": "van.png",
+    "Virginia": "uva.png",
+    "W. Michigan": "wmu.png",
+    "Wake Forest": "wf.png",
+    "Rutgers": "rutgers.png"
+};
+
+function gcd(a,b){ return b ? gcd(b, a % b) : a; }
+
+function decimalToFraction(decimal){
+  let num = parseFloat(decimal);
+  if(isNaN(num)) return decimal;
+
+  let denom = 8;
+  let numerator = Math.round(num * denom);
+
+  if(numerator === 0) return "";
+  if(numerator === denom) return "1";
+
+  let divisor = gcd(numerator, denom);
+  numerator /= divisor;
+  denom /= divisor;
+
+  return numerator + "/" + denom;
+}
+
+function formatMeasurement(value, isHeight = false){
+  let original = String(value ?? "");
+  if(!original) return "-";
+
+  if(original.includes("/")) return original;
+
+  let hasQuote = original.includes('"');
+  let clean = original.replace(/"/g,"").trim();
+
+  if(isHeight && clean.includes("'")){
+    let parts = clean.split("'");
+    let feet = parts[0];
+    let inchesDecimal = parseFloat(parts[1]);
+
+    if(!isNaN(inchesDecimal)){
+      let whole = Math.floor(inchesDecimal);
+      let decimal = inchesDecimal - whole;
+      let fraction = decimal > 0 ? " " + decimalToFraction(decimal) : "";
+      let out = `${feet}'${whole}${fraction}`;
+      if(hasQuote) out += '"';
+      return out;
+    }
+  } else {
+    let num = parseFloat(clean);
+    if(!isNaN(num)){
+      let whole = Math.floor(num);
+      let decimal = num - whole;
+      let fraction = decimal > 0 ? " " + decimalToFraction(decimal) : "";
+      let out = `${whole}${fraction}`;
+      if(hasQuote) out += '"';
+      return out;
+    }
+  }
+
+  return original;
+}
+
+function slugify(name){
+  return String(name || "").toLowerCase().replace(/[^a-z0-9]/g,"");
+}
+
+function getSlugFromURL(){
+  const url = new URL(window.location.href);
+
+  const p = url.searchParams.get("p");
+  if(p && p.startsWith("/2026")){
+    return p.replace("/2026", "");
+  }
+
+  const path = window.location.pathname;
+  const match = path.match(/\/2026([a-z0-9]+)$/i);
+  if(match) return match[1].toLowerCase();
+
+  return "";
+}
+
+function getValue(row, headers, headerName){
+  const idx = headers.findIndex(h => h.toLowerCase() === headerName.toLowerCase());
+  return idx > -1 ? row[idx] : "";
+}
+
+function getCircleTextColor(pos){
+  return (pos === "IOL" || pos === "OT") ? "black" : "white";
+}
+
+function renderPlayer(row, headers){
+  const name = getValue(row, headers, "name");
+  const school = getValue(row, headers, "school");
+  const pos = getValue(row, headers, "pos");
+  const height = formatMeasurement(getValue(row, headers, "height"), true);
+  const weight = getValue(row, headers, "weight") || "-";
+  const age = getValue(row, headers, "age") || "-";
+  const avg = getValue(row, headers, "avg") || "-";
+  const bnum = getValue(row, headers, "b#") || "-";
+  const cnum = getValue(row, headers, "c#") || "-";
+  const forty = getValue(row, headers, "40") || "-";
+  const vertical = getValue(row, headers, "vertical") || "-";
+  const broad = getValue(row, headers, "broad") || "-";
+  const hand = formatMeasurement(getValue(row, headers, "hand"));
+  const arm = formatMeasurement(getValue(row, headers, "arm"));
+  const wingspan = formatMeasurement(getValue(row, headers, "wingspan"));
+  const pfn = getValue(row, headers, "PFN") || "-";
+  const pff = getValue(row, headers, "PFF") || "-";
+  const nfldb = getValue(row, headers, "NFLDB") || "-";
+
+  const circleColor = positionColors[pos] || "#444";
+  const circleTextColor = getCircleTextColor(pos);
+  const schoolLogo = schoolLogos[school] ? `<img src="${schoolLogos[school]}" class="school-logo" alt="${school} logo">` : "";
+  const headshotSlug = slugify(name);
+
+  document.title = `${name} | Brandon's Big Board`;
+
+  document.getElementById("playerProfile").innerHTML = `
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="headshot-box">
+          <img src="headshots/${headshotSlug}.jpg" alt="${name}" onerror="this.src='headshots/default.jpg'">
+        </div>
+
+        <div class="player-main">
+          <h1>${name}</h1>
+          <div class="player-school-row">
+            ${schoolLogo}
+            <div class="player-school">${school}</div>
+          </div>
+          <div class="player-pos">${pos}</div>
+        </div>
+
+        <div class="rank-circle" style="background:${circleColor};color:${circleTextColor};">
+          ${bnum}
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="info-label">Position</div>
+          <div class="info-value">${pos}</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">Height</div>
+          <div class="info-value">${height}</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">Weight</div>
+          <div class="info-value">${weight}</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">Age</div>
+          <div class="info-value">${age}</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">Brandon Rank</div>
+          <div class="info-value">${bnum}</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">Consensus Rank</div>
+          <div class="info-value">${cnum}</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">AVG Score</div>
+          <div class="info-value">${avg}</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">40 Time</div>
+          <div class="info-value">${forty}</div>
+        </div>
+      </div>
+
+      <h3 class="section-title">Testing / Measurements</h3>
+      <div class="metrics-grid" style="margin-bottom:24px;">
+        <div class="metric-box">
+          <div class="metric-name">Vertical</div>
+          <div class="metric-value">${vertical}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-name">Broad Jump</div>
+          <div class="metric-value">${broad}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-name">Hand</div>
+          <div class="metric-value">${hand}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-name">Arm</div>
+          <div class="metric-value">${arm}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-name">Wingspan</div>
+          <div class="metric-value">${wingspan}</div>
+        </div>
+      </div>
+
+      <h3 class="section-title">Grades</h3>
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div class="metric-name">PFN</div>
+          <div class="metric-value">${pfn}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-name">PFF</div>
+          <div class="metric-value">${pff}</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-name">NFLDB</div>
+          <div class="metric-value">${nfldb}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderNotFound(){
+  document.getElementById("playerProfile").innerHTML = `
+    <div class="profile-card">
+      <div class="not-found">Player not found.</div>
+    </div>
+  `;
+}
+
+const slug = getSlugFromURL();
+
+if(!slug){
+  renderNotFound();
 } else {
-    document.getElementById("playerName").textContent = playerData.name;
-    document.getElementById("headshot").src = "headshots/" + (playerData.name.toLowerCase().replace(/[^a-z0-9]/g,"")) + ".jpg";
-    document.getElementById("headshot").onerror = () => {document.getElementById("headshot").src="headshots/default.jpg";};
-    document.getElementById("schoolLogo").src = "logos/" + (playerData.school.replace(/ /g,"").replace(/\./g,"")) + ".png";
-    document.getElementById("bnum").textContent = playerData.bnum;
-    document.getElementById("bnum").style.background = "#4E2A84"; // You can customize by POS color if desired
-    document.getElementById("pos").textContent = playerData.pos;
-    document.getElementById("cnum").textContent = playerData.cnum;
-    document.getElementById("height").textContent = playerData.height;
-    document.getElementById("weight").textContent = playerData.weight;
-    document.getElementById("age").textContent = playerData.age;
-    document.getElementById("avg").textContent = playerData.avg;
-    document.getElementById("forty").textContent = playerData.forty;
-    document.getElementById("vertical").textContent = playerData.vertical;
-    document.getElementById("broad").textContent = playerData.broad;
+  Papa.parse(csvUrl, {
+    download: true,
+    skipEmptyLines: true,
+    complete: function(results){
+      const headers = results.data[1].map(h => h.trim());
+
+      const data = results.data.slice(2)
+        .filter(r => r.some(cell => String(cell).trim() !== ""))
+        .map(r => {
+          while(r.length < headers.length) r.push("");
+          return r.slice(0, headers.length);
+        });
+
+      const row = data.find(r => slugify(getValue(r, headers, "name")) === slug);
+
+      if(row){
+        renderPlayer(row, headers);
+      } else {
+        renderNotFound();
+      }
+    }
+  });
 }
 </script>
 
