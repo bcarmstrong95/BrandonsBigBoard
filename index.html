@@ -26,17 +26,13 @@ font-style:italic;
 font-weight:bold;
 }
 .hero-banner{
+.banner-img{
+display:block;
+width:100%;
+height:auto;
+}
 position:relative;
 width:100%;
-aspect-ratio:12 / 10;
-
-background-image:url("banner5.png");
-background-size:100% auto;
-background-position:center top;
-background-repeat:no-repeat;
-
-border-bottom:none;
-
 box-sizing:border-box;
 overflow:hidden;
 }
@@ -203,9 +199,6 @@ tbody tr:hover{
 /* Mobile layout */
 @media (max-width:768px){
 .hero-banner{
-aspect-ratio:12 / 10;
-background-size:100% auto;
-background-position:center top;
 overflow:hidden;
 }
 
@@ -286,7 +279,7 @@ transform:none;
    .filter-column{
         position:absolute;
         left:28px;
-        bottom:145px;
+        bottom:185px;
         top:auto;
         width:auto;
         max-width:none;
@@ -320,9 +313,9 @@ transform:none;
         padding:0;
     }
 
-    .timer-column{
+  .timer-column{
         width:auto;
-        top:35px;
+        top:0;
         left:50%;
         transform:translateX(145%);
     }
@@ -623,7 +616,7 @@ padding:8px 12px;
 .search-bar-wrap{
 position:absolute;
 left:28px;
-bottom:78px;
+bottom:120px;
 transform:none;
 z-index:4;
 }
@@ -735,6 +728,8 @@ opacity:1;
 <body>
 
 <div class="hero-banner">
+
+  <img src="banner5.png" class="banner-img" alt="Banner">
 
   <div class="prospect-counter">
   Brandon's Top
