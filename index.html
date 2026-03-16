@@ -1080,7 +1080,6 @@ filteredData=[...data];
 createHeaders();
 initializeFilters();
 applyFilters();
-loadProspectPage();
 }
 });
 
@@ -1631,7 +1630,9 @@ if(prospectCountEl.textContent !== newProspectCount){
 }
 
 function slugifyName(name){
-  return String(name || "").replace(/[^A-Za-z0-9]/g,"");
+  return String(name || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g,"");
 }
 
 function slugifySchool(school){
@@ -1754,29 +1755,6 @@ scoreboardUpdate("seconds",seconds,2);
 
     updateCountdown();
     setInterval(updateCountdown,1000);
-}
-function loadProspectPage(){
-  const path = window.__PLAYER_PATH__ || window.location.pathname;
-  if(!path.startsWith("/2026")) return;
-
-  const slug = path.replace("/2026","");
-
-  const rowIndex = filteredData.findIndex(row=>{
-    const cleanName = row[nameIndex]
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g,"");
-    return cleanName === slug;
-  });
-
-  if(rowIndex === -1) return;
-
-  const tbody = document.querySelector("#data-table tbody");
-  const rowEl = tbody.children[rowIndex];
-  if(rowEl){
-    rowEl.scrollIntoView({behavior:"smooth", block:"center"});
-    rowEl.style.background = "#222";
-    setTimeout(()=>rowEl.style.background="", 2000);
-  }
 }
 startDraftCountdown();
 </script>
