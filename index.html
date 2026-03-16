@@ -28,7 +28,6 @@ font-weight:bold;
 .hero-banner{
 position:relative;
 width:100%;
-min-height:980px;
 aspect-ratio:12 / 10;
 
 background-image:url("banner5.png");
@@ -42,7 +41,7 @@ display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:flex-start;
-padding:380px 20px 20px 20px;
+padding:320px 20px 0 20px;
 box-sizing:border-box;
 }
 
@@ -204,11 +203,10 @@ tbody tr:hover{
 /* Mobile layout */
 @media (max-width:768px){
 .hero-banner{
-min-height:520px;
 aspect-ratio:12 / 10;
 background-size:100% auto;
 background-position:center top;
-padding:205px 10px 28px 10px;
+padding:165px 10px 0 10px;
 }
 .prospect-counter{
 font-size:16px;
@@ -280,7 +278,7 @@ transform:none;
    .filter-column{
         position:absolute;
         left:28px;
-        bottom:95px;
+        bottom:145px;
         top:auto;
         width:auto;
         max-width:none;
@@ -308,15 +306,15 @@ transform:none;
         position:absolute;
         left:0;
         right:0;
-        bottom:18px;
-        height:260px;
+        bottom:0;
+        height:220px;
         margin:0;
         padding:0;
     }
 
     .timer-column{
         width:auto;
-        top:95px;
+        top:35px;
         left:50%;
         transform:translateX(145%);
     }
@@ -617,7 +615,7 @@ padding:8px 12px;
 .search-bar-wrap{
 position:absolute;
 left:28px;
-bottom:22px;
+bottom:78px;
 transform:none;
 z-index:4;
 }
