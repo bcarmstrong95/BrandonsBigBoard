@@ -276,7 +276,7 @@ transform:none;
 
         .filter-column{
         top:350px;
-        transform:translateX(-120%) scale(1.4);
+        transform:translateX(-120%) scale(1.3);
         transform-origin:top center;
     }
 
@@ -1024,7 +1024,12 @@ wingspanIndex=headers.findIndex(h=>h.toLowerCase()==="wingspan");
 broadIndex=headers.findIndex(h=>h.toLowerCase()==="broad");
 cColorIndex = headers.findIndex(h=>h.toLowerCase().includes("c# color"));
 
-data=results.data.slice(2).filter(r=>r.length===headers.length);
+data = results.data.slice(2)
+  .filter(r => r.some(cell => String(cell).trim() !== ""))
+  .map(r => {
+    while(r.length < headers.length) r.push("");
+    return r.slice(0, headers.length);
+  });
 // Keep sheet values exactly as-is
 data = data.map(row => row.map(cell => cell));
 
@@ -1332,7 +1337,9 @@ class="${extraClass}"
 title="${cleanSchool}" 
 style="cursor:pointer;">`;
 
-td.querySelector("img").addEventListener("click",()=>{
+td.querySelector("img").addEventListener("click",(e)=>{
+
+    e.stopPropagation();
 
     if(selectedSchool === cleanSchool){
         selectedSchool = null;
