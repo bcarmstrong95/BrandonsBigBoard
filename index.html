@@ -78,9 +78,9 @@ text-align:center;
 width:75%;
 max-width:540px;
 position:absolute;
-left:50%;
+left:0;
 top:120px;
-transform:translateX(-145%);
+transform:none;
 }
 .timer-column{
 display:flex;
@@ -99,11 +99,11 @@ grid-template-areas:
 "QB RB WR TE IOL OT"
 "DT EDGE LB S CB ."
 "K P LS . . .";
-gap:4px 6px;
-justify-content:center;
-justify-items:center;
+gap:6px 8px;
+justify-content:start;
+justify-items:start;
 width:fit-content;
-margin:auto;
+margin:0;
 }
 #positionButtons button:nth-child(1){ grid-area: QB; }
 #positionButtons button:nth-child(2){ grid-area: RB; }
@@ -276,32 +276,45 @@ transform:none;
 }
 
     .filter-column{
-        top:35px;
-        width:52%;
-        max-width:380px;
-        transform:translateX(-120%) scale(0.9);
-        transform-origin:top center;
+        position:absolute;
+        left:28px;
+        bottom:120px;
+        top:auto;
+        width:auto;
+        max-width:none;
+        transform:none;
+        transform-origin:bottom left;
+        gap:10px;
+        align-items:flex-start;
+        text-align:left;
+        z-index:4;
     }
 
     .position-btn{
-        font-size:16px;
-        padding:8px 12px;
+        font-size:21px;
+        padding:10px 16px;
     }
 
     #filterLabel{
-        font-size:25px;
+        font-size:32px;
         font-weight:bold;
-        margin-bottom:8px;
+        margin-bottom:10px;
+        text-align:left;
     }
 
     .header-grid{
-        height:300px;
-        margin-top:40px;
+        position:absolute;
+        left:0;
+        right:0;
+        bottom:18px;
+        height:260px;
+        margin:0;
+        padding:0;
     }
 
     .timer-column{
         width:auto;
-        top:35px;
+        top:20px;
         left:50%;
         transform:translateX(145%);
     }
@@ -601,10 +614,10 @@ padding:8px 12px;
 @media (min-width:900px){
 .search-bar-wrap{
 position:absolute;
-left:50%;
-bottom:320px;
-transform:translateX(-50%);
-z-index:3;
+left:28px;
+bottom:22px;
+transform:none;
+z-index:4;
 }
 
 #searchInput{
