@@ -270,7 +270,7 @@ transform:none;
 
    .prospect-counter{
     position:relative;
-    top:110px;
+    top:130px;
     margin:0 0 22px 0;
 }
 
@@ -826,7 +826,7 @@ let currentSort=-1, sortAsc=true;
 let heightIndex=-1, positionIndex=-1;
 let handIndex=-1, armIndex=-1, wingspanIndex=-1;
 let broadIndex=-1;
-
+let nameIndex=-1, schoolIndex=-1, weightIndex=-1, avgIndex=-1, bIndex=-1;
 let cColorIndex=-1;
 
 let searchTerm="";
@@ -1705,21 +1705,21 @@ function loadProspectPage(){
   if(!path.startsWith("/2026")) return;
 
   const slug = path.replace("/2026","");
-  const playerIndex = data.findIndex(row=>{
+
+  const rowIndex = filteredData.findIndex(row=>{
     const cleanName = row[nameIndex]
       .toLowerCase()
       .replace(/[^a-z0-9]/g,"");
     return cleanName === slug;
   });
-  
-  if(playerIndex === -1) return;
 
-  // Highlight row
+  if(rowIndex === -1) return;
+
   const tbody = document.querySelector("#data-table tbody");
-  const rowEl = tbody.children[playerIndex];
+  const rowEl = tbody.children[rowIndex];
   if(rowEl){
     rowEl.scrollIntoView({behavior:"smooth", block:"center"});
-    rowEl.style.background = "#222"; // highlight for a second
+    rowEl.style.background = "#222";
     setTimeout(()=>rowEl.style.background="", 2000);
   }
 }
