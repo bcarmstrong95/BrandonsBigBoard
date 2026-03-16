@@ -1213,7 +1213,7 @@ tbody.innerHTML="";
 filteredData.forEach(r=>{
 const tr=document.createElement("tr");
 const playerName = r[nameIndex];
-const playerURL = createPlayerURL(playerName);
+const playerURL = createPlayerURL(playerName, r[schoolIndex]);
 // CLICK to go to player profile page (ignore school logo column)
 tr.addEventListener("click", (e) => {
     const cellIndex = Array.from(tr.children).indexOf(e.target.closest("td"));
@@ -1630,12 +1630,21 @@ if(prospectCountEl.textContent !== newProspectCount){
 }
 }
 
-function createPlayerURL(name){
-  const slug = name
+function slugifyName(name){
+  return String(name || "").replace(/[^A-Za-z0-9]/g,"");
+}
+
+function slugifySchool(school){
+  return String(school || "")
     .toLowerCase()
     .replace(/[^a-z0-9]/g,"");
+}
 
-  return "player.html/2026" + slug;
+function createPlayerURL(name, school){
+  const schoolSlug = slugifySchool(school);
+  const nameSlug = slugifyName(name);
+
+  return "/2026/" + schoolSlug + "/" + nameSlug;
 }
 const columnDescriptions = {
     // Fill these in later
