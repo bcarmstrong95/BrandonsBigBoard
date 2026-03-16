@@ -840,12 +840,6 @@ opacity:1;
 
 <script>
 // GitHub Pages routing fix for /2026playername URLs
-(function() {
-const params = new URLSearchParams(window.location.search);
-const path = params.get("p") || window.location.pathname;
-
-window.__PLAYER_PATH__ = path;
-})();
 const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
 let headers=[], data=[], filteredData=[];
@@ -1215,8 +1209,11 @@ const playerName = r[nameIndex];
 const playerURL = createPlayerURL(playerName, r[schoolIndex]);
 // CLICK to go to player profile page (ignore school logo column)
 tr.addEventListener("click", (e) => {
-    const cellIndex = Array.from(tr.children).indexOf(e.target.closest("td"));
-    const headerName = headers[cellIndex].toLowerCase();
+    const clickedCell = e.target.closest("td");
+if(!clickedCell) return;
+
+const cellIndex = Array.from(tr.children).indexOf(clickedCell);
+const headerName = headers[cellIndex].toLowerCase();
     if (headerName === "school") return; // ignore school column
 
     // Save player data to sessionStorage so profile page can load it
