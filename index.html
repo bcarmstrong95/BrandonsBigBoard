@@ -223,26 +223,30 @@ tbody tr:hover{
 .hero-banner{
 overflow:hidden;
 position:relative;
+height:235px;
 }
 
 .banner-img{
 display:block;
 width:100%;
-height:auto;
+height:100%;
+object-fit:cover;
+object-position:center top;
 }
 
 .prospect-counter{
 position:absolute;
-right:10px;
-bottom:58px;
-left:auto;
-top:auto;
-transform:none;
+left:50%;
+top:26px;
+right:auto;
+bottom:auto;
+transform:translateX(-50%);
 font-size:11px;
 margin:0;
 z-index:4;
-text-align:right;
-transform-origin:bottom right;
+text-align:center;
+transform-origin:center;
+white-space:nowrap;
 }
 
 .header-grid{
@@ -259,7 +263,7 @@ z-index:4;
 .filter-column{
 position:absolute;
 left:8px;
-bottom:44px;
+bottom:34px;
 top:auto;
 width:auto;
 max-width:none;
@@ -273,14 +277,15 @@ margin:0;
 
 .timer-column{
 position:absolute;
-right:8px;
-bottom:4px;
+right:0;
+bottom:0;
 left:auto;
 top:auto;
 width:auto;
-transform:scale(.70);
+transform:scale(.50);
 transform-origin:bottom right;
 margin:0;
+z-index:4;
 }
 
 #filterLabel{
@@ -312,8 +317,8 @@ line-height:.9;
 /* mobile search bar locked to banner bottom-left */
 .search-bar-wrap{
 position:absolute;
-left:8px;
-bottom:8px;
+left:0;
+bottom:0;
 transform:none;
 z-index:4;
 margin:0;
@@ -325,6 +330,7 @@ width:auto;
 width:148px;
 font-size:12px;
 padding:6px 8px;
+border-radius:0;
 font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
 font-style:normal;
 font-weight:normal;
@@ -1534,14 +1540,16 @@ if(headerClean === "b#"){
         textColor = "black";
     }
 
-   td.innerHTML =
+  const bCircleSize = window.innerWidth >= 900 ? 65 : 54;
+
+td.innerHTML =
 `<div style="
     background:${circleColor};
     color:${textColor};
     font-weight:bold;
     font-size:1em;
-width:54px;
-height:54px;
+width:${bCircleSize}px;
+height:${bCircleSize}px;
 border-radius:50%;
 display:flex;
 align-items:center;
