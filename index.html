@@ -222,74 +222,139 @@ tbody tr:hover{
 @media (max-width:768px){
 .hero-banner{
 overflow:hidden;
+position:relative;
+}
+
+.banner-img{
+display:block;
+width:100%;
+height:auto;
 }
 
 .prospect-counter{
 position:absolute;
-left:50%;
-top:112px;
-transform:translateX(-50%);
-font-size:16px;
+right:10px;
+bottom:58px;
+left:auto;
+top:auto;
+transform:none;
+font-size:11px;
 margin:0;
 z-index:4;
-font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
-font-style:italic;
-font-weight:bold;
+text-align:right;
+transform-origin:bottom right;
 }
 
 .header-grid{
-display:flex;
-justify-content:center;
-align-items:flex-start;
-gap:48px;
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+height:120px;
+margin:0;
 padding:0;
-flex-wrap:nowrap;
-margin-top:58px;
-transform:none;
-position:static;
-height:auto;
+z-index:4;
 }
+
 .filter-column{
-margin-left:0;
-position:static;
-transform:none;
+position:absolute;
+left:8px;
+bottom:44px;
+top:auto;
+width:auto;
+max-width:none;
+transform:scale(.60);
+transform-origin:bottom left;
+align-items:flex-start;
+text-align:left;
+gap:6px;
+margin:0;
 }
 
 .timer-column{
+position:absolute;
+right:8px;
+bottom:4px;
+left:auto;
+top:auto;
 width:auto;
-margin-top:0;
-margin-left:0;
-position:static;
-transform:none;
-}
- #filterLabel{
-      font-size:18px;
-      margin-bottom:6px;
-      color:#ccc;
-      text-align:center;
-  }
- /* MOBILE position buttons layout */
-#positionButtons{
-    gap:6px;
-    margin:20px auto 0 auto;
+transform:scale(.70);
+transform-origin:bottom right;
+margin:0;
 }
 
-/* button sizing for mobile */
-#positionButtons button{
-    font-size:16px;
-    padding:9px 7px;
+#filterLabel{
+font-size:18px;
+margin-bottom:4px;
+color:#ccc;
+text-align:left;
+font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+font-style:normal;
+font-weight:normal;
+}
+
+/* mobile search bar locked to banner bottom-left */
+.search-bar-wrap{
+position:absolute;
+left:8px;
+bottom:8px;
+transform:none;
+z-index:4;
+margin:0;
+display:block;
+width:auto;
+}
+
+#searchInput{
+width:148px;
+font-size:12px;
+padding:6px 8px;
+font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+font-style:normal;
+font-weight:normal;
+}
+
+#searchInput::placeholder{
+font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+font-style:normal;
+font-weight:normal;
+}
+
+/* mobile header text in Impact */
+th{
+font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+font-style:normal;
+font-weight:normal;
+}
+
+/* mobile table text in Impact */
+tbody td{
+font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+font-style:normal;
+font-weight:normal;
 }
 }
 /* Position filter buttons */
 .position-btn{
-    padding:6px 12px;
-    border-radius:20px;
+    width:64px;
+    height:64px;
+    min-width:64px;
+    min-height:64px;
+    padding:0;
+    border-radius:50%;
     border:1px solid #444;
     background:#111;
     color:white;
     cursor:pointer;
     font-size:13px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
     transition:all .2s ease;
+    font-stretch:condensed;
+    letter-spacing:-.4px;
 }
 @media (min-width: 900px){
 
@@ -317,9 +382,13 @@ transform:none;
     }
 
     .position-btn{
-        font-size:21px;
-        padding:10px 16px;
-    }
+    width:74px;
+    height:74px;
+    min-width:74px;
+    min-height:74px;
+    font-size:18px;
+    padding:0;
+}
 
     #filterLabel{
         font-size:32px;
@@ -622,18 +691,20 @@ font-weight:bold;
 
 @media (max-width:768px){
 .search-bar-wrap{
-position:static;
+position:absolute;
+left:8px;
+bottom:8px;
 transform:none;
-margin:14px auto 0 auto;
-display:flex;
-justify-content:center;
-width:100%;
+margin:0;
+display:block;
+justify-content:flex-start;
+width:auto;
 }
 
 #searchInput{
-width:220px;
-font-size:14px;
-padding:8px 12px;
+width:148px;
+font-size:12px;
+padding:6px 8px;
 }
 }
 
@@ -765,6 +836,7 @@ thead th{
 /* MOBILE font settings */
 @media (max-width:768px){
 tbody td,
+thead th,
 #searchInput,
 #searchInput::placeholder,
 #filterLabel,
