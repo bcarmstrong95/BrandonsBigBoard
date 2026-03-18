@@ -238,18 +238,19 @@ content:url("banner7.png");
 
 .prospect-counter{
 position:absolute;
-left:60%;
-top:120px;
+left:50%;
+top:132px;
 right:auto;
 bottom:auto;
-transform:translateX(-50%) scale(.60);
-font-size:11px;
+transform:translateX(-50%) scale(.90);
+font-size:16.5px;
 margin:0;
 z-index:4;
 text-align:center;
 transform-origin:center top;
 white-space:nowrap;
 }
+
 .header-grid{
 position:absolute;
 left:0;
@@ -278,7 +279,7 @@ margin:0;
 
 .timer-column{
 position:absolute;
-right:0;
+right:8px;
 bottom:0;
 left:auto;
 top:auto;
@@ -300,6 +301,13 @@ font-weight:normal;
 }
 
 #positionButtons{
+grid-template-columns:repeat(3, auto);
+grid-template-areas:
+"QB RB WR"
+"TE IOL OT"
+"DT EDGE LB"
+"S CB ."
+"K P LS";
 gap:4px 4px;
 margin:0;
 }
@@ -314,21 +322,19 @@ padding:0;
 letter-spacing:-.4px;
 line-height:.9;
 }
-/* mobile search bar locked to banner bottom-left */
+
 #searchInput::placeholder{
 font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
 font-style:normal;
 font-weight:normal;
 }
 
-/* mobile header text in Impact */
 th{
 font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
 font-style:normal;
 font-weight:normal;
 }
 
-/* mobile table text in Impact */
 tbody td{
 font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
 font-style:normal;
@@ -560,52 +566,77 @@ filter:brightness(1);
 /* mobile scoreboard sizing */
 @media (max-width:768px){
 #prospectCount{
-min-width:44px;
-padding:2px 6px 1px 6px;
-font-size:0.95em;
+min-width:52px;
+padding:3px 8px 2px 8px;
+font-size:1.45em;
 letter-spacing:2px;
 }
 
 #draftCountdownBox{
-width:132px;
-max-width:132px;
-padding:5px 5px 6px 5px;
+width:96px;
+max-width:96px;
+padding:6px 4px 8px 4px;
 transform:none;
 }
 
 .countdown-title{
 font-size:10px;
+margin-bottom:2px;
 }
 
 .countdown-subtitle{
-font-size:11px;
+font-size:10px;
 margin-bottom:4px;
 }
 
+.countdown-grid{
+display:flex;
+flex-direction:column;
+align-items:center;
+width:100%;
+}
+
+.countdown-unit{
+display:flex;
+flex-direction:column;
+align-items:center;
+width:100%;
+margin-bottom:4px;
+}
+
+.countdown-unit-days{
+margin-bottom:4px;
+}
+
+.countdown-row{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:flex-start;
+gap:4px;
+width:100%;
+margin-top:0;
+}
+
 .scoreboard-number{
-min-width:32px;
-height:30px;
+min-width:46px;
+height:28px;
 padding:0 4px;
-font-size:18px;
+font-size:16px;
 letter-spacing:2px;
 border-radius:4px;
 }
 
 .scoreboard-number-large{
 min-width:58px;
-height:38px;
-font-size:24px;
+height:34px;
+font-size:22px;
 letter-spacing:3px;
-}
-
-.countdown-row{
-gap:6px;
-margin-top:4px;
 }
 
 .flip-label{
 font-size:6px;
-margin-top:3px;
+margin-top:2px;
 }
 }
 
@@ -818,7 +849,7 @@ thead th{
 @media (max-width:768px){
 .search-bar-wrap{
 position:absolute;
-left:0 !important;
+left:8px !important;
 bottom:0 !important;
 transform:none !important;
 z-index:4;
