@@ -37,6 +37,40 @@ display:block;
 width:100%;
 height:auto;
 }
+.corner-logo{
+position:absolute;
+top:10px;
+width:82px;
+height:82px;
+object-fit:contain;
+display:block;
+z-index:5;
+pointer-events:none;
+}
+
+.corner-logo-left{
+left:10px;
+}
+
+.corner-logo-right{
+right:10px;
+}
+
+@media (max-width:768px){
+.corner-logo{
+top:6px;
+width:52px;
+height:52px;
+}
+
+.corner-logo-left{
+left:6px;
+}
+
+.corner-logo-right{
+right:6px;
+}
+}
 
 .prospect-counter{
 position:absolute;
@@ -459,6 +493,14 @@ color:white;
 line-height:1.05;
 margin-bottom:6px;
 }
+.countdown-title-line{
+font-size:15px;
+font-weight:bold;
+color:white;
+line-height:1.05;
+margin-bottom:6px;
+white-space:nowrap;
+}
 
 .countdown-grid{
 display:flex;
@@ -565,6 +607,7 @@ filter:brightness(1);
 }
 
 /* mobile scoreboard sizing */
+/* mobile scoreboard sizing */
 @media (max-width:768px){
 #prospectCount{
 min-width:42px;
@@ -574,10 +617,10 @@ letter-spacing:2px;
 }
 
 #draftCountdownBox{
-width:150px;
-max-width:150px;
-height:105px;
-padding:7px 8px 10px 8px;
+width:120px;
+max-width:120px;
+height:84px;
+padding:5px 6px 7px 6px;
 transform:none;
 display:flex;
 flex-direction:column;
@@ -587,19 +630,17 @@ box-sizing:border-box;
 text-align:center;
 }
 
-.countdown-title{
-display:inline;
-font-size:9px;
-margin-bottom:0;
-line-height:1;
-white-space:nowrap;
+.countdown-title,
+.countdown-subtitle{
+display:none;
 }
 
-.countdown-subtitle{
-display:inline;
-font-size:9px;
-margin-bottom:2px;
+.countdown-title-line{
+font-size:7px;
+font-weight:normal;
+color:white;
 line-height:1;
+margin-bottom:2px;
 white-space:nowrap;
 }
 
@@ -620,7 +661,7 @@ margin-bottom:0;
 }
 
 .countdown-unit-days{
-margin-bottom:4px;
+margin-bottom:3px;
 }
 
 .countdown-row{
@@ -628,30 +669,30 @@ display:flex;
 flex-direction:row;
 align-items:flex-start;
 justify-content:center;
-gap:6px;
+gap:4px;
 width:100%;
 margin-top:0;
 }
 
 .scoreboard-number{
-min-width:30px;
-height:20px;
-padding:0 3px;
-font-size:15px;
+min-width:24px;
+height:16px;
+padding:0 2px;
+font-size:12px;
 letter-spacing:1px;
 border-radius:4px;
 }
 
 .scoreboard-number-large{
-min-width:50px;
-height:28px;
-font-size:22px;
-letter-spacing:2px;
+min-width:40px;
+height:22px;
+font-size:18px;
+letter-spacing:1px;
 }
 
 .flip-label{
-font-size:6.4px;
-margin-top:2px;
+font-size:5px;
+margin-top:1px;
 }
 }
 /* desktop scoreboard sizing */
@@ -916,7 +957,9 @@ thead th,
 
 <div class="hero-banner">
 
-  <img src="banner11.png" class="banner-img" alt="Banner">
+<img src="banner11.png" class="banner-img" alt="Banner">
+<img src="afc.png" class="corner-logo corner-logo-left" alt="AFC">
+<img src="nfc.png" class="corner-logo corner-logo-right" alt="NFC">
 
   <div class="prospect-counter">
   Brandon's Top
@@ -940,7 +983,7 @@ thead th,
 
      <div id="draftCountdownBox">
 
-  <div class="countdown-title">Countdown to</div>
+<div class="countdown-title-line">Countdown to 2026 NFL Draft:</div>
   <div class="countdown-subtitle">2026 NFL Draft:</div>
 
   <div class="countdown-grid">
