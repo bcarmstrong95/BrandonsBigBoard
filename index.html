@@ -59,6 +59,40 @@ width:205px;
 height:205px;
 }
 
+.team-corner-logo{
+position:absolute;
+width:109px;
+height:109px;
+object-fit:contain;
+display:block;
+z-index:5;
+pointer-events:none;
+}
+
+.ravens-logo{
+top:28px;
+left:128px;
+}
+
+.steelers-logo{
+top:28px;
+left:238px;
+}
+
+.lions-left-logo{
+display:none;
+}
+
+.lions-right-logo{
+top:42px;
+right:118px;
+}
+
+.bears-logo{
+top:42px;
+right:8px;
+}
+
 @media (max-width:768px){
 .corner-logo{
 top:6px;
@@ -75,6 +109,37 @@ right:-4px;
 top:-4px;
 width:87.75px;
 height:87.75px;
+}
+
+.team-corner-logo{
+width:46.8px;
+height:46.8px;
+}
+
+.ravens-logo{
+top:18px;
+left:58px;
+}
+
+.steelers-logo{
+top:18px;
+left:106px;
+}
+
+.lions-left-logo{
+display:block;
+top:18px;
+left:154px;
+}
+
+.lions-right-logo{
+top:22px;
+right:54px;
+}
+
+.bears-logo{
+top:22px;
+right:8px;
 }
 }
 .prospect-counter{
@@ -972,8 +1037,12 @@ thead th,
 
 <img src="banner11.png" class="banner-img" alt="Banner">
 <img src="afc.png" class="corner-logo corner-logo-left" alt="AFC">
+<img src="ravens.png" class="team-corner-logo ravens-logo" alt="Ravens">
+<img src="steelers.png" class="team-corner-logo steelers-logo" alt="Steelers">
+<img src="lions.png" class="team-corner-logo lions-left-logo" alt="Lions">
+<img src="lions.png" class="team-corner-logo lions-right-logo" alt="Lions">
+<img src="bears.png" class="team-corner-logo bears-logo" alt="Bears">
 <img src="nfc.png" class="corner-logo corner-logo-right" alt="NFC">
-
   <div class="prospect-counter">
   Brandon's Top
 <span id="prospectCountWrap">
