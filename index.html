@@ -40,8 +40,8 @@ height:auto;
 .corner-logo{
 position:absolute;
 top:10px;
-width:82px;
-height:82px;
+width:164px;
+height:164px;
 object-fit:contain;
 display:block;
 z-index:5;
@@ -54,15 +54,15 @@ left:10px;
 
 .corner-logo-right{
 right:10px;
-width:102.5px;
-height:102.5px;
+width:205px;
+height:205px;
 }
 
 @media (max-width:768px){
 .corner-logo{
 top:6px;
-width:52px;
-height:52px;
+width:104px;
+height:104px;
 }
 
 .corner-logo-left{
@@ -71,11 +71,10 @@ left:6px;
 
 .corner-logo-right{
 right:6px;
-width:65px;
-height:65px;
+width:130px;
+height:130px;
 }
 }
-
 .prospect-counter{
 position:absolute;
 left:50%;
@@ -642,12 +641,18 @@ display:none;
 }
 
 .countdown-title-line{
-font-size:7px;
+font-size:6.3px;
+font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+font-style:normal;
 font-weight:normal;
 color:white;
 line-height:1;
 margin-bottom:2px;
 white-space:nowrap;
+}
+
+.countdown-title-line::after{
+content:" 2026 NFL Draft";
 }
 
 .countdown-grid{
