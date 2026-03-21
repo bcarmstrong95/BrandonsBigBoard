@@ -1121,33 +1121,76 @@ background:#111;
 color:white;
 padding:8px 10px;
 border-radius:6px;
-
 font-size:13px;
-
 border:1px solid #444;
-
 box-shadow:0 4px 12px rgba(0,0,0,.6);
-
 pointer-events:none;
-
 opacity:0;
-
 transition:opacity .12s ease;
-
 z-index:5000;
-
 white-space:nowrap;
-
 }
 
 .custom-tooltip.show{
 opacity:1;
 }
+
 .prospect-popup{
-  position:fixed;
-  pointer-events:none;
-  z-index:9000;
-  display:none;
+position:fixed;
+pointer-events:none;
+z-index:9000;
+display:none;
+}
+
+.banner-team-popup{
+position:fixed;
+display:none;
+pointer-events:none;
+z-index:9500;
+width:270px;
+background:rgba(8,8,8,.96);
+border:1px solid #555;
+border-radius:12px;
+padding:12px 12px 10px 12px;
+box-shadow:
+0 0 18px rgba(0,0,0,.72),
+0 0 10px rgba(255,255,255,.08);
+color:white;
+font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
+font-style:italic;
+font-weight:bold;
+line-height:1.25;
+}
+
+.banner-team-popup-title{
+font-size:19.5px;
+margin-bottom:8px;
+}
+
+.banner-team-popup-line{
+font-size:13px;
+margin-bottom:6px;
+word-break:break-word;
+}
+
+.banner-team-popup-logo-wrap{
+margin-top:8px;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.banner-team-popup-logo{
+width:56px;
+height:56px;
+object-fit:contain;
+display:block;
+}
+
+@media (max-width:768px){
+.banner-team-popup{
+display:none !important;
+}
 }
 
 .prospect-popup-card{
@@ -1389,6 +1432,16 @@ thead th,
 
 </div>
 <div id="tooltip" class="custom-tooltip"></div>
+
+<div id="bannerTeamPopup" class="banner-team-popup">
+  <div id="bannerTeamPopupTitle" class="banner-team-popup-title"></div>
+  <div id="bannerTeamPopupPicks" class="banner-team-popup-line"></div>
+  <div id="bannerTeamPopupRounds" class="banner-team-popup-line"></div>
+  <div class="banner-team-popup-logo-wrap">
+    <img id="bannerTeamPopupLogo" class="banner-team-popup-logo" src="" alt="">
+  </div>
+</div>
+
 <div id="prospectPopup" class="prospect-popup">
   <div class="prospect-popup-card">
     <div class="prospect-headshot">
@@ -1559,6 +1612,181 @@ const mediumLogos = [
 const extraLargeLogos = [
 "Arkansas","Navy","NC State","Wyoming"
 ];
+const bannerPopupData = {
+  "afc.png": {
+    title: "AFC",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "nfc.png": {
+    title: "NFC",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "ravens.png": {
+    title: "Ravens",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "steelers.png": {
+    title: "Steelers",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "browns.png": {
+    title: "Browns",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "bengals.png": {
+    title: "Bengals",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "jags.png": {
+    title: "Jaguars",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "texans.png": {
+    title: "Texans",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "titans.png": {
+    title: "Titans",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "colts.png": {
+    title: "Colts",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "jets.png": {
+    title: "Jets",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "patriots.png": {
+    title: "Patriots",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "broncos.png": {
+    title: "Broncos",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "raiders.png": {
+    title: "Raiders",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "bills.png": {
+    title: "Bills",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "chargers.png": {
+    title: "Chargers",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "chiefs.png": {
+    title: "Chiefs",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "dolphins.png": {
+    title: "Dolphins",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "saints.png": {
+    title: "Saints",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "commanders.png": {
+    title: "Commanders",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "rams.png": {
+    title: "Rams",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "49ers.png": {
+    title: "49ers",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "giants.png": {
+    title: "Giants",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "seahawks.png": {
+    title: "Seahawks",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "eagles.png": {
+    title: "Eagles",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "panthers.png": {
+    title: "Panthers",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "pack.png": {
+    title: "Packers",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "lions.png": {
+    title: "Lions",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "bears.png": {
+    title: "Bears",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "atl.png": {
+    title: "Falcons",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "cardinals.png": {
+    title: "Cardinals",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "cowboys.png": {
+    title: "Cowboys",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "bucs.png": {
+    title: "Buccaneers",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  },
+  "vikings.png": {
+    title: "Vikings",
+    draftPicks: "# of Draft Picks: ",
+    picksRound: "Picks (Round): "
+  }
+};
+
+let bannerPopupTimer = null;
+let activeBannerLogo = null;
 
 function gcd(a,b){ return b?gcd(b,a%b):a; }
 
@@ -2304,6 +2532,91 @@ thead.appendChild(row);
    NFL Draft Countdown Timer
 ================================ */
 
+function showBannerTeamPopup(imgEl, mouseEvent){
+    if(window.innerWidth < 900) return;
+
+    const popup = document.getElementById("bannerTeamPopup");
+    const titleEl = document.getElementById("bannerTeamPopupTitle");
+    const picksEl = document.getElementById("bannerTeamPopupPicks");
+    const roundsEl = document.getElementById("bannerTeamPopupRounds");
+    const logoEl = document.getElementById("bannerTeamPopupLogo");
+
+    const src = imgEl.getAttribute("src") || "";
+    const popupInfo = bannerPopupData[src] || {
+        title: imgEl.getAttribute("alt") || "Team",
+        draftPicks: "# of Draft Picks: ",
+        picksRound: "Picks (Round): "
+    };
+
+    titleEl.textContent = popupInfo.title;
+    picksEl.textContent = popupInfo.draftPicks;
+    roundsEl.textContent = popupInfo.picksRound;
+    logoEl.src = src;
+    logoEl.alt = popupInfo.title;
+
+    popup.style.display = "block";
+    moveBannerTeamPopup(mouseEvent);
+}
+
+function moveBannerTeamPopup(e){
+    const popup = document.getElementById("bannerTeamPopup");
+    if(popup.style.display !== "block") return;
+
+    const offsetX = 16;
+    const offsetY = 16;
+    const popupWidth = 270;
+    const popupHeight = 160;
+
+    let left = e.clientX + offsetX;
+    let top = e.clientY + offsetY;
+
+    if(left + popupWidth > window.innerWidth - 10){
+        left = e.clientX - popupWidth - 12;
+    }
+
+    if(top + popupHeight > window.innerHeight - 10){
+        top = e.clientY - popupHeight - 12;
+    }
+
+    popup.style.left = left + "px";
+    popup.style.top = top + "px";
+}
+
+function hideBannerTeamPopup(){
+    const popup = document.getElementById("bannerTeamPopup");
+    popup.style.display = "none";
+}
+
+function initializeBannerLogoPopups(){
+    const bannerLogos = document.querySelectorAll(".hero-banner .team-corner-logo, .hero-banner .corner-logo");
+
+    bannerLogos.forEach(img => {
+        img.addEventListener("mouseenter", (e) => {
+            if(window.innerWidth < 900) return;
+
+            activeBannerLogo = img;
+            clearTimeout(bannerPopupTimer);
+
+            bannerPopupTimer = setTimeout(() => {
+                if(activeBannerLogo === img){
+                    showBannerTeamPopup(img, e);
+                }
+            }, 2000);
+        });
+
+        img.addEventListener("mousemove", (e) => {
+            if(window.innerWidth < 900) return;
+            moveBannerTeamPopup(e);
+        });
+
+        img.addEventListener("mouseleave", () => {
+            clearTimeout(bannerPopupTimer);
+            activeBannerLogo = null;
+            hideBannerTeamPopup();
+        });
+    });
+}
+
 function startDraftCountdown(){
 
     const draftDate = new Date("2026-04-23T20:00:00-04:00");
@@ -2349,6 +2662,8 @@ scoreboardUpdate("seconds",seconds,2);
     updateCountdown();
     setInterval(updateCountdown,1000);
 }
+
+initializeBannerLogoPopups();
 startDraftCountdown();
 </script>
 
