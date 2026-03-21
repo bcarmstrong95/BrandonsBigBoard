@@ -1167,6 +1167,27 @@ font-size:27px;
 margin-bottom:8px;
 }
 
+.banner-team-popup-body{
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+gap:10px;
+}
+
+.banner-team-popup-left{
+flex:1 1 auto;
+min-width:0;
+}
+
+.banner-team-popup-right{
+flex:0 0 auto;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:flex-start;
+min-width:42px;
+}
+
 .banner-team-popup-line{
 font-size:18px;
 margin-bottom:6px;
@@ -1174,8 +1195,13 @@ word-break:break-word;
 white-space:pre-line;
 }
 
+.banner-team-popup-picks{
+text-align:center;
+margin-bottom:6px;
+}
+
 .banner-team-popup-logo-wrap{
-margin-top:8px;
+margin-top:0;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -1188,6 +1214,21 @@ object-fit:contain;
 display:block;
 }
 
+@media (max-width:768px){
+.banner-team-popup{
+font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+font-style:normal;
+font-weight:normal;
+}
+
+.banner-team-popup-title{
+font-size:18.9px;
+}
+
+.banner-team-popup-line{
+font-size:12.6px;
+}
+}
 .prospect-popup-card{
   background:#0b0b0b;
   border:1px solid #444;
@@ -1430,10 +1471,18 @@ thead th,
 
 <div id="bannerTeamPopup" class="banner-team-popup">
   <div id="bannerTeamPopupTitle" class="banner-team-popup-title"></div>
-  <div id="bannerTeamPopupPicks" class="banner-team-popup-line"></div>
-  <div id="bannerTeamPopupRounds" class="banner-team-popup-line"></div>
-  <div class="banner-team-popup-logo-wrap">
-    <img id="bannerTeamPopupLogo" class="banner-team-popup-logo" src="" alt="">
+
+  <div class="banner-team-popup-body">
+    <div class="banner-team-popup-left">
+      <div id="bannerTeamPopupRounds" class="banner-team-popup-line"></div>
+    </div>
+
+    <div class="banner-team-popup-right">
+      <div id="bannerTeamPopupPicks" class="banner-team-popup-line banner-team-popup-picks"></div>
+      <div class="banner-team-popup-logo-wrap">
+        <img id="bannerTeamPopupLogo" class="banner-team-popup-logo" src="" alt="">
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2527,6 +2576,33 @@ thead.appendChild(row);
    NFL Draft Countdown Timer
 ================================ */
 
+function formatBannerPopupRounds(rawText){
+    const lines = String(rawText || "")
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean);
+
+    if(!lines.length){
+        return "Pick (Round):";
+    }
+
+    const firstLine = "Pick (Round):";
+    const remaining = lines.slice(1);
+
+    if(!remaining.length){
+        return firstLine;
+    }
+
+    const looksLikePickLine = remaining.every(line => /^\d+\s+\(\d+\)$/.test(line));
+
+    if(!looksLikePickLine){
+        return firstLine + "\n" + remaining.join("\n");
+    }
+
+    const numberedLines = remaining.map((line, index) => `${index + 1}. ${line}`);
+    return firstLine + "\n" + numberedLines.join("\n");
+}
+
 function showBannerTeamPopup(imgEl, mouseEvent){
     const popup = document.getElementById("bannerTeamPopup");
     const titleEl = document.getElementById("bannerTeamPopupTitle");
@@ -2538,12 +2614,12 @@ function showBannerTeamPopup(imgEl, mouseEvent){
     const popupInfo = bannerPopupData[src] || {
         title: imgEl.getAttribute("alt") || "Team",
         draftPicks: "Draft Picks: ",
-        picksRound: "Picks (Rounds): "
+        picksRound: "Pick (Round): "
     };
 
     titleEl.textContent = popupInfo.title;
     picksEl.textContent = popupInfo.draftPicks;
-    roundsEl.textContent = popupInfo.picksRound;
+    roundsEl.textContent = formatBannerPopupRounds(popupInfo.picksRound);
     logoEl.src = src;
     logoEl.alt = popupInfo.title;
 
