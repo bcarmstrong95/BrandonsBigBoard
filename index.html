@@ -1177,6 +1177,10 @@ font-stretch:condensed;
 letter-spacing:-.6px;
 }
 
+.banner-team-popup.compact-conference .banner-team-popup-title{
+font-size:13.5px;
+}
+
 .banner-team-popup-body{
 display:flex;
 align-items:flex-start;
@@ -1236,8 +1240,6 @@ align-items:center;
 }
 
 .banner-team-popup-logo{
-width:118px;
-height:118px;
 object-fit:contain;
 display:block;
 }
@@ -1247,6 +1249,16 @@ filter:
 drop-shadow(0 0 6px rgba(255,255,255,.95))
 drop-shadow(0 0 12px rgba(255,255,255,.9))
 drop-shadow(0 0 20px rgba(255,255,255,.8));
+}
+
+@media (min-width:900px){
+.banner-team-popup{
+width:326px;
+}
+
+.banner-team-popup.compact-conference{
+width:243px;
+}
 }
 
 @media (max-width:768px){
@@ -1260,13 +1272,12 @@ font-weight:normal;
 font-size:18.9px;
 }
 
-.banner-team-popup-line{
-font-size:12.6px;
+.banner-team-popup.compact-conference .banner-team-popup-title{
+font-size:9.45px;
 }
 
-.banner-team-popup-logo{
-width:86px;
-height:86px;
+.banner-team-popup-line{
+font-size:12.6px;
 }
 }
 .prospect-popup-card{
@@ -2710,10 +2721,13 @@ function showBannerTeamPopup(imgEl, mouseEvent){
     logoEl.src = src;
     logoEl.alt = popupInfo.title;
 
+    const rect = imgEl.getBoundingClientRect();
+    logoEl.style.width = rect.width + "px";
+    logoEl.style.height = rect.height + "px";
+
     popup.style.display = "block";
     moveBannerTeamPopup(mouseEvent);
 }
-
 function moveBannerTeamPopup(e){
     const popup = document.getElementById("bannerTeamPopup");
     if(popup.style.display !== "block") return;
