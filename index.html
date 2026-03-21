@@ -66,7 +66,18 @@ height:87.2px;
 object-fit:contain;
 display:block;
 z-index:5;
-pointer-events:none;
+pointer-events:auto;
+transition:filter .18s ease, transform .18s ease;
+}
+
+@media (min-width:900px){
+.team-corner-logo:hover,
+.corner-logo:hover{
+filter:
+drop-shadow(0 0 6px rgba(255,255,255,.95))
+drop-shadow(0 0 12px rgba(255,255,255,.9))
+drop-shadow(0 0 20px rgba(255,255,255,.8));
+}
 }
 
 .ravens-logo{
@@ -297,6 +308,7 @@ height:131.2px;
 top:6px;
 width:70.2px;
 height:70.2px;
+pointer-events:none;
 }
 
 .corner-logo-left{
@@ -313,6 +325,7 @@ height:87.75px;
 .team-corner-logo{
 width:46.8px;
 height:46.8px;
+pointer-events:none;
 }
 
 .ravens-logo{
