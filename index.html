@@ -1220,6 +1220,26 @@ min-width:0;
 width:100%;
 }
 
+@media (min-width:900px){
+.banner-team-popup.compact-conference .banner-team-popup-title{
+white-space:pre-line;
+line-height:1.05;
+}
+
+.banner-team-popup.compact-conference .banner-team-popup-picks{
+display:block;
+width:100%;
+text-align:center;
+margin-top:4px;
+margin-bottom:8px;
+}
+
+.banner-team-popup.compact-conference .banner-team-popup-logo-wrap{
+width:100%;
+justify-content:center;
+}
+}
+
 .banner-team-popup-line{
 font-size:18px;
 margin-bottom:6px;
@@ -1351,6 +1371,12 @@ tbody td{
 
 thead th{
     font-weight:900;
+}
+
+.prospect-popup-card,
+.prospect-popup-card *{
+    font-family:"Eurostile Extended","Eurostile",Arial,sans-serif !important;
+    font-style:normal !important;
 }
 }
 @media (max-width:768px){
@@ -2715,7 +2741,16 @@ function showBannerTeamPopup(imgEl, mouseEvent){
 
     popup.classList.toggle("compact-conference", isConference);
 
-    titleEl.textContent = popupInfo.title;
+    if(isConference && window.innerWidth >= 900){
+        if(src === "afc.png"){
+            titleEl.textContent = "American Football Conference\n(AFC)";
+        } else {
+            titleEl.textContent = "National Football Conference\n(NFC)";
+        }
+    } else {
+        titleEl.textContent = popupInfo.title;
+    }
+
     picksEl.textContent = popupInfo.draftPicks;
     roundsEl.textContent = formatBannerPopupRounds(popupInfo.picksRound, src);
     logoEl.src = src;
