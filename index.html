@@ -354,20 +354,121 @@ width:51.48px;
 height:51.48px;
 }
 
-.browns-logo,
-.bengals-logo,
-.jags-logo,
-.texans-logo,
-.titans-logo,
-.colts-logo,
-.jets-logo,
-.patriots-logo,
-.broncos-logo,
-.raiders-logo,
-.bills-logo,
-.chargers-logo,
-.chiefs-logo,
-.dolphins-logo,
+/* left column */
+.bengals-logo{
+display:block;
+top:170px;
+left:2px;
+width:46.8px;
+height:46.8px;
+}
+
+.jags-logo{
+display:block;
+top:216.8px;
+left:2px;
+width:46.8px;
+height:46.8px;
+}
+
+.titans-logo{
+display:block;
+top:263.6px;
+left:2px;
+width:46.8px;
+height:46.8px;
+}
+
+.raiders-logo{
+display:block;
+top:310.4px;
+left:2px;
+width:46.8px;
+height:46.8px;
+}
+
+.colts-logo{
+display:block;
+top:357.2px;
+left:2px;
+width:46.8px;
+height:46.8px;
+}
+
+.patriots-logo{
+display:block;
+top:404px;
+left:2px;
+width:46.8px;
+height:46.8px;
+}
+
+.chargers-logo{
+display:block;
+top:450.8px;
+left:2px;
+width:46.8px;
+height:46.8px;
+}
+
+/* second column */
+.browns-logo{
+display:block;
+top:170px;
+left:48.8px;
+width:46.8px;
+height:46.8px;
+}
+
+.texans-logo{
+display:block;
+top:216.8px;
+left:48.8px;
+width:46.8px;
+height:46.8px;
+}
+
+.jets-logo{
+display:block;
+top:263.6px;
+left:48.8px;
+width:46.8px;
+height:46.8px;
+}
+
+.bills-logo{
+display:block;
+top:310.4px;
+left:48.8px;
+width:46.8px;
+height:46.8px;
+}
+
+.dolphins-logo{
+display:block;
+top:357.2px;
+left:48.8px;
+width:46.8px;
+height:46.8px;
+}
+
+.chiefs-logo{
+display:block;
+top:404px;
+left:48.8px;
+width:46.8px;
+height:46.8px;
+}
+
+/* under left half of countdown box */
+.broncos-logo{
+display:block;
+top:226px;
+left:112px;
+width:46.8px;
+height:46.8px;
+}
+
 .lions-desktop-logo,
 .atl-logo,
 .cardinals-logo,
@@ -1311,6 +1412,15 @@ font-size:12.6px;
   box-shadow:0 10px 30px rgba(0,0,0,.7);
 }
 
+.prospect-left-col{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  width:90px;
+  flex:0 0 90px;
+}
+
 .prospect-headshot{
   width:90px;
   height:110px;
@@ -1347,7 +1457,8 @@ font-size:12.6px;
 .prospect-bnum{
   margin-top:8px;
   display:flex;
-  justify-content:flex-start;
+  justify-content:center;
+  width:100%;
 }
 
 .popup-bnum-circle{
@@ -1565,23 +1676,26 @@ thead th,
 
 <div id="prospectPopup" class="prospect-popup">
   <div class="prospect-popup-card">
-    <div class="prospect-headshot">
-      <img id="popupHeadshot" src="" alt="">
+    <div class="prospect-left-col">
+      <div class="prospect-headshot">
+        <img id="popupHeadshot" src="" alt="">
+      </div>
+      <div class="prospect-bnum">
+        <span id="popupBNum"></span>
+      </div>
     </div>
+
     <div class="prospect-info">
       <div class="prospect-name" id="popupName"></div>
       <div class="prospect-school">
         <img id="popupSchoolLogo" class="popup-school-logo">
       </div>
-     <div class="prospect-details">
-  <div>POS: <span id="popupPos"></span></div>
-  <div>Height: <span id="popupHeight"></span></div>
-  <div>Weight: <span id="popupWeight"></span></div>
-  <div>Age: <span id="popupAge"></span></div>
-  <div>AVG Score: <span id="popupAVG"></span></div>
-</div>
-      <div class="prospect-bnum">
-        <span id="popupBNum"></span>
+      <div class="prospect-details">
+        <div>POS: <span id="popupPos"></span></div>
+        <div>Height: <span id="popupHeight"></span></div>
+        <div>Weight: <span id="popupWeight"></span></div>
+        <div>Age: <span id="popupAge"></span></div>
+        <div>AVG Score: <span id="popupAVG"></span></div>
       </div>
     </div>
   </div>
