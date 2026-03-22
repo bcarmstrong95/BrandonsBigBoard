@@ -58,6 +58,21 @@ top:-6px;
 width:205px;
 height:205px;
 }
+@media (min-width:900px){
+.corner-logo-left{
+left:10px;
+top:4px;
+width:139.4px;
+height:139.4px;
+}
+
+.corner-logo-right{
+right:-6px;
+top:-14px;
+width:174.25px;
+height:174.25px;
+}
+}
 
 .team-corner-logo{
 position:absolute;
@@ -926,23 +941,23 @@ font-size:1.3em;
    .prospect-counter{
     position:absolute;
     left:50%;
-    top:320px;
+    top:360px;
     transform:translateX(-50%);
     margin:0;
 }
 
    .filter-column{
         position:absolute;
-        left:20px;
+        left:50%;
         bottom:100px;
         top:auto;
         width:auto;
         max-width:none;
-        transform:none;
-        transform-origin:bottom left;
+        transform:translateX(-50%);
+        transform-origin:bottom center;
         gap:10px;
-        align-items:flex-start;
-        text-align:left;
+        align-items:center;
+        text-align:center;
         z-index:4;
     }
 
@@ -959,7 +974,7 @@ font-size:1.3em;
         font-size:32px;
         font-weight:bold;
         margin-bottom:10px;
-        text-align:left;
+        text-align:center;
     }
 
     .header-grid{
@@ -972,11 +987,11 @@ font-size:1.3em;
         padding:0;
     }
 
-  .timer-column{
+    .timer-column{
         width:auto;
-        top:-30px;
+        top:-8px;
         left:50%;
-        transform:translateX(210%);
+        transform:translateX(-210%);
     }
 }
 .position-btn:hover{
@@ -1231,6 +1246,8 @@ margin-top:1px;
 width:195px;
 max-width:195px;
 padding:8px 10px 10px 10px;
+transform:scale(.75);
+transform-origin:top left;
 }
 
 .countdown-title{
@@ -1310,9 +1327,9 @@ font-weight:bold;
 @media (min-width:900px){
 .search-bar-wrap{
 position:absolute;
-left:25px;
+left:50%;
 bottom:20px;
-transform:none;
+transform:translateX(-50%);
 z-index:4;
 }
 
