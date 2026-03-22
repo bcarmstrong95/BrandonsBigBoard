@@ -365,7 +365,7 @@ height:73.008px;
 .bears-logo{
 display:block;
 top:292px;
-right:-16px;
+right:-22px;
 width:51.48px;
 height:51.48px;
 }
@@ -373,7 +373,7 @@ height:51.48px;
 /* left AFC column */
 .bengals-logo{
 display:block;
-top:131px;
+top:120px;
 left:2px;
 width:46.8px;
 height:46.8px;
@@ -381,7 +381,7 @@ height:46.8px;
 
 .jags-logo{
 display:block;
-top:190px;
+top:178px;
 left:2px;
 width:59.8px;
 height:59.8px;
@@ -405,23 +405,23 @@ height:71.8px;
 
 .colts-logo{
 display:block;
-bottom:-36px;
-left:3px;
+bottom:103px;
+left:2px;
 width:49.8px;
 height:49.8px;
 }
 
 .chiefs-logo{
 display:block;
-bottom:103px;
-left:2px;
+bottom:-36px;
+left:3px;
 width:69.8px;
 height:69.8px;
 }
 
 .patriots-logo{
 display:block;
-top:80px;
+top:66px;
 left:2px;
 width:69.8px;
 height:59.8px;
@@ -447,7 +447,7 @@ height:76.8px;
 .texans-logo{
 display:block;
 top:231.8px;
-left:0px;
+left:-10px;
 width:79.8px;
 height:79.8px;
 }
@@ -498,15 +498,15 @@ height:61.8px;
 .eagles-logo{
 display:block;
 top:346px;
-right:106px;
+right:114px;
 width:66.8px;
 height:66.8px;
 }
 
 .cardinals-logo{
 display:block;
-top:352px;
-right:65px;
+top:302px;
+right:34px;
 left:auto;
 width:60.8px;
 height:60.8px;
@@ -544,8 +544,8 @@ height:71.8px;
 
 .seahawks-logo{
 display:block;
-top:302px;
-right:34px;
+top:352px;
+right:65px;
 left:auto;
 bottom:auto;
 width:60.76px;
@@ -556,7 +556,7 @@ height:60.76px;
 .atl-logo{
 display:block;
 top:15px;
-right:78px;
+right:88px;
 left:auto;
 width:73.8px;
 height:70.8px;
@@ -601,7 +601,7 @@ height:66.8px;
 .vikings-logo{
 display:block;
 top:170px;
-right:0px;
+right:-10px;
 left:auto;
 width:121.8px;
 height:111.8px;
@@ -871,7 +871,7 @@ z-index:4;
 
 .timer-column{
 position:absolute;
-left:39.9%;
+left:38.9%;
 top:-150px;
 right:auto;
 bottom:auto;
@@ -1198,7 +1198,7 @@ filter:brightness(1);
 #prospectCount{
 min-width:42px;
 padding:2px 6px 1px 6px;
-font-size:1.16em;
+font-size:1.06em;
 letter-spacing:2px;
 }
 
@@ -1211,7 +1211,7 @@ padding:4px 3px 4px 3px;
 transform:none;
 display:flex;
 flex-direction:column;
-align-items:flex-end;
+align-items:stretch;
 justify-content:flex-start;
 box-sizing:border-box;
 text-align:center;
@@ -1228,7 +1228,7 @@ display:none;
 position:absolute;
 top:4px;
 left:4px;
-width:36px;
+width:38px;
 margin:0;
 font-size:0;
 line-height:0;
@@ -1240,18 +1240,18 @@ text-align:left;
 content:"Countdown\Ato the\A2026\ANFL Draft:";
 display:block;
 white-space:pre-line;
-font-size:5.2px;
+font-size:10.4px;
 font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
 font-style:normal;
 font-weight:normal;
 color:white;
-line-height:1;
+line-height:.9;
 }
 
 .countdown-grid{
 display:flex;
 flex-direction:column;
-align-items:flex-end;
+align-items:stretch;
 justify-content:flex-start;
 width:100%;
 padding-right:0;
@@ -1270,14 +1270,30 @@ width:100%;
 display:flex;
 flex-direction:column;
 align-items:flex-end;
-margin-bottom:4px;
+margin-bottom:2px;
+}
+
+.countdown-unit-days .scoreboard-number-large{
+min-width:28px;
+width:28px;
+height:22px;
+padding:0 1px;
+font-size:17px;
+letter-spacing:1px;
+}
+
+.countdown-unit-days .flip-label{
+width:28px;
+text-align:center;
+font-size:5px;
+margin-top:1px;
 }
 
 .countdown-row{
 display:flex;
 flex-direction:row;
 align-items:flex-start;
-justify-content:flex-end;
+justify-content:center;
 gap:1px;
 width:100%;
 margin-top:8px;
