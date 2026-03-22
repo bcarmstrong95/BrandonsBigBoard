@@ -372,7 +372,7 @@ height:51.48px;
 /* left AFC column */
 .bengals-logo{
 display:block;
-top:170px;
+top:156px;
 left:2px;
 width:46.8px;
 height:46.8px;
@@ -388,7 +388,7 @@ height:59.8px;
 
 .titans-logo{
 display:block;
-top:262.6px;
+top:282px;
 left:-3px;
 width:71.8px;
 height:76.8px;
@@ -396,7 +396,7 @@ height:76.8px;
 
 .raiders-logo{
 display:block;
-top:374.4px;
+top:356px;
 left:-10px;
 width:71.8px;
 height:71.8px;
@@ -404,7 +404,7 @@ height:71.8px;
 
 .colts-logo{
 display:block;
-bottom:22.2px;
+bottom:8px;
 left:2px;
 width:49.8px;
 height:49.8px;
@@ -420,7 +420,7 @@ height:69.8px;
 
 .patriots-logo{
 display:block;
-top:46px;
+top:60px;
 left:2px;
 width:69.8px;
 height:59.8px;
@@ -429,7 +429,7 @@ height:59.8px;
 .chargers-logo{
 display:block;
 bottom:-10px;
-left:2px;
+left:16px;
 width:71.8px;
 height:74.8px;
 }
@@ -461,16 +461,16 @@ height:66.8px;
 
 .bills-logo{
 display:block;
-top:290.4px;
-left:52.8px;
+top:306px;
+left:64px;
 width:76.8px;
 height:76.8px;
 }
 
 .dolphins-logo{
 display:block;
-top:382.2px;
-left:73.8px;
+top:368px;
+left:88px;
 width:91.8px;
 height:91.8px;
 }
@@ -478,7 +478,7 @@ height:91.8px;
 /* under countdown box */
 .broncos-logo{
 display:block;
-top:263px;
+top:276px;
 left:121px;
 width:70.8px;
 height:61.8px;
@@ -486,7 +486,7 @@ height:61.8px;
 
 .rams-logo{
 display:block;
-top:261px;
+top:273px;
 left:199.8px;
 width:61.8px;
 height:61.8px;
@@ -496,7 +496,7 @@ height:61.8px;
 .eagles-logo{
 display:block;
 top:190px;
-right:65px;
+right:0px;
 width:66.8px;
 height:66.8px;
 }
@@ -512,9 +512,9 @@ height:60.8px;
 
 .fortyniners-logo{
 display:block;
-top:462px;
+top:auto;
 right:0px;
-bottom:auto;
+bottom:0px;
 left:auto;
 width:60.8px;
 height:60.8px;
@@ -532,9 +532,9 @@ height:96.8px;
 
 .pack-logo{
 display:block;
-top:408px;
+top:auto;
 right:0.8px;
-bottom:auto;
+bottom:58px;
 left:auto;
 width:71.8px;
 height:71.8px;
@@ -561,7 +561,7 @@ height:69.8px;
 
 .cowboys-logo{
 display:block;
-top:170px;
+top:152px;
 right:0px;
 left:auto;
 width:61.8px;
@@ -589,7 +589,7 @@ height:66.8px;
 .vikings-logo{
 display:block;
 top:308px;
-right:71.8px;
+right:92px;
 left:auto;
 width:121.8px;
 height:111.8px;
@@ -1182,8 +1182,6 @@ filter:brightness(1);
 }
 }
 
-/* mobile scoreboard sizing */
-/* mobile scoreboard sizing */
 @media (max-width:768px){
 #prospectCount{
 min-width:42px;
@@ -1193,10 +1191,10 @@ letter-spacing:2px;
 }
 
 #draftCountdownBox{
-width:120px;
-max-width:120px;
-height:76px;
-padding:5px 6px 4px 6px;
+width:86px;
+max-width:86px;
+height:86px;
+padding:4px 4px 4px 4px;
 transform:none;
 display:flex;
 flex-direction:column;
@@ -1204,6 +1202,7 @@ align-items:center;
 justify-content:flex-start;
 box-sizing:border-box;
 text-align:center;
+border-radius:8px;
 }
 
 .countdown-title,
@@ -1212,7 +1211,7 @@ display:none;
 }
 
 .countdown-title-line{
-font-size:7.56px;
+font-size:6.2px;
 font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
 font-style:normal;
 font-weight:normal;
@@ -1251,29 +1250,29 @@ display:flex;
 flex-direction:row;
 align-items:flex-start;
 justify-content:center;
-gap:4px;
+gap:3px;
 width:100%;
 margin-top:0;
 }
 
 .scoreboard-number{
-min-width:24px;
-height:16px;
-padding:0 2px;
-font-size:12px;
+min-width:18px;
+height:13px;
+padding:0 1px;
+font-size:10px;
 letter-spacing:1px;
-border-radius:4px;
+border-radius:3px;
 }
 
 .scoreboard-number-large{
-min-width:40px;
-height:22px;
-font-size:18px;
+min-width:30px;
+height:18px;
+font-size:14px;
 letter-spacing:1px;
 }
 
 .flip-label{
-font-size:5px;
+font-size:4px;
 margin-top:1px;
 }
 }
