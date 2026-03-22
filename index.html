@@ -662,31 +662,38 @@ transform:translateX(-50%);
 }
 #positionButtons{
 display:grid;
-grid-template-columns: repeat(6, auto);
-grid-template-areas:
-"QB RB WR TE IOL OT"
-"DT EDGE LB S CB ."
-"K P LS . . .";
+grid-template-columns:repeat(6, auto);
 gap:6px 8px;
-justify-content:start;
-justify-items:start;
+justify-content:center;
+justify-items:center;
 width:fit-content;
-margin:0;
+margin:0 auto;
 }
-#positionButtons button:nth-child(1){ grid-area: QB; }
-#positionButtons button:nth-child(2){ grid-area: RB; }
-#positionButtons button:nth-child(3){ grid-area: WR; }
-#positionButtons button:nth-child(4){ grid-area: TE; }
-#positionButtons button:nth-child(5){ grid-area: IOL; }
-#positionButtons button:nth-child(6){ grid-area: OT; }
-#positionButtons button:nth-child(7){ grid-area: DT; }
-#positionButtons button:nth-child(8){ grid-area: EDGE; }
-#positionButtons button:nth-child(9){ grid-area: LB; }
-#positionButtons button:nth-child(10){ grid-area: S; }
-#positionButtons button:nth-child(11){ grid-area: CB; }
-#positionButtons button:nth-child(12){ grid-area: K; }
-#positionButtons button:nth-child(13){ grid-area: P; }
-#positionButtons button:nth-child(14){ grid-area: LS; }
+
+#positionButtons button:nth-child(1){ grid-column:1; grid-row:1; }
+#positionButtons button:nth-child(2){ grid-column:2; grid-row:1; }
+#positionButtons button:nth-child(3){ grid-column:3; grid-row:1; }
+#positionButtons button:nth-child(4){ grid-column:4; grid-row:1; }
+#positionButtons button:nth-child(5){ grid-column:5; grid-row:1; }
+#positionButtons button:nth-child(6){ grid-column:6; grid-row:1; }
+
+#positionButtons button:nth-child(7){ grid-column:1; grid-row:2; }
+#positionButtons button:nth-child(8){ grid-column:2; grid-row:2; }
+#positionButtons button:nth-child(9){
+grid-column:3 / span 2;
+grid-row:2;
+justify-self:center;
+}
+#positionButtons button:nth-child(10){ grid-column:5; grid-row:2; }
+#positionButtons button:nth-child(11){ grid-column:6; grid-row:2; }
+
+#positionButtons button:nth-child(12){ grid-column:2; grid-row:3; }
+#positionButtons button:nth-child(13){
+grid-column:3 / span 2;
+grid-row:3;
+justify-self:center;
+}
+#positionButtons button:nth-child(14){ grid-column:5; grid-row:3; }
 .table-wrapper{
     overflow-x:auto;  /* allows horizontal scroll on mobile */
     overflow-y:auto;  /* keeps vertical scroll if needed */
@@ -874,14 +881,10 @@ font-weight:normal;
 
 #positionButtons{
 grid-template-columns:repeat(6, auto);
-grid-template-areas:
-"QB RB WR TE IOL OT"
-"DT EDGE LB S CB ."
-"K P LS . . .";
 gap:4px 4px;
 justify-content:center;
 justify-items:center;
-margin:0;
+margin:0 auto;
 }
 
 #positionButtons button{
@@ -1245,7 +1248,9 @@ margin-top:1px;
 #draftCountdownBox{
 width:195px;
 max-width:195px;
-padding:8px 10px 10px 10px;
+height:120px;
+box-sizing:border-box;
+padding:6px 8px 7px 8px;
 transform:scale(.75);
 transform-origin:top left;
 }
@@ -1256,9 +1261,15 @@ line-height:1.05;
 }
 
 .countdown-subtitle{
-font-size:24px;
-line-height:1.05;
-margin-bottom:8px;
+font-size:22px;
+line-height:1;
+margin-bottom:4px;
+}
+
+.countdown-title-line{
+font-size:14px;
+line-height:1;
+margin-bottom:4px;
 }
 
 .scoreboard-number{
@@ -1270,20 +1281,24 @@ letter-spacing:2px;
 }
 
 .scoreboard-number-large{
-min-width:126px;
-height:78px;
-font-size:60px;
-letter-spacing:6px;
+min-width:101px;
+height:62px;
+font-size:48px;
+letter-spacing:5px;
 }
 
 .countdown-row{
-gap:10px;
-margin-top:8px;
+gap:8px;
+margin-top:4px;
+}
+
+.countdown-unit-days{
+margin-bottom:0;
 }
 
 .flip-label{
-font-size:11px;
-margin-top:5px;
+font-size:10px;
+margin-top:3px;
 }
 
 #prospectCount{
