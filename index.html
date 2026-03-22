@@ -694,6 +694,23 @@ grid-row:3;
 justify-self:center;
 }
 #positionButtons button:nth-child(14){ grid-column:5; grid-row:3; }
+ #positionButtons button:nth-child(7),
+#positionButtons button:nth-child(8){
+transform:translateX(37.3px);
+}
+
+#positionButtons button:nth-child(10),
+#positionButtons button:nth-child(11){
+transform:translateX(-37.3px);
+}
+
+#positionButtons button:nth-child(12){
+transform:translateX(37.3px);
+}
+
+#positionButtons button:nth-child(14){
+transform:translateX(-37.3px);
+}
 .table-wrapper{
     overflow-x:auto;  /* allows horizontal scroll on mobile */
     overflow-y:auto;  /* keeps vertical scroll if needed */
@@ -886,6 +903,23 @@ justify-content:center;
 justify-items:center;
 margin:0 auto;
 }
+#positionButtons button:nth-child(7),
+#positionButtons button:nth-child(8){
+transform:translateX(27px);
+}
+
+#positionButtons button:nth-child(10),
+#positionButtons button:nth-child(11){
+transform:translateX(-27px);
+}
+
+#positionButtons button:nth-child(12){
+transform:translateX(27px);
+}
+
+#positionButtons button:nth-child(14){
+transform:translateX(-27px);
+}
 
 #positionButtons button{
 width:50px;
@@ -944,7 +978,7 @@ font-size:1.3em;
    .prospect-counter{
     position:absolute;
     left:50%;
-    top:360px;
+    top:352px;
     transform:translateX(-50%);
     margin:0;
 }
@@ -952,7 +986,7 @@ font-size:1.3em;
    .filter-column{
         position:absolute;
         left:50%;
-        bottom:100px;
+        bottom:90px;
         top:auto;
         width:auto;
         max-width:none;
@@ -992,7 +1026,7 @@ font-size:1.3em;
 
     .timer-column{
         width:auto;
-        top:-299px;
+        top:-289px;
         left:50%;
         transform:translateX(-82%);
     }
@@ -1248,9 +1282,9 @@ margin-top:1px;
 #draftCountdownBox{
 width:195px;
 max-width:195px;
-height:120px;
+height:128px;
 box-sizing:border-box;
-padding:6px 8px 7px 8px;
+padding:6px 8px 8px 8px;
 transform:scale(.75);
 transform-origin:top left;
 }
