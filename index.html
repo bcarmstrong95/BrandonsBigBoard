@@ -856,7 +856,6 @@ width:100%;
 height:auto;
 object-fit:unset;
 object-position:center top;
-content:url("banner17.png");
 }
 
 .prospect-counter{
@@ -1744,9 +1743,6 @@ border-left:0 !important;
 border-bottom:0 !important;
 margin:0 !important;
 box-sizing:border-box;
-font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-font-style:normal;
-font-weight:normal;
 }
 
 #searchInput::placeholder{
@@ -1778,7 +1774,7 @@ thead th,
 
 <div class="hero-banner">
 
-<img src="banner18.png" class="banner-img" alt="Banner">
+<img src="banner18.png" class="banner-img" alt="Banner" id="heroBanner">
 <img src="afc.png" class="corner-logo corner-logo-left" alt="AFC">
 
 <img src="ravens.png" class="team-corner-logo ravens-logo" alt="Ravens">
@@ -1940,9 +1936,8 @@ thead th,
 </div>
 
 <script>
-// GitHub Pages routing fix for /2026playername URLs
-const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 
+const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
 let headers=[], data=[], filteredData=[];
 let currentSort=-1, sortAsc=true;
 let heightIndex=-1, positionIndex=-1;
@@ -2349,12 +2344,22 @@ if(str.length >= 9) return "compact-text";
 
 return "";
 }
+const heroBanner = document.getElementById("heroBanner");
+if(heroBanner && window.innerWidth <= 768){
+heroBanner.src = "banner17.png";
+}
 Papa.parse(csvUrl,{
 download:true,
 skipEmptyLines:true,
 complete:function(results){
 
-headers=results.data[1].map(h=>h.trim());
+const headerRow = results.data[1] || [];
+if(!headerRow.length){
+console.error("Header row missing from CSV.");
+return;
+}
+
+headers = headerRow.map(h => String(h).trim());
 heightIndex=headers.findIndex(h=>h.toLowerCase()==="height");
 positionIndex=headers.findIndex(h=>h.toLowerCase()==="pos");
 nameIndex=headers.findIndex(h=>h.toLowerCase()==="name");
@@ -2374,8 +2379,6 @@ data = results.data.slice(2)
     while(r.length < headers.length) r.push("");
     return r.slice(0, headers.length);
   });
-// Keep sheet values exactly as-is
-data = data.map(row => row.map(cell => cell));
 
 filteredData=[...data];
 
