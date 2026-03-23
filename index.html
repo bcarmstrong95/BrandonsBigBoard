@@ -187,10 +187,10 @@ height:123.2px;
 }
  
 .jets-logo{
-top:410px;
+top:385px;
 left:300px;
-width:118px;
-height:118px;
+width:109px;
+height:109px;
 }
 
 .chiefs-logo{
@@ -422,7 +422,7 @@ height:69.8px;
 
 .jets-logo{
 display:block;
-bottom:88px;
+bottom:67px;
 left:8px;
 width:61.8px;
 height:66.8px;
@@ -1208,7 +1208,7 @@ padding:4px 3px 4px 3px;
 transform:none;
 display:flex;
 flex-direction:column;
-align-items:stretch;
+align-items:center;
 justify-content:flex-start;
 box-sizing:border-box;
 text-align:center;
@@ -1216,42 +1216,46 @@ border-radius:8px;
 overflow:hidden;
 }
 
-.countdown-title,
-.countdown-subtitle{
-display:none;
-}
-
-.countdown-title-line{
-position:absolute;
-top:4px;
-left:4px;
-width:38px;
-margin:0;
-font-size:0;
-line-height:0;
-white-space:normal;
-text-align:left;
-}
-
-.countdown-title-line::after{
-content:"Countdown\A to the\A 2026\A NFL Draft:";
+.countdown-title{
 display:block;
-white-space:pre-line;
-font-size:9.8px;
+font-size:5px;
 font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
 font-style:normal;
 font-weight:normal;
 color:white;
-line-height:1.1;
+line-height:1;
+margin:0;
+width:100%;
+text-align:center;
+}
+
+.countdown-subtitle{
+display:block;
+font-size:6.6px;
+font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+font-style:normal;
+font-weight:normal;
+color:white;
+line-height:1;
+margin:0 0 2px 0;
+width:100%;
+text-align:center;
+}
+
+.countdown-title-line{
+display:none;
+}
+
+.countdown-title-line::after{
+content:none;
 }
 
 .countdown-grid{
 display:flex;
 flex-direction:column;
-align-items:stretch;
+align-items:center;
 justify-content:flex-start;
 width:100%;
-padding-right:0;
 }
 
 .countdown-unit{
@@ -1266,38 +1270,37 @@ margin-bottom:0;
 width:100%;
 display:flex;
 flex-direction:column;
-align-items:flex-end;
-margin-bottom:-6px;
-padding-right:6px;
+align-items:center;
+margin-bottom:2px;
+padding-right:0;
 }
 
 .countdown-unit-days .scoreboard-number-large{
-min-width:28px;
-width:28px;
-height:22px;
-padding-top:2px;
-padding-right:1px;
-padding-bottom:0;
-padding-left:1px;
-font-size:24px;
+min-width:18px;
+width:18px;
+height:14px;
+padding:0;
+font-size:16px;
 letter-spacing:1px;
+text-align:center;
 }
 
 .countdown-unit-days .flip-label{
-width:28px;
+width:18px;
 text-align:center;
-font-size:5px;
+font-size:4px;
 margin-top:1px;
 }
 
 .countdown-row{
 display:flex;
 flex-direction:row;
-align-items:flex-start;
+align-items:flex-end;
 justify-content:center;
 gap:1px;
 width:100%;
-margin-top:22px;
+margin-top:auto;
+padding-top:2px;
 }
 
 .scoreboard-number{
