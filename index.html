@@ -214,6 +214,10 @@ width:131px;
 height:131px;
 }
 
+.lions-right-logo{
+display:none;
+}
+
 .bears-logo{
 top:353px;
 right:339px;
@@ -1130,11 +1134,12 @@ color:white;
 margin-top:4px;
 letter-spacing:1px;
 }
-border:2px solid #1c1c1c;
+
 #prospectCount{
 display:inline-block;
 min-width:72px;
 padding:4px 10px 2px 10px;
+border:2px solid #1c1c1c;
 color:#ff1a1a;
 font-family:"DS-Digital","Digital-7","Digital-7 Mono","Courier New",monospace;
 font-style:normal;
@@ -2285,18 +2290,29 @@ return numerator + "/" + denom;
 }
 
 function fractionToDecimal(val){
-if(!val||val==="-" ) return null;
-let clean=val.replace(/"/g,"").trim();
+if(!val || val === "-") return null;
+
+let clean = val.replace(/"/g,"").trim();
+
 if(clean.includes("/")){
-let parts=clean.split(" ");
-let whole=parseFloat(parts[0])||0;
-let frac=0;
+let parts = clean.split(" ");
+
+if(parts.length === 1){
+let f = parts[0].split("/");
+return parseFloat(f[0]) / parseFloat(f[1]);
+}
+
+let whole = parseFloat(parts[0]) || 0;
+let frac = 0;
+
 if(parts[1]){
-let f=parts[1].split("/");
-frac=parseFloat(f[0])/parseFloat(f[1]);
+let f = parts[1].split("/");
+frac = parseFloat(f[0]) / parseFloat(f[1]);
 }
-return whole+frac;
+
+return whole + frac;
 }
+
 return parseFloat(clean);
 }
 
