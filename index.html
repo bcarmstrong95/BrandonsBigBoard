@@ -447,8 +447,8 @@ height:74.8px;
 /* second AFC column */
 .browns-logo{
 display:block;
-top:342px;
-left:104px;
+top:360px;
+left:109px;
 width:76.8px;
 height:76.8px;
 }
@@ -1200,7 +1200,7 @@ position:relative;
 width:92px;
 max-width:92px;
 height:74px;
-padding:4px 3px 0px 3px;
+padding:2px 3px 0px 3px;
 transform:none;
 display:flex;
 flex-direction:column;
@@ -1208,11 +1208,19 @@ align-items:center;
 justify-content:flex-start;
 box-sizing:border-box;
 text-align:center;
-border-radius:8px;
+border-radius:0;
 overflow:hidden;
+background:none;
+border:0;
+box-shadow:none;
+backdrop-filter:none;
 }
 
 .countdown-title{
+display:none;
+}
+
+.countdown-title-line{
 display:block;
 font-size:4px;
 font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
@@ -1223,6 +1231,7 @@ line-height:1;
 margin:0;
 width:100%;
 text-align:center;
+white-space:nowrap;
 }
 
 .countdown-subtitle{
@@ -1233,13 +1242,9 @@ font-style:normal;
 font-weight:normal;
 color:white;
 line-height:1;
-margin:0 0 2px 0;
+margin:0 0 1px 0;
 width:100%;
 text-align:center;
-}
-
-.countdown-title-line{
-display:none;
 }
 
 .countdown-title-line::after{
@@ -1267,8 +1272,8 @@ width:100%;
 display:flex;
 flex-direction:column;
 align-items:center;
-margin-top:3px
-margin-bottom:2px;
+margin-top:1px;
+margin-bottom:1px;
 padding-right:0;
 }
 
