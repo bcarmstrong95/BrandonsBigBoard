@@ -2567,8 +2567,8 @@ tr.addEventListener("mouseenter", (e) => {
     popup.style.display = "block";
 
     const img = document.getElementById("popupHeadshot");
-    img.src = "headshots/default.jpg";
-    img.onerror = () => { img.src = "headshots/default.jpg"; };
+img.src = "headshots/blank.jpg";
+img.onerror = () => { img.src = "headshots/blank.jpg"; };
 
     let popupHeightValue = String(r[heightIndex] ?? "");
     if(popupHeightValue.includes("/")){
