@@ -1948,7 +1948,7 @@ thead th,
 
 <script>
 
-const csvUrl="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pubhtml?gid=2066890910&single=true";
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=2066890910&single=true&output=csv";
 let headers=[], data=[], filteredData=[];
 let currentSort=-1, sortAsc=true;
 let heightIndex=-1, positionIndex=-1;
@@ -2971,7 +2971,7 @@ function createPlayerURL(name, school){
   const schoolSlug = slugifySchool(school);
   const nameSlug = slugifyName(name);
 
-  return "/2026/" + schoolSlug + "/" + nameSlug;
+return "/BrandonsBigBoard/2026/" + schoolSlug + "/" + nameSlug;
 }
 const columnDescriptions = {
     // Fill these in later
