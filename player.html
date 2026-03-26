@@ -245,7 +245,7 @@ font-size:22px;
 
 <div class="page-wrap">
   <div class="top-bar">
-    <a class="back-link" href="/">← Back to Big Board</a>
+    <a class="back-link" href="/BrandonsBigBoard/">← Back to Big Board</a>
     <h2 class="page-title">2026 Prospect Profile</h2>
   </div>
 
@@ -441,13 +441,13 @@ function getPlayerInfoFromURL(){
   const path = rawPath.replace(/\/+$/,"");
   const parts = path.split("/").filter(Boolean);
 
-  if(parts.length < 3) return null;
-  if(parts[0] !== "2026") return null;
+  const idx = parts.findIndex(part => part === "2026");
+  if(idx === -1 || parts.length < idx + 3) return null;
 
- return {
-  schoolSlug: parts[1].toLowerCase(),
-  playerSlug: parts[2].toLowerCase()
-};
+  return {
+    schoolSlug: parts[idx + 1].toLowerCase(),
+    playerSlug: parts[idx + 2].toLowerCase()
+  };
 }
 
 function getValue(row, headers, headerName){
