@@ -866,7 +866,7 @@ padding-right:2px;
 
 th.trend-header{
 font-size:.52em;
-line-height:.88;
+line-height:1.02;
 letter-spacing:-.2px;
 }
 
@@ -898,7 +898,7 @@ padding-right:1px;
 
 th.trend-header{
 font-size:.48em;
-line-height:.84;
+line-height:1.01;
 letter-spacing:-.25px;
 }
 
@@ -3255,7 +3255,15 @@ const th=document.createElement("th");
 const cleanHeader = h.trim();
 const cleanLower = cleanHeader.toLowerCase();
 
-th.innerHTML = h + ' <span class="arrow"></span>';
+if(cleanLower === "trend (b#)"){
+    th.innerHTML = 'Trend<br>(B#) <span class="arrow"></span>';
+}
+else if(cleanLower === "trend (c#)"){
+    th.innerHTML = 'Trend<br>(C#) <span class="arrow"></span>';
+}
+else{
+    th.innerHTML = h + ' <span class="arrow"></span>';
+}
 
 if(cleanLower === "trend (b#)" || cleanLower === "trend (c#)"){
     th.classList.add("trend-header");
