@@ -2625,41 +2625,46 @@ if(currentSort === col){
 }else{
     currentSort = col;
 
-    // Trend columns → first click shows biggest green risers first
-    if(
-        header === "trend (b#)" ||
-        header === "trend (c#)"
-    ){
-        sortAsc = true;
-    }
+   // Trend columns → first click shows biggest green risers first
+if(
+    header === "trend (b#)" ||
+    header === "trend (c#)"
+){
+    sortAsc = true;
+}
 
-    // FIRST TWO COLUMNS → always low to high on first click
-    else if(col === 0 || col === 1){
-        sortAsc = true;
-    }
+// FIRST TWO COLUMNS → always low to high on first click
+else if(col === 0 || col === 1){
+    sortAsc = true;
+}
 
-    // Age + 40 → lowest first
-    else if(
-        header === "age" ||
-        header === "40" ||
-        header.includes("40")
-    ){
-        sortAsc = true;
-    }
+// C# → low to high on first click
+else if(header === "c#"){
+    sortAsc = true;
+}
 
-    // Name / School / Pos → A–Z first
-    else if(
-        header === "name" ||
-        header === "school" ||
-        header === "pos"
-    ){
-        sortAsc = true;
-    }
+// Age + 40 → lowest first
+else if(
+    header === "age" ||
+    header === "40" ||
+    header.includes("40")
+){
+    sortAsc = true;
+}
 
-    // Everything else → high to low first
-    else{
-        sortAsc = false;
-    }
+// Name / School / Pos → A–Z first
+else if(
+    header === "name" ||
+    header === "school" ||
+    header === "pos"
+){
+    sortAsc = true;
+}
+
+// Everything else → high to low first
+else{
+    sortAsc = false;
+}
 }
 filteredData.sort((a,b)=>{
 
@@ -2681,7 +2686,7 @@ let raw1 = String(a[col] ?? "").trim();
 let raw2 = String(b[col] ?? "").trim();
 
     // Force these values to ALWAYS go to bottom
-    const invalidValues = ["", "-", "0", "#DIV/0!"];
+const invalidValues = ["", "-", "0", "#DIV/0!", "n/a", "N/A"];
 
     let isInvalid1 = invalidValues.includes(raw1);
     let isInvalid2 = invalidValues.includes(raw2);
