@@ -813,6 +813,48 @@ th.sorted{
     background:#f2f2f2 !important;
 }
 .active-col{background:#1c1c1c!important;}
+.rank-cell-wrap{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:6px;
+}
+
+.rank-main-value{
+display:inline-block;
+}
+
+.rank-change{
+display:inline-flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+line-height:1;
+min-width:14px;
+}
+
+.rank-arrow{
+font-size:.72em;
+font-weight:bold;
+line-height:1;
+}
+
+.rank-diff{
+font-size:.5em;
+font-weight:bold;
+margin-top:1px;
+line-height:1;
+}
+
+.rank-up .rank-arrow,
+.rank-up .rank-diff{
+color:#39FF14;
+}
+
+.rank-down .rank-arrow,
+.rank-down .rank-diff{
+color:#ff3b30;
+}
 
 .school-logo{
     height:70px;
@@ -1949,14 +1991,17 @@ thead th,
 <script>
 
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=2066890910&single=true&output=csv";
+const oldCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=0&single=true&output=csv";
+
 let headers=[], data=[], filteredData=[];
+let oldBigBoardMap={};
+
 let currentSort=-1, sortAsc=true;
 let heightIndex=-1, positionIndex=-1;
 let handIndex=-1, armIndex=-1, wingspanIndex=-1;
 let broadIndex=-1;
-let nameIndex=-1, schoolIndex=-1, weightIndex=-1, avgIndex=-1, bIndex=-1;
+let nameIndex=-1, schoolIndex=-1, weightIndex=-1, avgIndex=-1, bIndex=-1, cIndex=-1;
 let cColorIndex=-1;
-
 let searchTerm="";
 let selectedPositions=[];
 let selectedSchool=null;
@@ -2359,6 +2404,97 @@ const heroBanner = document.getElementById("heroBanner");
 if(heroBanner && window.innerWidth <= 768){
 heroBanner.src = "banner17.png";
 }
+function getPlayerKey(name, school){
+return slugifyName(name) + "|" + slugifySchool(school);
+}
+
+function parseRankValue(value){
+const num = parseInt(String(value ?? "").replace(/[^\d-]/g,""), 10);
+return isNaN(num) ? null : num;
+}
+
+function buildOldBigBoardMap(oldHeaders, oldRows){
+const oldNameIndex = oldHeaders.findIndex(h => h.toLowerCase() === "name");
+const oldSchoolIndex = oldHeaders.findIndex(h => h.toLowerCase() === "school");
+const oldBIndex = oldHeaders.findIndex(h => h.toLowerCase() === "b#");
+const oldCIndex = oldHeaders.findIndex(h => h.toLowerCase() === "c#");
+
+const map = {};
+
+oldRows.forEach(row => {
+    const key = getPlayerKey(row[oldNameIndex] || "", row[oldSchoolIndex] || "");
+    if(key === "|") return;
+
+    map[key] = {
+        b: oldBIndex > -1 ? parseRankValue(row[oldBIndex]) : null,
+        c: oldCIndex > -1 ? parseRankValue(row[oldCIndex]) : null
+    };
+});
+
+return map;
+}
+
+function getRankChange(currentValue, oldValue){
+const currentNum = parseRankValue(currentValue);
+const oldNum = parseRankValue(oldValue);
+
+if(currentNum === null || oldNum === null) return null;
+if(currentNum === oldNum) return null;
+
+if(currentNum < oldNum){
+    return {
+        direction: "up",
+        diff: oldNum - currentNum
+    };
+}
+
+return {
+    direction: "down",
+    diff: currentNum - oldNum
+};
+}
+
+function getRankChangeHTML(change){
+if(!change) return "";
+
+if(change.direction === "up"){
+    return `
+        <span class="rank-change rank-up">
+            <span class="rank-arrow">▲</span>
+            <span class="rank-diff">${change.diff}</span>
+        </span>
+    `;
+}
+
+return `
+    <span class="rank-change rank-down">
+        <span class="rank-arrow">▼</span>
+        <span class="rank-diff">${change.diff}</span>
+    </span>
+`;
+}
+Papa.parse(oldCsvUrl,{
+download:true,
+skipEmptyLines:true,
+complete:function(oldResults){
+
+const oldHeaderRow = oldResults.data[1] || [];
+if(!oldHeaderRow.length){
+console.error("Header row missing from old big board CSV.");
+return;
+}
+
+const oldHeaders = oldHeaderRow.map(h => String(h).trim());
+
+const oldRows = oldResults.data.slice(2)
+  .filter(r => r.some(cell => String(cell).trim() !== ""))
+  .map(r => {
+    while(r.length < oldHeaders.length) r.push("");
+    return r.slice(0, oldHeaders.length);
+  });
+
+oldBigBoardMap = buildOldBigBoardMap(oldHeaders, oldRows);
+
 Papa.parse(csvUrl,{
 download:true,
 skipEmptyLines:true,
@@ -2378,6 +2514,7 @@ schoolIndex=headers.findIndex(h=>h.toLowerCase()==="school");
 weightIndex=headers.findIndex(h=>h.toLowerCase()==="weight");
 avgIndex=headers.findIndex(h=>h.toLowerCase()==="avg");
 bIndex=headers.findIndex(h=>h.toLowerCase()==="b#");
+cIndex=headers.findIndex(h=>h.toLowerCase()==="c#");
 handIndex=headers.findIndex(h=>h.toLowerCase()==="hand");
 armIndex=headers.findIndex(h=>h.toLowerCase()==="arm");
 wingspanIndex=headers.findIndex(h=>h.toLowerCase()==="wingspan");
@@ -2396,6 +2533,14 @@ filteredData=[...data];
 createHeaders();
 initializeFilters();
 applyFilters();
+},
+error:function(err){
+console.error("Current big board CSV failed to load:", err);
+}
+});
+},
+error:function(err){
+console.error("Old big board CSV failed to load:", err);
 }
 });
 
@@ -2843,15 +2988,36 @@ else{
     }
 }
 
-   const compactClass = getCompactTextClass(displayValue);
+  const compactClass = getCompactTextClass(displayValue);
 if(compactClass){
     td.classList.add(compactClass);
 }
 
-if(String(displayValue).includes("/")){
-    td.innerHTML = formatFractionCell(displayValue);
+const playerKey = getPlayerKey(r[nameIndex], r[schoolIndex]);
+const oldPlayer = oldBigBoardMap[playerKey] || null;
+
+if(i === bIndex || i === cIndex){
+    const oldValue = oldPlayer
+        ? (i === bIndex ? oldPlayer.b : oldPlayer.c)
+        : null;
+
+    const change = getRankChange(displayValue, oldValue);
+    const mainHTML = String(displayValue).includes("/")
+        ? formatFractionCell(displayValue)
+        : escapeHtml(displayValue);
+
+    td.innerHTML = `
+        <span class="rank-cell-wrap">
+            <span class="rank-main-value">${mainHTML}</span>
+            ${getRankChangeHTML(change)}
+        </span>
+    `;
 } else{
-    td.textContent = displayValue;
+    if(String(displayValue).includes("/")){
+        td.innerHTML = formatFractionCell(displayValue);
+    } else{
+        td.textContent = displayValue;
+    }
 }
 }
 
