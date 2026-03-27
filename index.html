@@ -2877,29 +2877,21 @@ if(headerClean === "b#"){
     }
 
     const bCircleSize = window.innerWidth >= 900 ? 65 : 54;
-    const playerKey = getPlayerKey(r[nameIndex], r[schoolIndex]);
-    const oldPlayer = oldBigBoardMap[playerKey] || null;
-    const change = getRankChange(c, oldPlayer ? oldPlayer.b : null);
 
     td.innerHTML = `
-        <span class="rank-cell-wrap">
-            <span class="rank-main-value">
-                <div style="
-                    background:${circleColor};
-                    color:${textColor};
-                    font-weight:bold;
-                    font-size:1em;
-                    width:${bCircleSize}px;
-                    height:${bCircleSize}px;
-                    border-radius:50%;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    margin:auto;
-                ">${c}</div>
-            </span>
-            ${getRankChangeHTML(change)}
-        </span>
+        <div style="
+            background:${circleColor};
+            color:${textColor};
+            font-weight:bold;
+            font-size:1em;
+            width:${bCircleSize}px;
+            height:${bCircleSize}px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin:auto;
+        ">${c}</div>
     `;
 
     tr.appendChild(td);
@@ -3004,23 +2996,15 @@ if(compactClass){
 const playerKey = getPlayerKey(r[nameIndex], r[schoolIndex]);
 const oldPlayer = oldBigBoardMap[playerKey] || null;
 
-if(i === bIndex || i === cIndex){
-    const oldValue = oldPlayer
-        ? (i === bIndex ? oldPlayer.b : oldPlayer.c)
-        : null;
-
-    const change = getRankChange(displayValue, oldValue);
-    const mainHTML = String(displayValue).includes("/")
-        ? formatFractionCell(displayValue)
-        : escapeHtml(displayValue);
-
-    td.innerHTML = `
-        <span class="rank-cell-wrap">
-            <span class="rank-main-value">${mainHTML}</span>
-            ${getRankChangeHTML(change)}
-        </span>
-    `;
-} else{
+if(headerClean === "trend (b#)"){
+    const change = getRankChange(r[bIndex], oldPlayer ? oldPlayer.b : null);
+    td.innerHTML = getRankChangeHTML(change);
+}
+else if(headerClean === "trend (c#)"){
+    const change = getRankChange(r[cIndex], oldPlayer ? oldPlayer.c : null);
+    td.innerHTML = getRankChangeHTML(change);
+}
+else{
     if(String(displayValue).includes("/")){
         td.innerHTML = formatFractionCell(displayValue);
     } else{
