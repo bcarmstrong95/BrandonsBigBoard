@@ -855,7 +855,61 @@ color:#39FF14;
 .rank-down .rank-diff{
 color:#ff3b30;
 }
+th.trend-header,
+td.trend-cell{
+width:34px;
+min-width:34px;
+max-width:34px;
+padding-left:2px;
+padding-right:2px;
+}
 
+th.trend-header{
+font-size:.52em;
+line-height:.88;
+letter-spacing:-.2px;
+}
+
+td.trend-cell{
+text-align:center;
+}
+
+td.trend-cell .rank-change{
+min-width:0;
+}
+
+td.trend-cell .rank-arrow{
+font-size:.68em;
+}
+
+td.trend-cell .rank-diff{
+font-size:.46em;
+}
+
+@media (max-width:768px){
+th.trend-header,
+td.trend-cell{
+width:24px;
+min-width:24px;
+max-width:24px;
+padding-left:1px;
+padding-right:1px;
+}
+
+th.trend-header{
+font-size:.48em;
+line-height:.84;
+letter-spacing:-.25px;
+}
+
+td.trend-cell .rank-arrow{
+font-size:.62em;
+}
+
+td.trend-cell .rank-diff{
+font-size:.42em;
+}
+}
 .school-logo{
     height:70px;
     width:auto;
@@ -2473,6 +2527,24 @@ return `
     </span>
 `;
 }
+function getTrendSortValue(row, headerLower){
+const playerKey = getPlayerKey(row[nameIndex], row[schoolIndex]);
+const oldPlayer = oldBigBoardMap[playerKey] || null;
+
+if(headerLower === "trend (b#)"){
+    const change = getRankChange(row[bIndex], oldPlayer ? oldPlayer.b : null);
+    if(!change) return null;
+    return change.direction === "up" ? -change.diff : change.diff;
+}
+
+if(headerLower === "trend (c#)"){
+    const change = getRankChange(row[cIndex], oldPlayer ? oldPlayer.c : null);
+    if(!change) return null;
+    return change.direction === "up" ? -change.diff : change.diff;
+}
+
+return null;
+}
 Papa.parse(oldCsvUrl,{
 download:true,
 skipEmptyLines:true,
@@ -2553,8 +2625,16 @@ if(currentSort === col){
 }else{
     currentSort = col;
 
+    // Trend columns → first click shows biggest green risers first
+    if(
+        header === "trend (b#)" ||
+        header === "trend (c#)"
+    ){
+        sortAsc = true;
+    }
+
     // FIRST TWO COLUMNS → always low to high on first click
-    if(col === 0 || col === 1){
+    else if(col === 0 || col === 1){
         sortAsc = true;
     }
 
@@ -2583,8 +2663,22 @@ if(currentSort === col){
 }
 filteredData.sort((a,b)=>{
 
-    let raw1 = String(a[col] ?? "").trim();
-    let raw2 = String(b[col] ?? "").trim();
+const trendValue1 = getTrendSortValue(a, header);
+const trendValue2 = getTrendSortValue(b, header);
+
+if(header === "trend (b#)" || header === "trend (c#)"){
+    const invalidTrend1 = trendValue1 === null;
+    const invalidTrend2 = trendValue2 === null;
+
+    if(invalidTrend1 && invalidTrend2) return 0;
+    if(invalidTrend1) return 1;
+    if(invalidTrend2) return -1;
+
+    return sortAsc ? (trendValue1 - trendValue2) : (trendValue2 - trendValue1);
+}
+
+let raw1 = String(a[col] ?? "").trim();
+let raw2 = String(b[col] ?? "").trim();
 
     // Force these values to ALWAYS go to bottom
     const invalidValues = ["", "-", "0", "#DIV/0!"];
@@ -2997,10 +3091,12 @@ const playerKey = getPlayerKey(r[nameIndex], r[schoolIndex]);
 const oldPlayer = oldBigBoardMap[playerKey] || null;
 
 if(headerClean === "trend (b#)"){
+    td.classList.add("trend-cell");
     const change = getRankChange(r[bIndex], oldPlayer ? oldPlayer.b : null);
     td.innerHTML = getRankChangeHTML(change);
 }
 else if(headerClean === "trend (c#)"){
+    td.classList.add("trend-cell");
     const change = getRankChange(r[cIndex], oldPlayer ? oldPlayer.c : null);
     td.innerHTML = getRankChangeHTML(change);
 }
@@ -3156,14 +3252,18 @@ const row=document.createElement("tr");
 headers.forEach((h,i)=>{
 
 const th=document.createElement("th");
+const cleanHeader = h.trim();
+const cleanLower = cleanHeader.toLowerCase();
 
 th.innerHTML = h + ' <span class="arrow"></span>';
+
+if(cleanLower === "trend (b#)" || cleanLower === "trend (c#)"){
+    th.classList.add("trend-header");
+}
 
 th.addEventListener("click",()=>sortTable(i));
 
 /* Professional Tooltip */
-
-const cleanHeader = h.trim();
 
 if(columnDescriptions[cleanHeader]){
 
@@ -3184,6 +3284,7 @@ if(columnDescriptions[cleanHeader]){
     });
 
 }
+
 row.appendChild(th);
 
 });
