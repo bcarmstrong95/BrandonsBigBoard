@@ -2870,29 +2870,37 @@ if(headerClean === "b#"){
 
     let pos = r[positionIndex];
     let circleColor = positionColors[pos] || "#444";
-
     let textColor = "white";
 
     if(pos === "IOL" || pos === "OT"){
         textColor = "black";
     }
 
-  const bCircleSize = window.innerWidth >= 900 ? 65 : 54;
+    const bCircleSize = window.innerWidth >= 900 ? 65 : 54;
+    const playerKey = getPlayerKey(r[nameIndex], r[schoolIndex]);
+    const oldPlayer = oldBigBoardMap[playerKey] || null;
+    const change = getRankChange(c, oldPlayer ? oldPlayer.b : null);
 
-td.innerHTML =
-`<div style="
-    background:${circleColor};
-    color:${textColor};
-    font-weight:bold;
-    font-size:1em;
-width:${bCircleSize}px;
-height:${bCircleSize}px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-margin:auto;
-">${c}</div>`;
+    td.innerHTML = `
+        <span class="rank-cell-wrap">
+            <span class="rank-main-value">
+                <div style="
+                    background:${circleColor};
+                    color:${textColor};
+                    font-weight:bold;
+                    font-size:1em;
+                    width:${bCircleSize}px;
+                    height:${bCircleSize}px;
+                    border-radius:50%;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    margin:auto;
+                ">${c}</div>
+            </span>
+            ${getRankChangeHTML(change)}
+        </span>
+    `;
 
     tr.appendChild(td);
     return;
