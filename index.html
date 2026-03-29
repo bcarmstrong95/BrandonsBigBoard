@@ -3651,14 +3651,18 @@ function setConferenceGlow(conference){
     }
 }
 
-function clearConferenceGlow(){
-    if(lockedConference){
+function clearConferenceGlow(keepLocked = true){
+    if(keepLocked && lockedConference){
         setConferenceGlow(lockedConference);
         return;
     }
-    setConferenceGlow(null);
-}
 
+    const allTeamLogos = document.querySelectorAll(".hero-banner .team-corner-logo");
+    allTeamLogos.forEach(logo => logo.classList.remove("conference-glow"));
+
+    const conferenceLogos = document.querySelectorAll(".hero-banner .corner-logo");
+    conferenceLogos.forEach(logo => logo.classList.remove("conference-glow"));
+}
 function showBannerTeamPopup(imgEl, mouseEvent){
     const popup = document.getElementById("bannerTeamPopup");
     const titleEl = document.getElementById("bannerTeamPopupTitle");
@@ -3735,6 +3739,17 @@ function hideBannerTeamPopup(){
 function initializeBannerLogoPopups(){
     const bannerLogos = document.querySelectorAll(".hero-banner .team-corner-logo, .hero-banner .corner-logo");
 
+    function setMobileLogoGlow(img){
+        clearConferenceGlow(false);
+        img.classList.add("conference-glow");
+    }
+
+    function setMobileConferenceGlow(img, conference){
+        clearConferenceGlow(false);
+        img.classList.add("conference-glow");
+        setConferenceGlow(conference);
+    }
+
     bannerLogos.forEach(img => {
         img.addEventListener("mouseenter", (e) => {
             if(window.innerWidth < 900) return;
@@ -3773,12 +3788,13 @@ function initializeBannerLogoPopups(){
 
             const src = img.getAttribute("src") || "";
             const isConferenceLogo = src === "afc.png" || src === "nfc.png";
+            const conferenceName = src === "afc.png" ? "afc" : src === "nfc.png" ? "nfc" : null;
 
             if(window.innerWidth >= 900){
                 if(isConferenceLogo){
-                    lockedConference = lockedConference === (src === "afc.png" ? "afc" : "nfc")
+                    lockedConference = lockedConference === conferenceName
                         ? null
-                        : (src === "afc.png" ? "afc" : "nfc");
+                        : conferenceName;
 
                     clearConferenceGlow();
                     activeBannerLogo = img;
@@ -3794,11 +3810,22 @@ function initializeBannerLogoPopups(){
 
             if(sameLogoOpen){
                 activeBannerLogo = null;
+                lockedConference = null;
                 hideBannerTeamPopup();
+                clearConferenceGlow(false);
                 return;
             }
 
             activeBannerLogo = img;
+
+            if(isConferenceLogo){
+                lockedConference = conferenceName;
+                setMobileConferenceGlow(img, conferenceName);
+            } else {
+                lockedConference = null;
+                setMobileLogoGlow(img);
+            }
+
             showBannerTeamPopup(img, e);
         });
     });
@@ -3809,7 +3836,7 @@ function initializeBannerLogoPopups(){
         if(window.innerWidth >= 900){
             if(clickedLogo) return;
             lockedConference = null;
-            clearConferenceGlow();
+            clearConferenceGlow(false);
             hideBannerTeamPopup();
             return;
         }
@@ -3817,6 +3844,8 @@ function initializeBannerLogoPopups(){
         if(clickedLogo) return;
 
         activeBannerLogo = null;
+        lockedConference = null;
+        clearConferenceGlow(false);
         hideBannerTeamPopup();
     });
 }
