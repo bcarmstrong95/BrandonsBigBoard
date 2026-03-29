@@ -2218,16 +2218,14 @@ function setupDesktopEdgeScrollbars(){
   if(!desktopVScroll || !desktopVTrack || !desktopVThumb || !rightEdgeHoverZone) return;
   if(!desktopHScroll || !desktopHTrack || !desktopHThumb || !bottomEdgeHoverZone || !tableWrapper) return;
 
-  function updateVThumb(){
-    const doc = document.documentElement;
-    const maxScroll = Math.max(1, doc.scrollHeight - window.innerHeight);
-    const trackHeight = desktopVTrack.clientHeight;
-    const thumbHeight = desktopVThumb.clientHeight;
-    const maxThumbTop = trackHeight - thumbHeight;
-    const ratio = window.scrollY / maxScroll;
-    desktopVThumb.style.top = (ratio * maxThumbTop) + "px";
-  }
-
+function updateVThumb(){
+  const maxScrollTop = Math.max(1, tableWrapper.scrollHeight - tableWrapper.clientHeight);
+  const trackHeight = desktopVTrack.clientHeight;
+  const thumbHeight = desktopVThumb.clientHeight;
+  const maxThumbTop = trackHeight - thumbHeight;
+  const ratio = tableWrapper.scrollTop / maxScrollTop;
+  desktopVThumb.style.top = (ratio * maxThumbTop) + "px";
+}
   function updateHThumb(){
     const maxScrollLeft = Math.max(1, tableWrapper.scrollWidth - tableWrapper.clientWidth);
     const trackWidth = desktopHTrack.clientWidth;
@@ -2272,17 +2270,17 @@ function setupDesktopEdgeScrollbars(){
   bottomEdgeHoverZone.addEventListener("mouseleave", hideHScroll);
   desktopHScroll.addEventListener("mouseleave", hideHScroll);
 
-  desktopVTrack.addEventListener("click", function(e){
-    if(e.target === desktopVThumb) return;
-    const rect = desktopVTrack.getBoundingClientRect();
-    const thumbHeight = desktopVThumb.clientHeight;
-    const clickY = e.clientY - rect.top - (thumbHeight / 2);
-    const maxThumbTop = rect.height - thumbHeight;
-    const thumbTop = Math.max(0, Math.min(maxThumbTop, clickY));
-    const ratio = thumbTop / Math.max(1, maxThumbTop);
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    window.scrollTo({ top: ratio * maxScroll, behavior: "smooth" });
-  });
+ desktopVTrack.addEventListener("click", function(e){
+  if(e.target === desktopVThumb) return;
+  const rect = desktopVTrack.getBoundingClientRect();
+  const thumbHeight = desktopVThumb.clientHeight;
+  const clickY = e.clientY - rect.top - (thumbHeight / 2);
+  const maxThumbTop = rect.height - thumbHeight;
+  const thumbTop = Math.max(0, Math.min(maxThumbTop, clickY));
+  const ratio = thumbTop / Math.max(1, maxThumbTop);
+  const maxScrollTop = tableWrapper.scrollHeight - tableWrapper.clientHeight;
+  tableWrapper.scrollTo({ top: ratio * maxScrollTop, behavior: "smooth" });
+});
 
   desktopHTrack.addEventListener("click", function(e){
     if(e.target === desktopHThumb) return;
@@ -2309,15 +2307,15 @@ function setupDesktopEdgeScrollbars(){
   });
 
   document.addEventListener("mousemove", function(e){
-    if(isDraggingVThumb){
-      const rect = desktopVTrack.getBoundingClientRect();
-      const thumbHeight = desktopVThumb.clientHeight;
-      const maxThumbTop = rect.height - thumbHeight;
-      const thumbTop = Math.max(0, Math.min(maxThumbTop, e.clientY - rect.top - (thumbHeight / 2)));
-      const ratio = thumbTop / Math.max(1, maxThumbTop);
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      window.scrollTo(0, ratio * maxScroll);
-    }
+   if(isDraggingVThumb){
+  const rect = desktopVTrack.getBoundingClientRect();
+  const thumbHeight = desktopVThumb.clientHeight;
+  const maxThumbTop = rect.height - thumbHeight;
+  const thumbTop = Math.max(0, Math.min(maxThumbTop, e.clientY - rect.top - (thumbHeight / 2)));
+  const ratio = thumbTop / Math.max(1, maxThumbTop);
+  const maxScrollTop = tableWrapper.scrollHeight - tableWrapper.clientHeight;
+  tableWrapper.scrollTop = ratio * maxScrollTop;
+}
 
     if(isDraggingHThumb){
       const rect = desktopHTrack.getBoundingClientRect();
@@ -2335,7 +2333,7 @@ function setupDesktopEdgeScrollbars(){
     isDraggingHThumb = false;
   });
 
-  window.addEventListener("scroll", updateVThumb, { passive:true });
+tableWrapper.addEventListener("scroll", updateVThumb, { passive:true });
   window.addEventListener("resize", function(){
     if(window.innerWidth < 900){
       desktopVScroll.classList.remove("show");
