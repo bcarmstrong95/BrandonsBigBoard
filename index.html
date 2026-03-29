@@ -1881,6 +1881,121 @@ thead th,
     font-weight:normal;
 }
 }
+/* DESKTOP EDGE HOVER SCROLLBARS */
+@media (min-width:900px){
+
+#rightEdgeHoverZone{
+position:fixed;
+top:0;
+right:0;
+width:14px;
+height:100vh;
+z-index:9996;
+background:transparent;
+}
+
+#bottomEdgeHoverZone{
+position:fixed;
+left:0;
+bottom:0;
+width:100vw;
+height:14px;
+z-index:9996;
+background:transparent;
+}
+
+#desktopVScroll{
+position:fixed;
+right:10px;
+top:50%;
+transform:translateY(-50%);
+width:18px;
+height:220px;
+border-radius:12px;
+background:rgba(0,0,0,.72);
+border:1px solid rgba(255,255,255,.22);
+box-shadow:0 0 14px rgba(0,0,0,.45);
+opacity:0;
+pointer-events:none;
+transition:opacity .16s ease;
+z-index:9997;
+}
+
+#desktopVScroll.show{
+opacity:1;
+pointer-events:auto;
+}
+
+#desktopVTrack{
+position:absolute;
+top:10px;
+bottom:10px;
+left:50%;
+transform:translateX(-50%);
+width:6px;
+border-radius:999px;
+background:rgba(255,255,255,.16);
+}
+
+#desktopVThumb{
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+top:0;
+width:14px;
+height:44px;
+border-radius:999px;
+background:#d9d9d9;
+box-shadow:0 0 8px rgba(255,255,255,.18);
+cursor:pointer;
+}
+
+#desktopHScroll{
+position:fixed;
+left:50%;
+bottom:10px;
+transform:translateX(-50%);
+width:min(520px, calc(100vw - 60px));
+height:18px;
+border-radius:12px;
+background:rgba(0,0,0,.72);
+border:1px solid rgba(255,255,255,.22);
+box-shadow:0 0 14px rgba(0,0,0,.45);
+opacity:0;
+pointer-events:none;
+transition:opacity .16s ease;
+z-index:9997;
+}
+
+#desktopHScroll.show{
+opacity:1;
+pointer-events:auto;
+}
+
+#desktopHTrack{
+position:absolute;
+left:10px;
+right:10px;
+top:50%;
+transform:translateY(-50%);
+height:6px;
+border-radius:999px;
+background:rgba(255,255,255,.16);
+}
+
+#desktopHThumb{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+left:0;
+width:64px;
+height:14px;
+border-radius:999px;
+background:#d9d9d9;
+box-shadow:0 0 8px rgba(255,255,255,.18);
+cursor:pointer;
+}
+} 
 </style>
 </head>
 <body>
@@ -2048,6 +2163,20 @@ thead th,
 </table>
 </div>
 
+<div id="rightEdgeHoverZone"></div>
+<div id="bottomEdgeHoverZone"></div>
+
+<div id="desktopVScroll">
+  <div id="desktopVTrack">
+    <div id="desktopVThumb"></div>
+  </div>
+</div>
+
+<div id="desktopHScroll">
+  <div id="desktopHTrack">
+    <div id="desktopHThumb"></div>
+  </div>
+</div>
 <script>
 
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0uaGV-62aAS74y5I-HVKCtGd8l5vy0iaNOErDHjQBFXNt2kDKhAEUMRQDGckqQoJqjUtwnKqTWqgR/pub?gid=1600078699&single=true&output=csv";
@@ -2065,6 +2194,165 @@ let cColorIndex=-1;
 let searchTerm="";
 let selectedPositions=[];
 let selectedSchool=null;
+
+  let desktopVScroll, desktopVTrack, desktopVThumb, rightEdgeHoverZone;
+let desktopHScroll, desktopHTrack, desktopHThumb, bottomEdgeHoverZone;
+let isDraggingVThumb = false;
+let isDraggingHThumb = false;
+
+function setupDesktopEdgeScrollbars(){
+  if(window.innerWidth < 900) return;
+
+  desktopVScroll = document.getElementById("desktopVScroll");
+  desktopVTrack = document.getElementById("desktopVTrack");
+  desktopVThumb = document.getElementById("desktopVThumb");
+  rightEdgeHoverZone = document.getElementById("rightEdgeHoverZone");
+
+  desktopHScroll = document.getElementById("desktopHScroll");
+  desktopHTrack = document.getElementById("desktopHTrack");
+  desktopHThumb = document.getElementById("desktopHThumb");
+  bottomEdgeHoverZone = document.getElementById("bottomEdgeHoverZone");
+
+  const tableWrapper = document.querySelector(".table-wrapper");
+
+  if(!desktopVScroll || !desktopVTrack || !desktopVThumb || !rightEdgeHoverZone) return;
+  if(!desktopHScroll || !desktopHTrack || !desktopHThumb || !bottomEdgeHoverZone || !tableWrapper) return;
+
+  function updateVThumb(){
+    const doc = document.documentElement;
+    const maxScroll = Math.max(1, doc.scrollHeight - window.innerHeight);
+    const trackHeight = desktopVTrack.clientHeight;
+    const thumbHeight = desktopVThumb.clientHeight;
+    const maxThumbTop = trackHeight - thumbHeight;
+    const ratio = window.scrollY / maxScroll;
+    desktopVThumb.style.top = (ratio * maxThumbTop) + "px";
+  }
+
+  function updateHThumb(){
+    const maxScrollLeft = Math.max(1, tableWrapper.scrollWidth - tableWrapper.clientWidth);
+    const trackWidth = desktopHTrack.clientWidth;
+    const thumbWidth = desktopHThumb.clientWidth;
+    const maxThumbLeft = trackWidth - thumbWidth;
+    const ratio = tableWrapper.scrollLeft / maxScrollLeft;
+    desktopHThumb.style.left = (ratio * maxThumbLeft) + "px";
+  }
+
+  function syncHThumbSize(){
+    const visible = tableWrapper.clientWidth;
+    const total = tableWrapper.scrollWidth;
+    const trackWidth = desktopHTrack.clientWidth;
+    const thumbWidth = Math.max(64, Math.min(trackWidth, (visible / total) * trackWidth));
+    desktopHThumb.style.width = thumbWidth + "px";
+    updateHThumb();
+  }
+
+  function showVScroll(){
+    desktopVScroll.classList.add("show");
+  }
+
+  function hideVScroll(){
+    if(!isDraggingVThumb) desktopVScroll.classList.remove("show");
+  }
+
+  function showHScroll(){
+    desktopHScroll.classList.add("show");
+  }
+
+  function hideHScroll(){
+    if(!isDraggingHThumb) desktopHScroll.classList.remove("show");
+  }
+
+  rightEdgeHoverZone.addEventListener("mouseenter", showVScroll);
+  desktopVScroll.addEventListener("mouseenter", showVScroll);
+  rightEdgeHoverZone.addEventListener("mouseleave", hideVScroll);
+  desktopVScroll.addEventListener("mouseleave", hideVScroll);
+
+  bottomEdgeHoverZone.addEventListener("mouseenter", showHScroll);
+  desktopHScroll.addEventListener("mouseenter", showHScroll);
+  bottomEdgeHoverZone.addEventListener("mouseleave", hideHScroll);
+  desktopHScroll.addEventListener("mouseleave", hideHScroll);
+
+  desktopVTrack.addEventListener("click", function(e){
+    if(e.target === desktopVThumb) return;
+    const rect = desktopVTrack.getBoundingClientRect();
+    const thumbHeight = desktopVThumb.clientHeight;
+    const clickY = e.clientY - rect.top - (thumbHeight / 2);
+    const maxThumbTop = rect.height - thumbHeight;
+    const thumbTop = Math.max(0, Math.min(maxThumbTop, clickY));
+    const ratio = thumbTop / Math.max(1, maxThumbTop);
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    window.scrollTo({ top: ratio * maxScroll, behavior: "smooth" });
+  });
+
+  desktopHTrack.addEventListener("click", function(e){
+    if(e.target === desktopHThumb) return;
+    const rect = desktopHTrack.getBoundingClientRect();
+    const thumbWidth = desktopHThumb.clientWidth;
+    const clickX = e.clientX - rect.left - (thumbWidth / 2);
+    const maxThumbLeft = rect.width - thumbWidth;
+    const thumbLeft = Math.max(0, Math.min(maxThumbLeft, clickX));
+    const ratio = thumbLeft / Math.max(1, maxThumbLeft);
+    const maxScrollLeft = tableWrapper.scrollWidth - tableWrapper.clientWidth;
+    tableWrapper.scrollTo({ left: ratio * maxScrollLeft, behavior: "smooth" });
+  });
+
+  desktopVThumb.addEventListener("mousedown", function(e){
+    e.preventDefault();
+    isDraggingVThumb = true;
+    showVScroll();
+  });
+
+  desktopHThumb.addEventListener("mousedown", function(e){
+    e.preventDefault();
+    isDraggingHThumb = true;
+    showHScroll();
+  });
+
+  document.addEventListener("mousemove", function(e){
+    if(isDraggingVThumb){
+      const rect = desktopVTrack.getBoundingClientRect();
+      const thumbHeight = desktopVThumb.clientHeight;
+      const maxThumbTop = rect.height - thumbHeight;
+      const thumbTop = Math.max(0, Math.min(maxThumbTop, e.clientY - rect.top - (thumbHeight / 2)));
+      const ratio = thumbTop / Math.max(1, maxThumbTop);
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo(0, ratio * maxScroll);
+    }
+
+    if(isDraggingHThumb){
+      const rect = desktopHTrack.getBoundingClientRect();
+      const thumbWidth = desktopHThumb.clientWidth;
+      const maxThumbLeft = rect.width - thumbWidth;
+      const thumbLeft = Math.max(0, Math.min(maxThumbLeft, e.clientX - rect.left - (thumbWidth / 2)));
+      const ratio = thumbLeft / Math.max(1, maxThumbLeft);
+      const maxScrollLeft = tableWrapper.scrollWidth - tableWrapper.clientWidth;
+      tableWrapper.scrollLeft = ratio * maxScrollLeft;
+    }
+  });
+
+  document.addEventListener("mouseup", function(){
+    isDraggingVThumb = false;
+    isDraggingHThumb = false;
+  });
+
+  window.addEventListener("scroll", updateVThumb, { passive:true });
+  window.addEventListener("resize", function(){
+    if(window.innerWidth < 900){
+      desktopVScroll.classList.remove("show");
+      desktopHScroll.classList.remove("show");
+      return;
+    }
+    syncHThumbSize();
+    updateVThumb();
+  });
+
+  tableWrapper.addEventListener("scroll", updateHThumb, { passive:true });
+
+  syncHThumbSize();
+  updateVThumb();
+}
+
+document.addEventListener("DOMContentLoaded", setupDesktopEdgeScrollbars);
 
 const positionColors={
 "EDGE":"#FF8200",  // Tennessee orange
