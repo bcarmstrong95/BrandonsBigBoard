@@ -1598,7 +1598,7 @@ position:fixed;
 display:none;
 pointer-events:none;
 z-index:9500;
-width:276px;
+width:252px;
 background:rgba(8,8,8,.96);
 border:1px solid #555;
 border-radius:12px;
@@ -1610,7 +1610,7 @@ color:white;
 font-family:"Eurostile Extended Bold Italic","Eurostile Extended","Eurostile",Arial,sans-serif;
 font-style:italic;
 font-weight:bold;
-line-height:1.25;
+line-height:1.2;
 }
 
 .banner-team-popup.compact-conference{
@@ -1684,22 +1684,23 @@ display:block;
 .banner-team-popup-body{
 display:flex;
 align-items:flex-start;
-justify-content:space-between;
-gap:3px;
+justify-content:flex-start;
+gap:1px;
 }
 
 .banner-team-popup-left{
-flex:1 1 0;
+flex:1 1 auto;
 min-width:0;
 }
 
 .banner-team-popup-right{
-flex:0 0 124px;
+flex:0 0 102px;
 display:flex;
 flex-direction:column;
 align-items:flex-start;
 justify-content:flex-start;
-min-width:124px;
+min-width:102px;
+margin-left:auto;
 }
 
 .banner-team-popup.team-layout .banner-team-popup-picks{
@@ -1724,6 +1725,7 @@ display:none;
 min-width:0;
 width:100%;
 align-items:center;
+margin-left:0;
 }
 
 @media (min-width:900px){
@@ -1792,19 +1794,30 @@ text-align:left;
 .banner-team-needs-row{
 display:flex;
 align-items:center;
-gap:6px;
+gap:5px;
 margin-bottom:4px;
 width:100%;
+line-height:1;
 }
 
 .banner-team-needs-num{
 flex:0 0 18px;
+display:flex;
+align-items:center;
+justify-content:flex-start;
+line-height:1;
 }
 
 .banner-team-needs-fill{
 flex:1 1 auto;
 height:auto;
 border-bottom:none;
+display:flex;
+align-items:center;
+line-height:1;
+min-height:1em;
+padding-top:0;
+padding-bottom:0;
 }
 
 .banner-team-popup.compact-conference .banner-team-needs-wrap{
@@ -1820,7 +1833,7 @@ drop-shadow(0 0 20px rgba(255,255,255,.8));
 
 @media (min-width:900px){
 .banner-team-popup{
-width:356px;
+width:320px;
 padding:14px 14px 14px 14px;
 }
 
@@ -1848,16 +1861,17 @@ font-size:22px;
 }
 
 .banner-team-popup-body{
-gap:4px;
+gap:2px;
 }
 
 .banner-team-popup-left{
-flex:1 1 0;
+flex:1 1 auto;
 }
 
 .banner-team-popup-right{
-flex:0 0 146px;
-min-width:146px;
+flex:0 0 124px;
+min-width:124px;
+margin-left:auto;
 }
 
 .banner-team-needs-title{
@@ -1867,10 +1881,11 @@ margin-bottom:6px;
 
 .banner-team-needs-row{
 margin-bottom:5px;
+gap:6px;
 }
 
 .banner-team-needs-fill{
-height:13px;
+min-height:1em;
 }
 }
 
@@ -1879,7 +1894,7 @@ height:13px;
 font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
 font-style:normal;
 font-weight:normal;
-width:236px;
+width:212px;
 padding:10px 10px 10px 10px;
 }
 
@@ -1911,7 +1926,7 @@ font-size:14px;
 }
 
 .banner-team-popup-body{
-gap:2px;
+gap:1px;
 }
 
 .banner-team-popup-line{
@@ -1919,9 +1934,10 @@ font-size:12.6px;
 }
 
 .banner-team-popup-right{
-flex:0 0 110px;
-min-width:110px;
+flex:0 0 92px;
+min-width:92px;
 align-items:flex-start;
+margin-left:auto;
 }
 
 .banner-team-needs-title{
@@ -1930,7 +1946,7 @@ margin-bottom:4px;
 }
 
 .banner-team-needs-row{
-gap:5px;
+gap:4px;
 margin-bottom:3px;
 }
 
@@ -1939,7 +1955,7 @@ flex:0 0 15px;
 }
 
 .banner-team-needs-fill{
-height:9px;
+min-height:1em;
 }
 }
 .prospect-popup-card{
