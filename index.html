@@ -2861,19 +2861,54 @@ const bannerPopupData = {
   }
 };
 
-const defaultBlankTeamNeeds = ["", "", "", "", ""];
+const teamNeedsByTeam = {
+    "ravens.png": ["", "", "", "", ""],
+    "steelers.png": ["", "", "", "", ""],
+    "browns.png": ["", "", "", "", ""],
+    "bengals.png": ["", "", "", "", ""],
+    "jags.png": ["", "", "", "", ""],
+    "texans.png": ["", "", "", "", ""],
+    "titans.png": ["", "", "", "", ""],
+    "colts.png": ["", "", "", "", ""],
+    "jets2.png": ["", "", "", "", ""],
+    "patriots.png": ["", "", "", "", ""],
+    "broncos.png": ["", "", "", "", ""],
+    "raiders.png": ["", "", "", "", ""],
+    "bills.png": ["", "", "", "", ""],
+    "chargers.png": ["", "", "", "", ""],
+    "chiefs.png": ["", "", "", "", ""],
+    "dolphins.png": ["", "", "", "", ""],
 
-Object.keys(bannerPopupData).forEach(key => {
-    if(key === "afc.png" || key === "nfc.png") return;
+    "saints.png": ["", "", "", "", ""],
+    "commanders.png": ["", "", "", "", ""],
+    "rams.png": ["", "", "", "", ""],
+    "49ers.png": ["", "", "", "", ""],
+    "giants.png": ["", "", "", "", ""],
+    "seahawks.png": ["", "", "", "", ""],
+    "eagles.png": ["", "", "", "", ""],
+    "panthers.png": ["", "", "", "", ""],
+    "pack.png": ["", "", "", "", ""],
+    "lions.png": ["", "", "", "", ""],
+    "bears.png": ["", "", "", "", ""],
+    "atl.png": ["", "", "", "", ""],
+    "cardinals.png": ["", "", "", "", ""],
+    "cowboys.png": ["", "", "", "", ""],
+    "bucs.png": ["", "", "", "", ""],
+    "vikings.png": ["", "", "", "", ""]
+};
 
-    if(!Array.isArray(bannerPopupData[key].teamNeeds)){
-        bannerPopupData[key].teamNeeds = [...defaultBlankTeamNeeds];
-    } else {
-        while(bannerPopupData[key].teamNeeds.length < 5){
-            bannerPopupData[key].teamNeeds.push("");
-        }
-        bannerPopupData[key].teamNeeds = bannerPopupData[key].teamNeeds.slice(0, 5);
+Object.keys(teamNeedsByTeam).forEach(key => {
+    if (!bannerPopupData[key]) return;
+
+    const needs = Array.isArray(teamNeedsByTeam[key])
+        ? teamNeedsByTeam[key].slice(0, 5)
+        : ["", "", "", "", ""];
+
+    while (needs.length < 5) {
+        needs.push("");
     }
+
+    bannerPopupData[key].teamNeeds = needs;
 });
 
 let bannerPopupTimer = null;
