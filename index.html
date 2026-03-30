@@ -1598,7 +1598,7 @@ position:fixed;
 display:none;
 pointer-events:none;
 z-index:9500;
-width:214px;
+width:250px;
 background:rgba(8,8,8,.96);
 border:1px solid #555;
 border-radius:12px;
@@ -1632,6 +1632,55 @@ letter-spacing:-.6px;
 font-size:17.45px;
 }
 
+.banner-team-popup-team-header{
+display:none;
+grid-template-columns:34px 1fr 34px;
+align-items:start;
+gap:8px;
+margin-bottom:8px;
+}
+
+.banner-team-popup.team-layout .banner-team-popup-team-header{
+display:grid;
+}
+
+.banner-team-popup.team-layout .banner-team-popup-title{
+display:none;
+}
+
+.banner-team-popup-team-title-wrap{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:flex-start;
+text-align:center;
+min-width:0;
+}
+
+.banner-team-popup-city,
+.banner-team-popup-nickname{
+line-height:1.02;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+width:100%;
+}
+
+.banner-team-popup-city{
+font-size:18px;
+}
+
+.banner-team-popup-nickname{
+font-size:18px;
+}
+
+.banner-team-popup-corner-logo{
+width:34px;
+height:34px;
+object-fit:contain;
+display:block;
+}
+
 .banner-team-popup-body{
 display:flex;
 align-items:flex-start;
@@ -1645,12 +1694,17 @@ min-width:0;
 }
 
 .banner-team-popup-right{
-flex:0 0 92px;
+flex:0 0 102px;
 display:flex;
 flex-direction:column;
-align-items:center;
+align-items:flex-start;
 justify-content:flex-start;
-min-width:92px;
+min-width:102px;
+}
+
+.banner-team-popup.team-layout .banner-team-popup-picks{
+text-align:left;
+width:100%;
 }
 
 .banner-team-popup.compact-conference .banner-team-popup-body{
@@ -1669,6 +1723,7 @@ display:none;
 .banner-team-popup.compact-conference .banner-team-popup-right{
 min-width:0;
 width:100%;
+align-items:center;
 }
 
 @media (min-width:900px){
@@ -1710,6 +1765,10 @@ display:flex;
 justify-content:center;
 align-items:center;
 width:100%;
+}
+
+.banner-team-popup.team-layout .banner-team-popup-logo-wrap{
+display:none;
 }
 
 .banner-team-popup-logo{
@@ -1761,7 +1820,7 @@ drop-shadow(0 0 20px rgba(255,255,255,.8));
 
 @media (min-width:900px){
 .banner-team-popup{
-width:300px;
+width:320px;
 padding:14px 14px 14px 14px;
 }
 
@@ -1769,9 +1828,28 @@ padding:14px 14px 14px 14px;
 width:243px;
 }
 
+.banner-team-popup-team-header{
+grid-template-columns:42px 1fr 42px;
+gap:10px;
+margin-bottom:10px;
+}
+
+.banner-team-popup-corner-logo{
+width:42px;
+height:42px;
+}
+
+.banner-team-popup-city{
+font-size:22px;
+}
+
+.banner-team-popup-nickname{
+font-size:22px;
+}
+
 .banner-team-popup-right{
-flex:0 0 92px;
-min-width:92px;
+flex:0 0 116px;
+min-width:116px;
 }
 
 .banner-team-needs-title{
@@ -1793,7 +1871,7 @@ height:13px;
 font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
 font-style:normal;
 font-weight:normal;
-width:196px;
+width:214px;
 padding:10px 10px 10px 10px;
 }
 
@@ -1805,17 +1883,33 @@ font-size:18.9px;
 font-size:9.45px;
 }
 
+.banner-team-popup-team-header{
+grid-template-columns:28px 1fr 28px;
+gap:6px;
+margin-bottom:6px;
+}
+
+.banner-team-popup-corner-logo{
+width:28px;
+height:28px;
+}
+
+.banner-team-popup-city{
+font-size:14px;
+}
+
+.banner-team-popup-nickname{
+font-size:14px;
+}
+
 .banner-team-popup-line{
 font-size:12.6px;
 }
 
 .banner-team-popup-right{
-flex:0 0 82px;
-min-width:82px;
-}
-
-.banner-team-popup-logo-wrap{
-margin-bottom:6px;
+flex:0 0 94px;
+min-width:94px;
+align-items:flex-start;
 }
 
 .banner-team-needs-title{
@@ -2202,13 +2296,18 @@ cursor:pointer;
 <div id="bannerTeamPopup" class="banner-team-popup">
   <div id="bannerTeamPopupTitle" class="banner-team-popup-title"></div>
 
+  <div id="bannerTeamPopupTeamHeader" class="banner-team-popup-team-header">
+    <img id="bannerTeamPopupConferenceCornerLogo" class="banner-team-popup-corner-logo" src="" alt="">
+    <div class="banner-team-popup-team-title-wrap">
+      <div id="bannerTeamPopupCity" class="banner-team-popup-city"></div>
+      <div id="bannerTeamPopupNickname" class="banner-team-popup-nickname"></div>
+    </div>
+    <img id="bannerTeamPopupTopTeamLogo" class="banner-team-popup-corner-logo" src="" alt="">
+  </div>
+
   <div class="banner-team-popup-body">
     <div class="banner-team-popup-left">
       <div id="bannerTeamPopupRounds" class="banner-team-popup-line"></div>
-
-      <div class="banner-team-popup-logo-wrap">
-        <img id="bannerTeamPopupLogo" class="banner-team-popup-logo" src="" alt="">
-      </div>
     </div>
 
     <div class="banner-team-popup-right">
@@ -2222,6 +2321,10 @@ cursor:pointer;
         <div class="banner-team-needs-row"><span class="banner-team-needs-num">3.</span><span class="banner-team-needs-fill"></span></div>
         <div class="banner-team-needs-row"><span class="banner-team-needs-num">4.</span><span class="banner-team-needs-fill"></span></div>
         <div class="banner-team-needs-row"><span class="banner-team-needs-num">5.</span><span class="banner-team-needs-fill"></span></div>
+      </div>
+
+      <div class="banner-team-popup-logo-wrap">
+        <img id="bannerTeamPopupLogo" class="banner-team-popup-logo" src="" alt="">
       </div>
     </div>
   </div>
@@ -3777,6 +3880,11 @@ function clearConferenceGlow(keepLocked = true){
 function showBannerTeamPopup(imgEl, mouseEvent){
     const popup = document.getElementById("bannerTeamPopup");
     const titleEl = document.getElementById("bannerTeamPopupTitle");
+    const teamHeaderEl = document.getElementById("bannerTeamPopupTeamHeader");
+    const cityEl = document.getElementById("bannerTeamPopupCity");
+    const nicknameEl = document.getElementById("bannerTeamPopupNickname");
+    const conferenceCornerLogoEl = document.getElementById("bannerTeamPopupConferenceCornerLogo");
+    const topTeamLogoEl = document.getElementById("bannerTeamPopupTopTeamLogo");
     const picksEl = document.getElementById("bannerTeamPopupPicks");
     const roundsEl = document.getElementById("bannerTeamPopupRounds");
     const logoEl = document.getElementById("bannerTeamPopupLogo");
@@ -3793,29 +3901,53 @@ function showBannerTeamPopup(imgEl, mouseEvent){
     const isConference = src === "afc.png" || src === "nfc.png";
 
     popup.classList.toggle("compact-conference", isConference);
-
-    if(isConference && window.innerWidth >= 900){
-        if(src === "afc.png"){
-            titleEl.textContent = "American Football Conference\n(AFC)";
-        } else {
-            titleEl.textContent = "National Football Conference\n(NFC)";
-        }
-    } else {
-        titleEl.textContent = popupInfo.title;
-    }
-
-    picksEl.textContent = popupInfo.draftPicks;
-    roundsEl.textContent = formatBannerPopupRounds(popupInfo.picksRound, src);
-    logoEl.src = src;
-    logoEl.alt = popupInfo.title;
-
-    const rect = imgEl.getBoundingClientRect();
+    popup.classList.toggle("team-layout", !isConference);
 
     if(isConference){
+        teamHeaderEl.style.display = "none";
+        titleEl.style.display = "block";
+
+        if(window.innerWidth >= 900){
+            if(src === "afc.png"){
+                titleEl.textContent = "American Football Conference\n(AFC)";
+            } else {
+                titleEl.textContent = "National Football Conference\n(NFC)";
+            }
+        } else {
+            titleEl.textContent = popupInfo.title;
+        }
+
+        picksEl.textContent = popupInfo.draftPicks;
+        roundsEl.textContent = formatBannerPopupRounds(popupInfo.picksRound, src);
         needsWrapEl.style.display = "none";
+
+        logoEl.src = src;
+        logoEl.alt = popupInfo.title;
+
+        const rect = imgEl.getBoundingClientRect();
         logoEl.style.width = rect.width + "px";
         logoEl.style.height = rect.height + "px";
     } else {
+        titleEl.style.display = "none";
+        teamHeaderEl.style.display = "grid";
+
+        const titleParts = String(popupInfo.title || "").trim().split(/\s+/);
+        const nickname = titleParts.pop() || "";
+        const city = titleParts.join(" ");
+
+        cityEl.textContent = city;
+        nicknameEl.textContent = nickname;
+
+        const conferenceSrc = afcTeamLogoSources.includes(src) ? "afc.png" : "nfc.png";
+        conferenceCornerLogoEl.src = conferenceSrc;
+        conferenceCornerLogoEl.alt = conferenceSrc === "afc.png" ? "AFC" : "NFC";
+
+        topTeamLogoEl.src = src;
+        topTeamLogoEl.alt = popupInfo.title;
+
+        picksEl.textContent = popupInfo.draftPicks;
+        roundsEl.textContent = formatBannerPopupRounds(popupInfo.picksRound, src);
+
         needsWrapEl.style.display = "block";
 
         const needs = Array.isArray(popupInfo.teamNeeds)
@@ -3831,19 +3963,15 @@ function showBannerTeamPopup(imgEl, mouseEvent){
             el.textContent = needs[index] || "";
         });
 
-        if(window.innerWidth >= 900){
-            logoEl.style.width = (rect.width * 0.6) + "px";
-            logoEl.style.height = (rect.height * 0.6) + "px";
-        } else {
-            logoEl.style.width = rect.width + "px";
-            logoEl.style.height = rect.height + "px";
-        }
+        logoEl.src = "";
+        logoEl.alt = "";
+        logoEl.style.width = "";
+        logoEl.style.height = "";
     }
 
     popup.style.display = "block";
     moveBannerTeamPopup(mouseEvent);
 }
-
 
 function moveBannerTeamPopup(e){
     const popup = document.getElementById("bannerTeamPopup");
