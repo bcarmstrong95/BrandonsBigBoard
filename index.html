@@ -2746,6 +2746,21 @@ const bannerPopupData = {
   }
 };
 
+const defaultBlankTeamNeeds = ["", "", "", "", ""];
+
+Object.keys(bannerPopupData).forEach(key => {
+    if(key === "afc.png" || key === "nfc.png") return;
+
+    if(!Array.isArray(bannerPopupData[key].teamNeeds)){
+        bannerPopupData[key].teamNeeds = [...defaultBlankTeamNeeds];
+    } else {
+        while(bannerPopupData[key].teamNeeds.length < 5){
+            bannerPopupData[key].teamNeeds.push("");
+        }
+        bannerPopupData[key].teamNeeds = bannerPopupData[key].teamNeeds.slice(0, 5);
+    }
+});
+
 let bannerPopupTimer = null;
 let activeBannerLogo = null;
 let lockedConference = null;
@@ -3765,31 +3780,14 @@ function showBannerTeamPopup(imgEl, mouseEvent){
     const picksEl = document.getElementById("bannerTeamPopupPicks");
     const roundsEl = document.getElementById("bannerTeamPopupRounds");
     const logoEl = document.getElementById("bannerTeamPopupLogo");
-
-    const src = imgEl.getAttribute("src") || "";
-    const popupInfo = bannerPopupData[src] || {
-        title: imgEl.getAttribute("alt") || "Team",
-        draftPicks: "Draft Picks: ",
-        picksRound: ""
-    };
-
-    const isConference = src === "afc.png" || src === "nfc.png";
-
-    popup.classList.toggle("compact-conference", isConference);
-
-  function showBannerTeamPopup(imgEl, mouseEvent){
-    const popup = document.getElementById("bannerTeamPopup");
-    const titleEl = document.getElementById("bannerTeamPopupTitle");
-    const picksEl = document.getElementById("bannerTeamPopupPicks");
-    const roundsEl = document.getElementById("bannerTeamPopupRounds");
-    const logoEl = document.getElementById("bannerTeamPopupLogo");
     const needsWrapEl = document.getElementById("bannerTeamNeedsWrap");
 
     const src = imgEl.getAttribute("src") || "";
     const popupInfo = bannerPopupData[src] || {
         title: imgEl.getAttribute("alt") || "Team",
         draftPicks: "Draft Picks: ",
-        picksRound: ""
+        picksRound: "",
+        teamNeeds: ["", "", "", "", ""]
     };
 
     const isConference = src === "afc.png" || src === "nfc.png";
@@ -3820,6 +3818,19 @@ function showBannerTeamPopup(imgEl, mouseEvent){
     } else {
         needsWrapEl.style.display = "block";
 
+        const needs = Array.isArray(popupInfo.teamNeeds)
+            ? popupInfo.teamNeeds.slice(0, 5)
+            : [];
+
+        while(needs.length < 5){
+            needs.push("");
+        }
+
+        const fillEls = needsWrapEl.querySelectorAll(".banner-team-needs-fill");
+        fillEls.forEach((el, index) => {
+            el.textContent = needs[index] || "";
+        });
+
         if(window.innerWidth >= 900){
             logoEl.style.width = (rect.width * 0.6) + "px";
             logoEl.style.height = (rect.height * 0.6) + "px";
@@ -3832,6 +3843,8 @@ function showBannerTeamPopup(imgEl, mouseEvent){
     popup.style.display = "block";
     moveBannerTeamPopup(mouseEvent);
 }
+
+
 function moveBannerTeamPopup(e){
     const popup = document.getElementById("bannerTeamPopup");
     if(popup.style.display !== "block") return;
