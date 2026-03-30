@@ -1598,11 +1598,11 @@ position:fixed;
 display:none;
 pointer-events:none;
 z-index:9500;
-width:181px;
+width:214px;
 background:rgba(8,8,8,.96);
 border:1px solid #555;
 border-radius:12px;
-padding:12px 12px 10px 12px;
+padding:12px 12px 12px 12px;
 box-shadow:
 0 0 18px rgba(0,0,0,.72),
 0 0 10px rgba(255,255,255,.08);
@@ -1645,12 +1645,12 @@ min-width:0;
 }
 
 .banner-team-popup-right{
-flex:0 0 auto;
+flex:0 0 92px;
 display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:flex-start;
-min-width:42px;
+min-width:92px;
 }
 
 .banner-team-popup.compact-conference .banner-team-popup-body{
@@ -1705,14 +1705,51 @@ margin-bottom:6px;
 
 .banner-team-popup-logo-wrap{
 margin-top:0;
+margin-bottom:8px;
 display:flex;
 justify-content:center;
 align-items:center;
+width:100%;
 }
 
 .banner-team-popup-logo{
 object-fit:contain;
 display:block;
+}
+
+.banner-team-needs-wrap{
+display:none;
+width:100%;
+text-align:left;
+margin-top:0;
+}
+
+.banner-team-needs-title{
+font-size:14px;
+margin-bottom:5px;
+text-align:left;
+}
+
+.banner-team-needs-row{
+display:flex;
+align-items:center;
+gap:6px;
+margin-bottom:4px;
+width:100%;
+}
+
+.banner-team-needs-num{
+flex:0 0 18px;
+}
+
+.banner-team-needs-fill{
+flex:1 1 auto;
+height:12px;
+border-bottom:1px solid rgba(255,255,255,.55);
+}
+
+.banner-team-popup.compact-conference .banner-team-needs-wrap{
+display:none !important;
 }
 
 .conference-glow{
@@ -1724,11 +1761,30 @@ drop-shadow(0 0 20px rgba(255,255,255,.8));
 
 @media (min-width:900px){
 .banner-team-popup{
-width:276px;
+width:300px;
+padding:14px 14px 14px 14px;
 }
 
 .banner-team-popup.compact-conference{
 width:243px;
+}
+
+.banner-team-popup-right{
+flex:0 0 92px;
+min-width:92px;
+}
+
+.banner-team-needs-title{
+font-size:15px;
+margin-bottom:6px;
+}
+
+.banner-team-needs-row{
+margin-bottom:5px;
+}
+
+.banner-team-needs-fill{
+height:13px;
 }
 }
 
@@ -1737,6 +1793,8 @@ width:243px;
 font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
 font-style:normal;
 font-weight:normal;
+width:196px;
+padding:10px 10px 10px 10px;
 }
 
 .banner-team-popup-title{
@@ -1749,6 +1807,33 @@ font-size:9.45px;
 
 .banner-team-popup-line{
 font-size:12.6px;
+}
+
+.banner-team-popup-right{
+flex:0 0 82px;
+min-width:82px;
+}
+
+.banner-team-popup-logo-wrap{
+margin-bottom:6px;
+}
+
+.banner-team-needs-title{
+font-size:11.5px;
+margin-bottom:4px;
+}
+
+.banner-team-needs-row{
+gap:5px;
+margin-bottom:3px;
+}
+
+.banner-team-needs-num{
+flex:0 0 15px;
+}
+
+.banner-team-needs-fill{
+height:9px;
 }
 }
 .prospect-popup-card{
@@ -2124,8 +2209,19 @@ cursor:pointer;
 
     <div class="banner-team-popup-right">
       <div id="bannerTeamPopupPicks" class="banner-team-popup-line banner-team-popup-picks"></div>
+
       <div class="banner-team-popup-logo-wrap">
         <img id="bannerTeamPopupLogo" class="banner-team-popup-logo" src="" alt="">
+      </div>
+
+      <div id="bannerTeamNeedsWrap" class="banner-team-needs-wrap">
+        <div class="banner-team-needs-title">Team Needs:</div>
+
+        <div class="banner-team-needs-row"><span class="banner-team-needs-num">1.</span><span class="banner-team-needs-fill"></span></div>
+        <div class="banner-team-needs-row"><span class="banner-team-needs-num">2.</span><span class="banner-team-needs-fill"></span></div>
+        <div class="banner-team-needs-row"><span class="banner-team-needs-num">3.</span><span class="banner-team-needs-fill"></span></div>
+        <div class="banner-team-needs-row"><span class="banner-team-needs-num">4.</span><span class="banner-team-needs-fill"></span></div>
+        <div class="banner-team-needs-row"><span class="banner-team-needs-num">5.</span><span class="banner-team-needs-fill"></span></div>
       </div>
     </div>
   </div>
@@ -3681,6 +3777,25 @@ function showBannerTeamPopup(imgEl, mouseEvent){
 
     popup.classList.toggle("compact-conference", isConference);
 
+  function showBannerTeamPopup(imgEl, mouseEvent){
+    const popup = document.getElementById("bannerTeamPopup");
+    const titleEl = document.getElementById("bannerTeamPopupTitle");
+    const picksEl = document.getElementById("bannerTeamPopupPicks");
+    const roundsEl = document.getElementById("bannerTeamPopupRounds");
+    const logoEl = document.getElementById("bannerTeamPopupLogo");
+    const needsWrapEl = document.getElementById("bannerTeamNeedsWrap");
+
+    const src = imgEl.getAttribute("src") || "";
+    const popupInfo = bannerPopupData[src] || {
+        title: imgEl.getAttribute("alt") || "Team",
+        draftPicks: "Draft Picks: ",
+        picksRound: ""
+    };
+
+    const isConference = src === "afc.png" || src === "nfc.png";
+
+    popup.classList.toggle("compact-conference", isConference);
+
     if(isConference && window.innerWidth >= 900){
         if(src === "afc.png"){
             titleEl.textContent = "American Football Conference\n(AFC)";
@@ -3697,8 +3812,22 @@ function showBannerTeamPopup(imgEl, mouseEvent){
     logoEl.alt = popupInfo.title;
 
     const rect = imgEl.getBoundingClientRect();
-    logoEl.style.width = rect.width + "px";
-    logoEl.style.height = rect.height + "px";
+
+    if(isConference){
+        needsWrapEl.style.display = "none";
+        logoEl.style.width = rect.width + "px";
+        logoEl.style.height = rect.height + "px";
+    } else {
+        needsWrapEl.style.display = "block";
+
+        if(window.innerWidth >= 900){
+            logoEl.style.width = (rect.width * 0.6) + "px";
+            logoEl.style.height = (rect.height * 0.6) + "px";
+        } else {
+            logoEl.style.width = rect.width + "px";
+            logoEl.style.height = rect.height + "px";
+        }
+    }
 
     popup.style.display = "block";
     moveBannerTeamPopup(mouseEvent);
