@@ -3312,6 +3312,21 @@ if(b2 === null) return -1;
 return sortAsc ? b1 - b2 : b2 - b1;
 }
 
+    // Pass Yds (2025) sorting
+    if(header === "pass yds (2025)"){
+        let y1 = parseFloat(raw1.replace(/,/g, ""));
+        let y2 = parseFloat(raw2.replace(/,/g, ""));
+
+        const invalidY1 = raw1 === "" || raw1 === "-" || raw1 === "0" || isNaN(y1);
+        const invalidY2 = raw2 === "" || raw2 === "-" || raw2 === "0" || isNaN(y2);
+
+        if(invalidY1 && invalidY2) return 0;
+        if(invalidY1) return 1;
+        if(invalidY2) return -1;
+
+        return sortAsc ? y1 - y2 : y2 - y1;
+    }
+
     // Numeric sort if possible
     let n1 = parseFloat(raw1);
     let n2 = parseFloat(raw2);
