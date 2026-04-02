@@ -3566,8 +3566,11 @@ td.querySelector("img").addEventListener("click",(e)=>{
 }
 else{
 
-    let displayValue = c;
-    let header = headers[i].toLowerCase();
+    let displayValue = String(c ?? "").trim();
+    if (displayValue === "#DIV/0!") {
+        displayValue = "";
+    }
+
     const headerClean = headers[i].trim().toLowerCase();
 
 if(headerClean === "b#"){
@@ -3595,7 +3598,7 @@ if(headerClean === "b#"){
             align-items:center;
             justify-content:center;
             margin:auto;
-        ">${c}</div>
+        ">${displayValue}</div>
     `;
 
     tr.appendChild(td);
@@ -3615,7 +3618,7 @@ if(
     i === wingspanIndex
 ){
 
-    let original = String(c);
+    let original = String(displayValue);
 
     // 🔥 If sheet already contains a fraction → KEEP EXACTLY AS-IS
     if(original.includes("/")){
@@ -3684,7 +3687,10 @@ else{
         headerName === "comp % (2025)" ||
         headerName === "pass rtg (2025)"
     ){
-        displayValue = c; // keep EXACTLY as sheet
+      displayValue = String(c ?? "").trim();
+if (displayValue === "#DIV/0!") {
+    displayValue = "";
+}
     }
     else{
 
