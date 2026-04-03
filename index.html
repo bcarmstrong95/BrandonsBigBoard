@@ -923,9 +923,9 @@ font-size:.42em;
 }
 
 .division-logo{
-    height:52.5px;
+    height:60.375px;
     width:auto;
-    max-width:52.5px;
+    max-width:60.375px;
     object-fit:contain;
     vertical-align:middle;
     display:block;
@@ -948,7 +948,8 @@ th.division-col{
 }
 
 td.division-col{
-    background:#ffffff !important;
+    background:#3a3a3a !important;
+    cursor:pointer;
 }
 
 .logo-large{
@@ -2451,6 +2452,7 @@ let cColorIndex=-1;
 let searchTerm="";
 let selectedPositions=[];
 let selectedSchool=null;
+let selectedDivision=null;
 
   let desktopVScroll, desktopVTrack, desktopVThumb, rightEdgeHoverZone;
 let desktopHScroll, desktopHTrack, desktopHThumb, bottomEdgeHoverZone;
@@ -3273,11 +3275,12 @@ else if(
     sortAsc = true;
 }
 
-// Name / School / Pos → A–Z first
+// Name / School / Pos / Division → A–Z first
 else if(
     header === "name" ||
     header === "school" ||
-    header === "pos"
+    header === "pos" ||
+    header === "division"
 ){
     sortAsc = true;
 }
@@ -3314,6 +3317,19 @@ let isInvalid2 = isDisplayBlankValue(raw2);
     if(isInvalid1) return 1;
     if(isInvalid2) return -1;
 
+    // DIVISION sorting with school as tie-breaker
+    if(header === "division"){
+        const divCompare = sortAsc
+            ? raw1.localeCompare(raw2)
+            : raw2.localeCompare(raw1);
+
+        if(divCompare !== 0) return divCompare;
+
+        const school1 = String(a[schoolIndex] ?? "").trim();
+        const school2 = String(b[schoolIndex] ?? "").trim();
+        return school1.localeCompare(school2);
+    }
+
     // HEIGHT sorting
     if(col === heightIndex){
         let h1 = heightToInches(raw1);
@@ -3331,6 +3347,7 @@ let isInvalid2 = isDisplayBlankValue(raw2);
         let f2 = fractionToDecimal(raw2);
         return sortAsc ? f1 - f2 : f2 - f1;
     }
+
     // BROAD sorting (10'5")
 if(col === broadIndex){
 
@@ -3614,6 +3631,18 @@ else if(headers[i].trim().toLowerCase() === "division"){
     else{
         td.textContent = c;
     }
+
+    td.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        if(selectedDivision === cleanDivision){
+            selectedDivision = null;
+        } else{
+            selectedDivision = cleanDivision;
+        }
+
+        applyFilters();
+    });
 }
 else{
 
@@ -3852,15 +3881,22 @@ function applyFilters(){
             String(cell).toLowerCase().includes(searchTerm)
         );
 
-       const matchesPosition =
+              const matchesPosition =
     positionIndex === -1 ||
     selectedPositions.length === 0 ||
     selectedPositions.includes(row[positionIndex]);
+
     const matchesSchool =
 selectedSchool === null ||
 row[schoolIndex].trim() === selectedSchool;
 
-return matchesSearch && matchesPosition && matchesSchool;
+    const divisionIndex = headers.findIndex(h => h.toLowerCase() === "division");
+    const matchesDivision =
+divisionIndex === -1 ||
+selectedDivision === null ||
+String(row[divisionIndex] ?? "").trim().toUpperCase() === selectedDivision;
+
+return matchesSearch && matchesPosition && matchesSchool && matchesDivision;
     });
 
     // Re-apply current sort if one exists
