@@ -3564,6 +3564,20 @@ td.querySelector("img").addEventListener("click",(e)=>{
         td.textContent = c;
     }
 }
+else if(headers[i].trim().toLowerCase() === "division"){
+
+    const cleanDivision = String(c ?? "").trim().toUpperCase();
+
+    if(cleanDivision === "FBS"){
+        td.innerHTML = `<img src="fbs.png" class="school-logo" title="FBS">`;
+    }
+    else if(cleanDivision === "FCS"){
+        td.innerHTML = `<img src="fcs.png" class="school-logo" title="FCS">`;
+    }
+    else{
+        td.textContent = c;
+    }
+}
 else{
 
     let displayValue = String(c ?? "").trim();
