@@ -922,6 +922,31 @@ font-size:.42em;
     margin:auto;
 }
 
+.division-logo{
+    height:35px;
+    width:auto;
+    max-width:35px;
+    object-fit:contain;
+    vertical-align:middle;
+    display:block;
+    margin:auto;
+}
+
+th.division-col,
+td.division-col{
+    width:42px;
+    min-width:42px;
+    max-width:42px;
+    padding-left:2px;
+    padding-right:2px;
+}
+
+th.division-col{
+    font-size:.78em;
+    line-height:1.02;
+    letter-spacing:-.2px;
+}
+
 .logo-large{
 transform:scale(1.7);
 transform-origin:center;
@@ -3566,13 +3591,15 @@ td.querySelector("img").addEventListener("click",(e)=>{
 }
 else if(headers[i].trim().toLowerCase() === "division"){
 
+    td.classList.add("division-col");
+
     const cleanDivision = String(c ?? "").trim().toUpperCase();
 
     if(cleanDivision === "FBS"){
-        td.innerHTML = `<img src="fbs.png" class="school-logo" title="FBS">`;
+        td.innerHTML = `<img src="fbs.png" class="division-logo" title="FBS">`;
     }
     else if(cleanDivision === "FCS"){
-        td.innerHTML = `<img src="fcs.png" class="school-logo" title="FCS">`;
+        td.innerHTML = `<img src="fcs.png" class="division-logo" title="FCS">`;
     }
     else{
         td.textContent = c;
@@ -3902,6 +3929,10 @@ else{
 
 if(cleanLower === "trend (b#)" || cleanLower === "trend (c#)"){
     th.classList.add("trend-header");
+}
+
+if(cleanLower === "division"){
+    th.classList.add("division-col");
 }
 
 th.addEventListener("click",()=>sortTable(i));
