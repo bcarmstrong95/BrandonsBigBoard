@@ -947,6 +947,10 @@ th.division-col{
     letter-spacing:-.2px;
 }
 
+td.division-col{
+    background:#5a5a5a !important;
+}
+
 .logo-large{
 transform:scale(1.7);
 transform-origin:center;
@@ -3604,6 +3608,9 @@ else if(headers[i].trim().toLowerCase() === "division"){
     else if(cleanDivision === "DIII"){
         td.innerHTML = `<img src="d3.png" class="division-logo" title="DIII">`;
     }
+    else if(cleanDivision === "DII"){
+        td.innerHTML = `<img src="d2.png" class="division-logo" title="DII">`;
+    }
     else{
         td.textContent = c;
     }
@@ -3925,6 +3932,10 @@ if(cleanLower === "trend (b#)"){
 }
 else if(cleanLower === "trend (c#)"){
     th.innerHTML = 'Trend<br>(C#) <span class="arrow"></span>';
+}
+else if(cleanHeader.includes("(2025)")){
+    const headerTop = cleanHeader.replace(/\s*\(2025\)\s*/g, "").trim();
+    th.innerHTML = `${headerTop}<br>(2025) <span class="arrow"></span>`;
 }
 else{
     th.innerHTML = h + ' <span class="arrow"></span>';
