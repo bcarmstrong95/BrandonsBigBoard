@@ -466,7 +466,13 @@ function renderPlayer(row, headers){
   const height = formatMeasurement(getValue(row, headers, "height"), true);
   const weight = getValue(row, headers, "weight") || "-";
   const age = getValue(row, headers, "age") || "-";
-  const avg = getValue(row, headers, "avg") || "-";
+  const avgRaw = getValue(row, headers, "avg");
+let avg = avgRaw || "-";
+
+const avgNum = parseFloat(avgRaw);
+if(!isNaN(avgNum)){
+  avg = (Math.round(avgNum * 1000) / 1000).toFixed(3).replace(/\.?0+$/, "");
+}
   const bnum = getValue(row, headers, "b#") || "-";
   const cnum = getValue(row, headers, "c#") || "-";
   const forty = getValue(row, headers, "40") || "-";
@@ -533,7 +539,7 @@ function renderPlayer(row, headers){
           <div class="info-value">${cnum}</div>
         </div>
         <div class="info-box">
-          <div class="info-label">AVG Score</div>
+          <div class="info-label">AVG Grade</div>
           <div class="info-value">${avg}</div>
         </div>
         <div class="info-box">
