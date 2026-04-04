@@ -2448,7 +2448,7 @@ let heightIndex=-1, positionIndex=-1;
 let handIndex=-1, armIndex=-1, wingspanIndex=-1;
 let broadIndex=-1;
 let nameIndex=-1, schoolIndex=-1, weightIndex=-1, avgIndex=-1, bIndex=-1, cIndex=-1;
-let cColorIndex=-1;
+let cColorIndex=-1, ageIndex=-1, fortyIndex=-1, verticalIndex=-1, divisionIndex=-1;
 let searchTerm="";
 let selectedPositions=[];
 let selectedSchool=null;
@@ -3209,19 +3209,23 @@ return;
 }
 
 headers = headerRow.map(h => String(h).trim());
-heightIndex=headers.findIndex(h=>h.toLowerCase()==="height");
-positionIndex=headers.findIndex(h=>h.toLowerCase()==="pos");
-nameIndex=headers.findIndex(h=>h.toLowerCase()==="name");
-schoolIndex=headers.findIndex(h=>h.toLowerCase()==="school");
-weightIndex=headers.findIndex(h=>h.toLowerCase()==="weight");
-avgIndex=headers.findIndex(h=>h.toLowerCase()==="avg");
-bIndex=headers.findIndex(h=>h.toLowerCase()==="b#");
-cIndex=headers.findIndex(h=>h.toLowerCase()==="c#");
-handIndex=headers.findIndex(h=>h.toLowerCase()==="hand");
-armIndex=headers.findIndex(h=>h.toLowerCase()==="arm");
-wingspanIndex=headers.findIndex(h=>h.toLowerCase()==="wingspan");
-broadIndex=headers.findIndex(h=>h.toLowerCase()==="broad");
-cColorIndex = headers.findIndex(h=>h.toLowerCase().includes("c# color"));
+heightIndex = headers.findIndex(h => h.toLowerCase() === "height");
+positionIndex = headers.findIndex(h => h.toLowerCase() === "pos");
+nameIndex = headers.findIndex(h => h.toLowerCase() === "name");
+schoolIndex = headers.findIndex(h => h.toLowerCase() === "school");
+weightIndex = headers.findIndex(h => h.toLowerCase() === "weight");
+avgIndex = headers.findIndex(h => h.toLowerCase() === "avg");
+bIndex = headers.findIndex(h => h.toLowerCase() === "b#");
+cIndex = headers.findIndex(h => h.toLowerCase() === "c#");
+handIndex = headers.findIndex(h => h.toLowerCase() === "hand");
+armIndex = headers.findIndex(h => h.toLowerCase() === "arm");
+wingspanIndex = headers.findIndex(h => h.toLowerCase() === "wingspan");
+broadIndex = headers.findIndex(h => h.toLowerCase() === "broad");
+cColorIndex = headers.findIndex(h => h.toLowerCase().includes("c# color"));
+ageIndex = headers.findIndex(h => h.toLowerCase() === "age");
+fortyIndex = headers.findIndex(h => h.toLowerCase() === "40");
+verticalIndex = headers.findIndex(h => h.toLowerCase() === "vertical");
+divisionIndex = headers.findIndex(h => h.toLowerCase() === "division");
 
 data = results.data.slice(2)
   .filter(r => r.some(cell => String(cell).trim() !== ""))
@@ -3424,8 +3428,9 @@ return sortAsc ? b1 - b2 : b2 - b1;
     displayRows();
 }
 function displayRows(){
-const tbody=document.querySelector("#data-table tbody");
-tbody.innerHTML="";
+const tbody = document.querySelector("#data-table tbody");
+tbody.innerHTML = "";
+const fragment = document.createDocumentFragment();
 
 filteredData.forEach(r=>{
 const tr=document.createElement("tr");
@@ -3897,21 +3902,18 @@ function applyFilters(){
 selectedSchool === null ||
 row[schoolIndex].trim() === selectedSchool;
 
-    const divisionIndex = headers.findIndex(h => h.toLowerCase() === "division");
-    const matchesDivision =
+  const matchesDivision =
 divisionIndex === -1 ||
 selectedDivision === null ||
 String(row[divisionIndex] ?? "").trim().toUpperCase() === selectedDivision;
-
 return matchesSearch && matchesPosition && matchesSchool && matchesDivision;
     });
 
     // Re-apply current sort if one exists
    if(currentSort !== -1){
-    sortTable(currentSort);
-} else {
-    displayRows();
+    applyCurrentSort();
 }
+displayRows();
 
 const prospectCountEl = document.getElementById("prospectCount");
 const newProspectCount = String(filteredData.length);
