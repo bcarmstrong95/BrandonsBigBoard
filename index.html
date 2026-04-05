@@ -3502,31 +3502,53 @@ return sortAsc ? b1 - b2 : b2 - b1;
         return sortAsc ? y1 - y2 : y2 - y1;
     }
 
-    // Numeric sort if possible
-    let n1 = parseFloat(raw1);
-    let n2 = parseFloat(raw2);
+    function sortTable(col){
+    let header = headers[col].toLowerCase();
 
-    if(!isNaN(n1) && !isNaN(n2)){
-        n1 = Math.round(n1 * 1000) / 1000;
-        n2 = Math.round(n2 * 1000) / 1000;
-        return sortAsc ? n1 - n2 : n2 - n1;
+    if(currentSort === col){
+        sortAsc = !sortAsc;
+    } else {
+        currentSort = col;
+
+        if(header === "trend (b#)" || header === "trend (c#)"){
+            sortAsc = true;
+        }
+        else if(col === 0 || col === 1){
+            sortAsc = true;
+        }
+        else if(header === "c#"){
+            sortAsc = true;
+        }
+        else if(
+            header === "age" ||
+            header === "40" ||
+            header.includes("40")
+        ){
+            sortAsc = true;
+        }
+        else if(
+            header === "name" ||
+            header === "school" ||
+            header === "pos" ||
+            header === "division"
+        ){
+            sortAsc = true;
+        }
+        else{
+            sortAsc = false;
+        }
     }
 
-    // Otherwise text sort
-    return sortAsc
-        ? raw1.localeCompare(raw2)
-        : raw2.localeCompare(raw1);
-
-});
+    applyCurrentSort();
 
     document.querySelectorAll("th").forEach(th=>{
         th.classList.remove("sorted");
-        th.querySelector(".arrow").textContent="";
+        th.querySelector(".arrow").textContent = "";
     });
 
-    const active=document.querySelectorAll("th")[col];
+    const active = document.querySelectorAll("th")[col];
     active.classList.add("sorted");
-    active.querySelector(".arrow").textContent=sortAsc?"▲":"▼";
+    active.querySelector(".arrow").textContent = sortAsc ? "▲" : "▼";
 
     displayRows();
 }
@@ -3536,54 +3558,49 @@ tbody.innerHTML = "";
 const fragment = document.createDocumentFragment();
 
 filteredData.forEach(r=>{
-const tr=document.createElement("tr");
+const tr = document.createElement("tr");
 const playerName = r[nameIndex];
 const playerURL = createPlayerURL(playerName, r[schoolIndex]);
-// CLICK to go to player profile page (ignore school logo column)
+
 tr.addEventListener("click", (e) => {
     const clickedCell = e.target.closest("td");
-if(!clickedCell) return;
+    if(!clickedCell) return;
 
-const cellIndex = Array.from(tr.children).indexOf(clickedCell);
-const headerName = headers[cellIndex].toLowerCase();
-    if (headerName === "school") return; // ignore school column
+    const cellIndex = Array.from(tr.children).indexOf(clickedCell);
+    const headerName = headers[cellIndex].toLowerCase();
+    if(headerName === "school") return;
 
-    // Save player data to sessionStorage so profile page can load it
     const playerData = {
         name: r[nameIndex],
         school: r[schoolIndex],
         pos: r[positionIndex],
         height: r[heightIndex],
         weight: r[weightIndex],
-        age: r[headers.findIndex(h => h.toLowerCase()==="age")],
+        age: ageIndex > -1 ? r[ageIndex] : "",
         avg: r[avgIndex],
         bnum: r[bIndex],
-        cnum: r[headers.findIndex(h => h.toLowerCase()==="c#")],
-        forty: r[headers.findIndex(h => h.toLowerCase()==="40")],
-        vertical: r[headers.findIndex(h => h.toLowerCase()==="vertical")],
-        broad: r[broadIndex]
+        cnum: cIndex > -1 ? r[cIndex] : "",
+        forty: fortyIndex > -1 ? r[fortyIndex] : "",
+        vertical: verticalIndex > -1 ? r[verticalIndex] : "",
+        broad: broadIndex > -1 ? r[broadIndex] : ""
     };
-    sessionStorage.setItem("selectedPlayer", JSON.stringify(playerData));
 
-    // Redirect to the dedicated player profile page
-window.location.href = playerURL;
+    sessionStorage.setItem("selectedPlayer", JSON.stringify(playerData));
+    window.location.href = playerURL;
 });
 
-// HOVER popup on desktop
 tr.addEventListener("mouseenter", (e) => {
-    if (window.innerWidth < 900) return;
+    if(window.innerWidth < 900) return;
 
     const popup = document.getElementById("prospectPopup");
     popup.style.display = "block";
 
     const img = document.getElementById("popupHeadshot");
-img.src = "blank.jpg";
-img.onerror = () => { img.src = "blank.jpg"; };
+    img.src = "blank.jpg";
+    img.onerror = () => { img.src = "blank.jpg"; };
 
     let popupHeightValue = String(r[heightIndex] ?? "");
-    if(popupHeightValue.includes("/")){
-        // keep exactly as-is
-    } else {
+    if(!popupHeightValue.includes("/")){
         let hasQuote = popupHeightValue.includes('"');
         let clean = popupHeightValue.replace(/"/g,"").trim();
 
@@ -3595,11 +3612,7 @@ img.onerror = () => { img.src = "blank.jpg"; };
             if(!isNaN(inchesDecimal)){
                 let whole = Math.floor(inchesDecimal);
                 let decimal = inchesDecimal - whole;
-
-                let fraction = decimal > 0
-                    ? " " + decimalToFraction(decimal)
-                    : "";
-
+                let fraction = decimal > 0 ? " " + decimalToFraction(decimal) : "";
                 popupHeightValue = `${feet}'${whole}${fraction}`;
             } else {
                 popupHeightValue = clean;
@@ -3618,7 +3631,6 @@ img.onerror = () => { img.src = "blank.jpg"; };
         popupAVGValue = popupAVGValue.replace(/\.?0+$/, '');
     }
 
-    const ageIndex = headers.findIndex(h => h.toLowerCase() === "age");
     let popupAgeValue = ageIndex > -1 ? String(r[ageIndex] ?? "") : "";
 
     document.getElementById("popupName").textContent = r[nameIndex];
@@ -3628,44 +3640,44 @@ img.onerror = () => { img.src = "blank.jpg"; };
     document.getElementById("popupWeight").textContent = r[weightIndex];
     document.getElementById("popupAge").textContent = popupAgeValue;
     document.getElementById("popupAVG").textContent = popupAVGValue;
+
     let popupPosValue = r[positionIndex];
-let popupCircleColor = positionColors[popupPosValue] || "#444";
-let popupTextColor = "white";
+    let popupCircleColor = positionColors[popupPosValue] || "#444";
+    let popupTextColor = "white";
 
-if(popupPosValue === "IOL" || popupPosValue === "OT"){
-    popupTextColor = "black";
-}
+    if(popupPosValue === "IOL" || popupPosValue === "OT"){
+        popupTextColor = "black";
+    }
 
-document.getElementById("popupBNum").innerHTML = `
-  <div class="popup-bnum-circle" style="
-    background:${popupCircleColor};
-    color:${popupTextColor};
-  ">${r[bIndex]}</div>
-`;
+    document.getElementById("popupBNum").innerHTML = `
+      <div class="popup-bnum-circle" style="
+        background:${popupCircleColor};
+        color:${popupTextColor};
+      ">${r[bIndex]}</div>
+    `;
 
     popup.style.left = (e.clientX + 14) + "px";
     popup.style.top = (e.clientY + 14) + "px";
 });
-// Move popup with mouse
+
 tr.addEventListener("mousemove", (e) => {
     const popup = document.getElementById("prospectPopup");
     popup.style.left = (e.clientX + 14) + "px";
     popup.style.top = (e.clientY + 14) + "px";
 });
 
-// Hide popup on mouse leave
 tr.addEventListener("mouseleave", () => {
     const popup = document.getElementById("prospectPopup");
     popup.style.display = "none";
 });
 
-if(positionIndex>-1){
-let pos=r[positionIndex];
-if(positionColors[pos]) tr.style.color=positionColors[pos];
+if(positionIndex > -1){
+    let pos = r[positionIndex];
+    if(positionColors[pos]) tr.style.color = positionColors[pos];
 }
 
 r.forEach((c,i)=>{
-const td=document.createElement("td");
+const td = document.createElement("td");
 
 if(headers[i].toLowerCase().includes("school")){
 
@@ -3673,54 +3685,48 @@ if(headers[i].toLowerCase().includes("school")){
 
     if(schoolLogos[cleanSchool]){
 
-  let extraClass = "school-logo";
+        let extraClass = "school-logo";
 
-if(largeLogos.includes(cleanSchool)){
-    extraClass = "school-logo logo-large";
-}
+        if(largeLogos.includes(cleanSchool)){
+            extraClass = "school-logo logo-large";
+        }
 
-if(mediumLogos.includes(cleanSchool)){
-    extraClass = "school-logo logo-medium";
-}
+        if(mediumLogos.includes(cleanSchool)){
+            extraClass = "school-logo logo-medium";
+        }
 
-if(extraLargeLogos.includes(cleanSchool)){
-    extraClass = "school-logo logo-xlarge";
-}
+        if(extraLargeLogos.includes(cleanSchool)){
+            extraClass = "school-logo logo-xlarge";
+        }
 
-/* Custom size adjustments */
+        if(
+            cleanSchool === "Iowa" ||
+            cleanSchool === "Missouri" ||
+            cleanSchool === "Navy" ||
+            cleanSchool === "NC State" ||
+            cleanSchool === "Wyoming"
+        ){
+            extraClass = "school-logo logo-custom130";
+        }
 
-if(
-    cleanSchool === "Iowa" ||
-    cleanSchool === "Missouri" ||
-    cleanSchool === "Navy" ||
-    cleanSchool === "NC State" ||
-    cleanSchool === "Wyoming"
-){
-    extraClass = "school-logo logo-custom130";
-}
+        if(cleanSchool === "Miss. St."){
+            extraClass = "school-logo logo-custom120";
+        }
 
-if(cleanSchool === "Miss. St."){
-    extraClass = "school-logo logo-custom120";
-}
-td.innerHTML = `<img src="${schoolLogos[cleanSchool]}" 
-class="${extraClass}" 
-title="${cleanSchool}" 
-style="cursor:pointer;">`;
+        td.innerHTML = `<img src="${schoolLogos[cleanSchool]}" class="${extraClass}" title="${cleanSchool}" style="cursor:pointer;">`;
 
-td.querySelector("img").addEventListener("click",(e)=>{
+        td.querySelector("img").addEventListener("click",(e)=>{
+            e.stopPropagation();
 
-    e.stopPropagation();
+            if(selectedSchool === cleanSchool){
+                selectedSchool = null;
+            } else{
+                selectedSchool = cleanSchool;
+            }
 
-    if(selectedSchool === cleanSchool){
-        selectedSchool = null;
-    } else{
-        selectedSchool = cleanSchool;
+            applyFilters();
+        });
     }
-
-    applyFilters();
-
-});
-}
     else{
         td.textContent = c;
     }
@@ -3762,175 +3768,159 @@ else if(headers[i].trim().toLowerCase() === "division"){
 else{
 
     let displayValue = String(c ?? "").trim();
-    if (displayValue === "#DIV/0!") {
+    if(displayValue === "#DIV/0!"){
         displayValue = "";
     }
 
     const headerClean = headers[i].trim().toLowerCase();
 
-if(headerClean === "b#"){
+    if(headerClean === "b#"){
+        let pos = r[positionIndex];
+        let circleColor = positionColors[pos] || "#444";
+        let textColor = "white";
 
-    let pos = r[positionIndex];
-    let circleColor = positionColors[pos] || "#444";
-    let textColor = "white";
+        if(pos === "IOL" || pos === "OT"){
+            textColor = "black";
+        }
 
-    if(pos === "IOL" || pos === "OT"){
-        textColor = "black";
+        const bCircleSize = window.innerWidth >= 900 ? 65 : 54;
+
+        td.innerHTML = `
+            <div style="
+                background:${circleColor};
+                color:${textColor};
+                font-weight:bold;
+                font-size:1em;
+                width:${bCircleSize}px;
+                height:${bCircleSize}px;
+                border-radius:50%;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                margin:auto;
+            ">${displayValue}</div>
+        `;
+
+        tr.appendChild(td);
+        return;
     }
 
-    const bCircleSize = window.innerWidth >= 900 ? 65 : 54;
-
-    td.innerHTML = `
-        <div style="
-            background:${circleColor};
-            color:${textColor};
-            font-weight:bold;
-            font-size:1em;
-            width:${bCircleSize}px;
-            height:${bCircleSize}px;
-            border-radius:50%;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            margin:auto;
-        ">${displayValue}</div>
-    `;
-
-    tr.appendChild(td);
-    return;
-}
-
-if(headerClean === "c#" && cColorIndex > -1){
-    const colorVal = String(r[cColorIndex] || "").trim();
-    if(colorVal) td.style.color = colorVal;
-}
-
-// Convert measurement columns
-if(
-    i === heightIndex ||
-    i === handIndex ||
-    i === armIndex ||
-    i === wingspanIndex
-){
-
-    let original = String(displayValue);
-
-    // 🔥 If sheet already contains a fraction → KEEP EXACTLY AS-IS
-    if(original.includes("/")){
-        displayValue = original;
+    if(headerClean === "c#" && cColorIndex > -1){
+        const colorVal = String(r[cColorIndex] || "").trim();
+        if(colorVal) td.style.color = colorVal;
     }
-    else{
 
-        let hasQuote = original.includes('"');
-        let clean = original.replace(/"/g,"").trim();
+    if(
+        i === heightIndex ||
+        i === handIndex ||
+        i === armIndex ||
+        i === wingspanIndex
+    ){
+        let original = String(displayValue);
 
-        // HEIGHT column (example: 6'2.75)
-        if(i === heightIndex && clean.includes("'")){
+        if(original.includes("/")){
+            displayValue = original;
+        }
+        else{
+            let hasQuote = original.includes('"');
+            let clean = original.replace(/"/g,"").trim();
 
-            let parts = clean.split("'");
-            let feet = parts[0];
-            let inchesDecimal = parseFloat(parts[1]);
+            if(i === heightIndex && clean.includes("'")){
+                let parts = clean.split("'");
+                let feet = parts[0];
+                let inchesDecimal = parseFloat(parts[1]);
 
-            if(!isNaN(inchesDecimal)){
-                let whole = Math.floor(inchesDecimal);
-                let decimal = inchesDecimal - whole;
-
-                let fraction = decimal > 0
-                    ? " " + decimalToFraction(decimal)
-                    : "";
-
-                displayValue = `${feet}'${whole}${fraction}`;
+                if(!isNaN(inchesDecimal)){
+                    let whole = Math.floor(inchesDecimal);
+                    let decimal = inchesDecimal - whole;
+                    let fraction = decimal > 0 ? " " + decimalToFraction(decimal) : "";
+                    displayValue = `${feet}'${whole}${fraction}`;
+                }
+                else{
+                    displayValue = clean;
+                }
             }
             else{
-                displayValue = clean;
+                let num = parseFloat(clean);
+
+                if(!isNaN(num)){
+                    let whole = Math.floor(num);
+                    let decimal = num - whole;
+                    let fraction = decimal > 0 ? " " + decimalToFraction(decimal) : "";
+                    displayValue = `${whole}${fraction}`;
+                }
+                else{
+                    displayValue = clean;
+                }
+            }
+
+            if(hasQuote){
+                displayValue += '"';
+            }
+        }
+    }
+    else{
+        let headerName = headers[i].toLowerCase();
+
+        if(
+            headerName === "vertical" ||
+            headerName === "broad" ||
+            headerName === "pass yds (2025)" ||
+            headerName === "pass tds (2025)" ||
+            headerName === "ints (2025)" ||
+            headerName === "comp % (2025)" ||
+            headerName === "pass rtg (2025)"
+        ){
+            displayValue = String(c ?? "").trim();
+            if(displayValue === "#DIV/0!"){
+                displayValue = "";
             }
         }
         else{
-            let num = parseFloat(clean);
+            let num = parseFloat(c);
 
             if(!isNaN(num)){
-                let whole = Math.floor(num);
-                let decimal = num - whole;
-
-                let fraction = decimal > 0
-                    ? " " + decimalToFraction(decimal)
-                    : "";
-
-                displayValue = `${whole}${fraction}`;
+                displayValue = (Math.round(num * 1000) / 1000).toFixed(3);
+                displayValue = displayValue.replace(/\.?0+$/, '');
             }
-            else{
-                displayValue = clean;
-            }
-        }
-
-        if(hasQuote){
-            displayValue += '"';
         }
     }
-}
-else{
 
-    let headerName = headers[i].toLowerCase();
+    const compactClass = getCompactTextClass(displayValue);
+    if(compactClass){
+        td.classList.add(compactClass);
+    }
 
-    // Do NOT modify Vertical or Broad
-    if(
-        headerName === "vertical" ||
-        headerName === "broad" ||
-        headerName === "pass yds (2025)" ||
-        headerName === "pass tds (2025)" ||
-        headerName === "ints (2025)" ||
-        headerName === "comp % (2025)" ||
-        headerName === "pass rtg (2025)"
-    ){
-      displayValue = String(c ?? "").trim();
-if (displayValue === "#DIV/0!") {
-    displayValue = "";
-}
+    const playerKey = getPlayerKey(r[nameIndex], r[schoolIndex]);
+    const oldPlayer = oldBigBoardMap[playerKey] || null;
+
+    if(headerClean === "trend (b#)"){
+        td.classList.add("trend-cell");
+        const change = getRankChange(r[bIndex], oldPlayer ? oldPlayer.b : null);
+        td.innerHTML = getRankChangeHTML(change);
+    }
+    else if(headerClean === "trend (c#)"){
+        td.classList.add("trend-cell");
+        const change = getRankChange(r[cIndex], oldPlayer ? oldPlayer.c : null);
+        td.innerHTML = getRankChangeHTML(change);
     }
     else{
-
-        let num = parseFloat(c);
-
-        if(!isNaN(num)){
-            displayValue = (Math.round(num * 1000) / 1000).toFixed(3);
-            displayValue = displayValue.replace(/\.?0+$/, '');
+        if(String(displayValue).includes("/")){
+            td.innerHTML = formatFractionCell(displayValue);
+        } else{
+            td.textContent = displayValue;
         }
     }
 }
 
-  const compactClass = getCompactTextClass(displayValue);
-if(compactClass){
-    td.classList.add(compactClass);
-}
-
-const playerKey = getPlayerKey(r[nameIndex], r[schoolIndex]);
-const oldPlayer = oldBigBoardMap[playerKey] || null;
-
-if(headerClean === "trend (b#)"){
-    td.classList.add("trend-cell");
-    const change = getRankChange(r[bIndex], oldPlayer ? oldPlayer.b : null);
-    td.innerHTML = getRankChangeHTML(change);
-}
-else if(headerClean === "trend (c#)"){
-    td.classList.add("trend-cell");
-    const change = getRankChange(r[cIndex], oldPlayer ? oldPlayer.c : null);
-    td.innerHTML = getRankChangeHTML(change);
-}
-else{
-    if(String(displayValue).includes("/")){
-        td.innerHTML = formatFractionCell(displayValue);
-    } else{
-        td.textContent = displayValue;
-    }
-}
-}
-
-if(i===currentSort) td.classList.add("active-col");
+if(i === currentSort) td.classList.add("active-col");
 tr.appendChild(td);
 });
-tbody.appendChild(tr);
+
+fragment.appendChild(tr);
 });
 
+tbody.appendChild(fragment);
 }
 function initializeFilters(){
 
