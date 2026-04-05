@@ -3249,7 +3249,110 @@ error:function(err){
 console.error("Old big board CSV failed to load:", err);
 }
 });
+function applyCurrentSort(){
+    if(currentSort === -1) return;
 
+    const col = currentSort;
+    const header = headers[col].toLowerCase();
+
+    filteredData.sort((a,b)=>{
+
+        const trendValue1 = getTrendSortValue(a, header);
+        const trendValue2 = getTrendSortValue(b, header);
+
+        if(header === "trend (b#)" || header === "trend (c#)"){
+            const invalidTrend1 = trendValue1 === null;
+            const invalidTrend2 = trendValue2 === null;
+
+            if(invalidTrend1 && invalidTrend2) return 0;
+            if(invalidTrend1) return 1;
+            if(invalidTrend2) return -1;
+
+            return sortAsc ? (trendValue1 - trendValue2) : (trendValue2 - trendValue1);
+        }
+
+        let raw1 = String(a[col] ?? "").trim();
+        let raw2 = String(b[col] ?? "").trim();
+
+        let isInvalid1 = isDisplayBlankValue(raw1);
+        let isInvalid2 = isDisplayBlankValue(raw2);
+
+        if(isInvalid1 && isInvalid2) return 0;
+        if(isInvalid1) return 1;
+        if(isInvalid2) return -1;
+
+        if(header === "division"){
+            const divCompare = sortAsc
+                ? raw1.localeCompare(raw2)
+                : raw2.localeCompare(raw1);
+
+            if(divCompare !== 0) return divCompare;
+
+            const school1 = String(a[schoolIndex] ?? "").trim();
+            const school2 = String(b[schoolIndex] ?? "").trim();
+            return school1.localeCompare(school2);
+        }
+
+        if(col === heightIndex){
+            let h1 = heightToInches(raw1);
+            let h2 = heightToInches(raw2);
+            return sortAsc ? h1 - h2 : h2 - h1;
+        }
+
+        if(col === handIndex || col === armIndex || col === wingspanIndex){
+            let f1 = fractionToDecimal(raw1);
+            let f2 = fractionToDecimal(raw2);
+            return sortAsc ? f1 - f2 : f2 - f1;
+        }
+
+        if(col === broadIndex){
+            function broadToInches(val){
+                if(!val) return null;
+                let match = val.match(/(\d+)\s*['’]\s*(\d+)\s*"/);
+                if(!match) return null;
+                let feet = parseInt(match[1]);
+                let inches = parseInt(match[2]);
+                return (feet * 12) + inches;
+            }
+
+            let b1 = broadToInches(raw1);
+            let b2 = broadToInches(raw2);
+
+            if(b1 === null && b2 === null) return 0;
+            if(b1 === null) return 1;
+            if(b2 === null) return -1;
+
+            return sortAsc ? b1 - b2 : b2 - b1;
+        }
+
+        if(header === "pass yds (2025)"){
+            let y1 = parseFloat(raw1.replace(/,/g, ""));
+            let y2 = parseFloat(raw2.replace(/,/g, ""));
+
+            const invalidY1 = raw1 === "" || raw1 === "-" || raw1 === "0" || isNaN(y1);
+            const invalidY2 = raw2 === "" || raw2 === "-" || raw2 === "0" || isNaN(y2);
+
+            if(invalidY1 && invalidY2) return 0;
+            if(invalidY1) return 1;
+            if(invalidY2) return -1;
+
+            return sortAsc ? y1 - y2 : y2 - y1;
+        }
+
+        let n1 = parseFloat(raw1);
+        let n2 = parseFloat(raw2);
+
+        if(!isNaN(n1) && !isNaN(n2)){
+            n1 = Math.round(n1 * 1000) / 1000;
+            n2 = Math.round(n2 * 1000) / 1000;
+            return sortAsc ? n1 - n2 : n2 - n1;
+        }
+
+        return sortAsc
+            ? raw1.localeCompare(raw2)
+            : raw2.localeCompare(raw1);
+    });
+}
 function sortTable(col){
 
     let header=headers[col].toLowerCase();
