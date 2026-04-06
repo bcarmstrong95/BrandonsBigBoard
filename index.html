@@ -3416,6 +3416,35 @@ const playerName = r[nameIndex];
 const playerURL = createPlayerURL(playerName, r[schoolIndex]);
 tr.dataset.playerUrl = playerURL;
 
+tr.addEventListener("click", (e) => {
+    const clickedCell = e.target.closest("td");
+    if(!clickedCell) return;
+
+    const cellIndex = Array.from(tr.children).indexOf(clickedCell);
+    const headerName = headers[cellIndex].trim().toLowerCase();
+
+    if(headerName === "school") return;
+    if(headerName === "division") return;
+
+    const playerData = {
+        name: r[nameIndex],
+        school: r[schoolIndex],
+        pos: positionIndex > -1 ? r[positionIndex] : "",
+        height: heightIndex > -1 ? r[heightIndex] : "",
+        weight: weightIndex > -1 ? r[weightIndex] : "",
+        age: ageIndex > -1 ? r[ageIndex] : "",
+        avg: avgIndex > -1 ? r[avgIndex] : "",
+        bnum: bIndex > -1 ? r[bIndex] : "",
+        cnum: cIndex > -1 ? r[cIndex] : "",
+        forty: fortyIndex > -1 ? r[fortyIndex] : "",
+        vertical: verticalIndex > -1 ? r[verticalIndex] : "",
+        broad: broadIndex > -1 ? r[broadIndex] : ""
+    };
+
+    sessionStorage.setItem("selectedPlayer", JSON.stringify(playerData));
+    window.location.href = playerURL;
+});
+
 if(positionIndex > -1){
     const pos = r[positionIndex];
     if(positionColors[pos]) tr.style.color = positionColors[pos];
