@@ -3408,49 +3408,213 @@ const tbody = document.querySelector("#data-table tbody");
 tbody.innerHTML = "";
 const fragment = document.createDocumentFragment();
 
-filteredData.forEach(r=>{
+filteredData.forEach((r,rowIndex)=>{
 const tr = document.createElement("tr");
+tr.dataset.rowIndex = rowIndex;
+
 const playerName = r[nameIndex];
 const playerURL = createPlayerURL(playerName, r[schoolIndex]);
+tr.dataset.playerUrl = playerURL;
 
-tr.addEventListener("click", (e) => {
-    const clickedCell = e.target.closest("td");
-    if(!clickedCell) return;
+if(positionIndex > -1){
+    const pos = r[positionIndex];
+    if(positionColors[pos]) tr.style.color = positionColors[pos];
+}
 
-    const cellIndex = Array.from(tr.children).indexOf(clickedCell);
-    const headerName = headers[cellIndex].toLowerCase();
-    if(headerName === "school") return;
+r.forEach((c,i)=>{
+const td = document.createElement("td");
+const headerLower = headers[i].trim().toLowerCase();
 
-    const playerData = {
-        name: r[nameIndex],
-        school: r[schoolIndex],
-        pos: r[positionIndex],
-        height: r[heightIndex],
-        weight: r[weightIndex],
-        age: ageIndex > -1 ? r[ageIndex] : "",
-        avg: r[avgIndex],
-        bnum: r[bIndex],
-        cnum: cIndex > -1 ? r[cIndex] : "",
-        forty: fortyIndex > -1 ? r[fortyIndex] : "",
-        vertical: verticalIndex > -1 ? r[verticalIndex] : "",
-        broad: broadIndex > -1 ? r[broadIndex] : ""
-    };
+if(headerLower.includes("school")){
+    const cleanSchool = String(c).trim();
 
-    sessionStorage.setItem("selectedPlayer", JSON.stringify(playerData));
-    window.location.href = playerURL;
+    if(schoolLogos[cleanSchool]){
+        let extraClass = "school-logo";
+
+        if(largeLogos.includes(cleanSchool)) extraClass = "school-logo logo-large";
+        if(mediumLogos.includes(cleanSchool)) extraClass = "school-logo logo-medium";
+        if(extraLargeLogos.includes(cleanSchool)) extraClass = "school-logo logo-xlarge";
+
+        if(
+            cleanSchool === "Iowa" ||
+            cleanSchool === "Missouri" ||
+            cleanSchool === "Navy" ||
+            cleanSchool === "NC State" ||
+            cleanSchool === "Wyoming"
+        ){
+            extraClass = "school-logo logo-custom130";
+        }
+
+        if(cleanSchool === "Miss. St."){
+            extraClass = "school-logo logo-custom120";
+        }
+
+        td.innerHTML = `<img src="${schoolLogos[cleanSchool]}" class="${extraClass}" title="${cleanSchool}" style="cursor:pointer;" data-school="${cleanSchool}">`;
+    } else {
+        td.textContent = c;
+    }
+}
+else if(headerLower === "division"){
+    td.classList.add("division-col");
+
+    const cleanDivision = String(c ?? "").trim().toUpperCase();
+
+    if(cleanDivision === "FBS"){
+        td.innerHTML = `<img src="fbs.png" class="division-logo" title="FBS" data-division="FBS">`;
+    }
+    else if(cleanDivision === "FCS"){
+        td.innerHTML = `<img src="fcs.png" class="division-logo" title="FCS" data-division="FCS">`;
+    }
+    else if(cleanDivision === "DIII"){
+        td.innerHTML = `<img src="d3.png" class="division-logo" title="DIII" data-division="DIII">`;
+    }
+    else if(cleanDivision === "DII"){
+        td.innerHTML = `<img src="d2.png" class="division-logo" title="DII" data-division="DII">`;
+    }
+    else{
+        td.textContent = c;
+    }
+}
+else{
+    let displayValue = String(c ?? "").trim();
+    if(displayValue === "#DIV/0!") displayValue = "";
+
+    if(headerLower === "b#"){
+        let pos = r[positionIndex];
+        let circleColor = positionColors[pos] || "#444";
+        let textColor = (pos === "IOL" || pos === "OT") ? "black" : "white";
+        const bCircleSize = window.innerWidth >= 900 ? 65 : 54;
+
+        td.innerHTML = `
+            <div style="
+                background:${circleColor};
+                color:${textColor};
+                font-weight:bold;
+                font-size:1em;
+                width:${bCircleSize}px;
+                height:${bCircleSize}px;
+                border-radius:50%;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                margin:auto;
+            ">${displayValue}</div>
+        `;
+    }
+    else{
+        if(headerLower === "c#" && cColorIndex > -1){
+            const colorVal = String(r[cColorIndex] || "").trim();
+            if(colorVal) td.style.color = colorVal;
+        }
+
+        if(
+            i === heightIndex ||
+            i === handIndex ||
+            i === armIndex ||
+            i === wingspanIndex
+        ){
+            let original = String(displayValue);
+
+            if(original.includes("/")){
+                displayValue = original;
+            }
+            else{
+                let hasQuote = original.includes('"');
+                let clean = original.replace(/"/g,"").trim();
+
+                if(i === heightIndex && clean.includes("'")){
+                    let parts = clean.split("'");
+                    let feet = parts[0];
+                    let inchesDecimal = parseFloat(parts[1]);
+
+                    if(!isNaN(inchesDecimal)){
+                        let whole = Math.floor(inchesDecimal);
+                        let decimal = inchesDecimal - whole;
+                        let fraction = decimal > 0 ? " " + decimalToFraction(decimal) : "";
+                        displayValue = `${feet}'${whole}${fraction}`;
+                    } else {
+                        displayValue = clean;
+                    }
+                }
+                else{
+                    let num = parseFloat(clean);
+
+                    if(!isNaN(num)){
+                        let whole = Math.floor(num);
+                        let decimal = num - whole;
+                        let fraction = decimal > 0 ? " " + decimalToFraction(decimal) : "";
+                        displayValue = `${whole}${fraction}`;
+                    } else {
+                        displayValue = clean;
+                    }
+                }
+
+                if(hasQuote) displayValue += '"';
+            }
+        }
+        else{
+            if(
+                headerLower === "vertical" ||
+                headerLower === "broad" ||
+                headerLower === "pass yds (2025)" ||
+                headerLower === "pass tds (2025)" ||
+                headerLower === "ints (2025)" ||
+                headerLower === "comp % (2025)" ||
+                headerLower === "pass rtg (2025)"
+            ){
+                displayValue = String(c ?? "").trim();
+                if(displayValue === "#DIV/0!") displayValue = "";
+            }
+            else{
+                let num = parseFloat(c);
+                if(!isNaN(num)){
+                    displayValue = (Math.round(num * 1000) / 1000).toFixed(3);
+                    displayValue = displayValue.replace(/\.?0+$/, "");
+                }
+            }
+        }
+
+        const compactClass = getCompactTextClass(displayValue);
+        if(compactClass) td.classList.add(compactClass);
+
+        const playerKey = getPlayerKey(r[nameIndex], r[schoolIndex]);
+        const oldPlayer = oldBigBoardMap[playerKey] || null;
+
+        if(headerLower === "trend (b#)"){
+            td.classList.add("trend-cell");
+            const change = getRankChange(r[bIndex], oldPlayer ? oldPlayer.b : null);
+            td.innerHTML = getRankChangeHTML(change);
+        }
+        else if(headerLower === "trend (c#)"){
+            td.classList.add("trend-cell");
+            const change = getRankChange(r[cIndex], oldPlayer ? oldPlayer.c : null);
+            td.innerHTML = getRankChangeHTML(change);
+        }
+        else{
+            if(String(displayValue).includes("/")){
+                td.innerHTML = formatFractionCell(displayValue);
+            } else {
+                td.textContent = displayValue;
+            }
+        }
+    }
+}
+
+if(i === currentSort) td.classList.add("active-col");
+tr.appendChild(td);
 });
 
-tr.addEventListener("mouseenter", (e) => {
-    if(window.innerWidth < 900) return;
+fragment.appendChild(tr);
+});
 
-    const popup = document.getElementById("prospectPopup");
-    popup.style.display = "block";
+tbody.appendChild(fragment);
+}
+let tableInteractionsInitialized = false;
+let lastHoveredRowIndex = -1;
 
-    const img = document.getElementById("popupHeadshot");
-    img.src = "blank.jpg";
-    img.onerror = () => { img.src = "blank.jpg"; };
+function formatPopupHeightValue(value){
+    let popupHeightValue = String(value ?? "");
 
-    let popupHeightValue = String(r[heightIndex] ?? "");
     if(!popupHeightValue.includes("/")){
         let hasQuote = popupHeightValue.includes('"');
         let clean = popupHeightValue.replace(/"/g,"").trim();
@@ -3470,308 +3634,153 @@ tr.addEventListener("mouseenter", (e) => {
             }
         }
 
-        if(hasQuote){
-            popupHeightValue += '"';
-        }
+        if(hasQuote) popupHeightValue += '"';
     }
 
-    let popupAVGValue = String(r[avgIndex] ?? "").trim();
+    return popupHeightValue;
+}
+
+function showProspectPopupForRow(rowData, mouseEvent){
+    if(window.innerWidth < 900) return;
+
+    const popup = document.getElementById("prospectPopup");
+    popup.style.display = "block";
+
+    const img = document.getElementById("popupHeadshot");
+    img.src = "blank.jpg";
+    img.onerror = () => { img.src = "blank.jpg"; };
+
+    let popupAVGValue = String(rowData[avgIndex] ?? "").trim();
     let avgNum = parseFloat(popupAVGValue);
     if(!isNaN(avgNum)){
         popupAVGValue = (Math.round(avgNum * 1000) / 1000).toFixed(3);
-        popupAVGValue = popupAVGValue.replace(/\.?0+$/, '');
+        popupAVGValue = popupAVGValue.replace(/\.?0+$/, "");
     }
 
-    let popupAgeValue = ageIndex > -1 ? String(r[ageIndex] ?? "") : "";
-
-    document.getElementById("popupName").textContent = r[nameIndex];
-    document.getElementById("popupSchoolLogo").src = schoolLogos[r[schoolIndex]] || "";
-    document.getElementById("popupPos").textContent = r[positionIndex];
-    document.getElementById("popupHeight").textContent = popupHeightValue;
-    document.getElementById("popupWeight").textContent = r[weightIndex];
-    document.getElementById("popupAge").textContent = popupAgeValue;
+    document.getElementById("popupName").textContent = rowData[nameIndex];
+    document.getElementById("popupSchoolLogo").src = schoolLogos[rowData[schoolIndex]] || "";
+    document.getElementById("popupPos").textContent = rowData[positionIndex];
+    document.getElementById("popupHeight").textContent = formatPopupHeightValue(rowData[heightIndex]);
+    document.getElementById("popupWeight").textContent = rowData[weightIndex];
+    document.getElementById("popupAge").textContent = ageIndex > -1 ? String(rowData[ageIndex] ?? "") : "";
     document.getElementById("popupAVG").textContent = popupAVGValue;
 
-    let popupPosValue = r[positionIndex];
+    let popupPosValue = rowData[positionIndex];
     let popupCircleColor = positionColors[popupPosValue] || "#444";
-    let popupTextColor = "white";
-
-    if(popupPosValue === "IOL" || popupPosValue === "OT"){
-        popupTextColor = "black";
-    }
+    let popupTextColor = (popupPosValue === "IOL" || popupPosValue === "OT") ? "black" : "white";
 
     document.getElementById("popupBNum").innerHTML = `
       <div class="popup-bnum-circle" style="
         background:${popupCircleColor};
         color:${popupTextColor};
-      ">${r[bIndex]}</div>
+      ">${rowData[bIndex]}</div>
     `;
 
-    popup.style.left = (e.clientX + 14) + "px";
-    popup.style.top = (e.clientY + 14) + "px";
-});
-
-tr.addEventListener("mousemove", (e) => {
-    const popup = document.getElementById("prospectPopup");
-    popup.style.left = (e.clientX + 14) + "px";
-    popup.style.top = (e.clientY + 14) + "px";
-});
-
-tr.addEventListener("mouseleave", () => {
-    const popup = document.getElementById("prospectPopup");
-    popup.style.display = "none";
-});
-
-if(positionIndex > -1){
-    let pos = r[positionIndex];
-    if(positionColors[pos]) tr.style.color = positionColors[pos];
+    popup.style.left = (mouseEvent.clientX + 14) + "px";
+    popup.style.top = (mouseEvent.clientY + 14) + "px";
 }
 
-r.forEach((c,i)=>{
-const td = document.createElement("td");
+function initializeTableInteractions(){
+    if(tableInteractionsInitialized) return;
+    tableInteractionsInitialized = true;
 
-if(headers[i].toLowerCase().includes("school")){
+    const tbody = document.querySelector("#data-table tbody");
 
-    const cleanSchool = String(c).trim();
-
-    if(schoolLogos[cleanSchool]){
-
-        let extraClass = "school-logo";
-
-        if(largeLogos.includes(cleanSchool)){
-            extraClass = "school-logo logo-large";
-        }
-
-        if(mediumLogos.includes(cleanSchool)){
-            extraClass = "school-logo logo-medium";
-        }
-
-        if(extraLargeLogos.includes(cleanSchool)){
-            extraClass = "school-logo logo-xlarge";
-        }
-
-        if(
-            cleanSchool === "Iowa" ||
-            cleanSchool === "Missouri" ||
-            cleanSchool === "Navy" ||
-            cleanSchool === "NC State" ||
-            cleanSchool === "Wyoming"
-        ){
-            extraClass = "school-logo logo-custom130";
-        }
-
-        if(cleanSchool === "Miss. St."){
-            extraClass = "school-logo logo-custom120";
-        }
-
-        td.innerHTML = `<img src="${schoolLogos[cleanSchool]}" class="${extraClass}" title="${cleanSchool}" style="cursor:pointer;">`;
-
-        td.querySelector("img").addEventListener("click",(e)=>{
+    tbody.addEventListener("click", function(e){
+        const schoolEl = e.target.closest("[data-school]");
+        if(schoolEl){
             e.stopPropagation();
+            const cleanSchool = schoolEl.dataset.school;
 
             if(selectedSchool === cleanSchool){
                 selectedSchool = null;
-            } else{
+            } else {
                 selectedSchool = cleanSchool;
             }
 
             applyFilters();
-        });
-    }
-    else{
-        td.textContent = c;
-    }
-}
-else if(headers[i].trim().toLowerCase() === "division"){
-
-    td.classList.add("division-col");
-
-    const cleanDivision = String(c ?? "").trim().toUpperCase();
-
-    if(cleanDivision === "FBS"){
-        td.innerHTML = `<img src="fbs.png" class="division-logo" title="FBS">`;
-    }
-    else if(cleanDivision === "FCS"){
-        td.innerHTML = `<img src="fcs.png" class="division-logo" title="FCS">`;
-    }
-    else if(cleanDivision === "DIII"){
-        td.innerHTML = `<img src="d3.png" class="division-logo" title="DIII">`;
-    }
-    else if(cleanDivision === "DII"){
-        td.innerHTML = `<img src="d2.png" class="division-logo" title="DII">`;
-    }
-    else{
-        td.textContent = c;
-    }
-
-    td.addEventListener("click", (e) => {
-        e.stopPropagation();
-
-        if(selectedDivision === cleanDivision){
-            selectedDivision = null;
-        } else{
-            selectedDivision = cleanDivision;
+            return;
         }
 
-        applyFilters();
+        const divisionEl = e.target.closest("[data-division]");
+        if(divisionEl){
+            e.stopPropagation();
+            const cleanDivision = divisionEl.dataset.division;
+
+            if(selectedDivision === cleanDivision){
+                selectedDivision = null;
+            } else {
+                selectedDivision = cleanDivision;
+            }
+
+            applyFilters();
+            return;
+        }
+
+        const tr = e.target.closest("tr");
+        if(!tr) return;
+
+        const clickedCell = e.target.closest("td");
+        if(!clickedCell) return;
+
+        const cellIndex = Array.from(tr.children).indexOf(clickedCell);
+        const headerName = headers[cellIndex].toLowerCase();
+        if(headerName === "school") return;
+
+        const rowIndex = parseInt(tr.dataset.rowIndex, 10);
+        const rowData = filteredData[rowIndex];
+        if(!rowData) return;
+
+        const playerData = {
+            name: rowData[nameIndex],
+            school: rowData[schoolIndex],
+            pos: rowData[positionIndex],
+            height: rowData[heightIndex],
+            weight: rowData[weightIndex],
+            age: ageIndex > -1 ? rowData[ageIndex] : "",
+            avg: rowData[avgIndex],
+            bnum: rowData[bIndex],
+            cnum: cIndex > -1 ? rowData[cIndex] : "",
+            forty: fortyIndex > -1 ? rowData[fortyIndex] : "",
+            vertical: verticalIndex > -1 ? rowData[verticalIndex] : "",
+            broad: broadIndex > -1 ? rowData[broadIndex] : ""
+        };
+
+        sessionStorage.setItem("selectedPlayer", JSON.stringify(playerData));
+        window.location.href = tr.dataset.playerUrl;
     });
-}
-else{
 
-    let displayValue = String(c ?? "").trim();
-    if(displayValue === "#DIV/0!"){
-        displayValue = "";
-    }
+    tbody.addEventListener("mousemove", function(e){
+        if(window.innerWidth < 900) return;
 
-    const headerClean = headers[i].trim().toLowerCase();
+        const tr = e.target.closest("tr");
+        const popup = document.getElementById("prospectPopup");
 
-    if(headerClean === "b#"){
-        let pos = r[positionIndex];
-        let circleColor = positionColors[pos] || "#444";
-        let textColor = "white";
-
-        if(pos === "IOL" || pos === "OT"){
-            textColor = "black";
+        if(!tr){
+            popup.style.display = "none";
+            lastHoveredRowIndex = -1;
+            return;
         }
 
-        const bCircleSize = window.innerWidth >= 900 ? 65 : 54;
+        const rowIndex = parseInt(tr.dataset.rowIndex, 10);
 
-        td.innerHTML = `
-            <div style="
-                background:${circleColor};
-                color:${textColor};
-                font-weight:bold;
-                font-size:1em;
-                width:${bCircleSize}px;
-                height:${bCircleSize}px;
-                border-radius:50%;
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                margin:auto;
-            ">${displayValue}</div>
-        `;
-
-        tr.appendChild(td);
-        return;
-    }
-
-    if(headerClean === "c#" && cColorIndex > -1){
-        const colorVal = String(r[cColorIndex] || "").trim();
-        if(colorVal) td.style.color = colorVal;
-    }
-
-    if(
-        i === heightIndex ||
-        i === handIndex ||
-        i === armIndex ||
-        i === wingspanIndex
-    ){
-        let original = String(displayValue);
-
-        if(original.includes("/")){
-            displayValue = original;
-        }
-        else{
-            let hasQuote = original.includes('"');
-            let clean = original.replace(/"/g,"").trim();
-
-            if(i === heightIndex && clean.includes("'")){
-                let parts = clean.split("'");
-                let feet = parts[0];
-                let inchesDecimal = parseFloat(parts[1]);
-
-                if(!isNaN(inchesDecimal)){
-                    let whole = Math.floor(inchesDecimal);
-                    let decimal = inchesDecimal - whole;
-                    let fraction = decimal > 0 ? " " + decimalToFraction(decimal) : "";
-                    displayValue = `${feet}'${whole}${fraction}`;
-                }
-                else{
-                    displayValue = clean;
-                }
+        if(rowIndex !== lastHoveredRowIndex){
+            lastHoveredRowIndex = rowIndex;
+            const rowData = filteredData[rowIndex];
+            if(rowData){
+                showProspectPopupForRow(rowData, e);
             }
-            else{
-                let num = parseFloat(clean);
-
-                if(!isNaN(num)){
-                    let whole = Math.floor(num);
-                    let decimal = num - whole;
-                    let fraction = decimal > 0 ? " " + decimalToFraction(decimal) : "";
-                    displayValue = `${whole}${fraction}`;
-                }
-                else{
-                    displayValue = clean;
-                }
-            }
-
-            if(hasQuote){
-                displayValue += '"';
-            }
+        } else {
+            popup.style.left = (e.clientX + 14) + "px";
+            popup.style.top = (e.clientY + 14) + "px";
         }
-    }
-    else{
-        let headerName = headers[i].toLowerCase();
+    });
 
-        if(
-            headerName === "vertical" ||
-            headerName === "broad" ||
-            headerName === "pass yds (2025)" ||
-            headerName === "pass tds (2025)" ||
-            headerName === "ints (2025)" ||
-            headerName === "comp % (2025)" ||
-            headerName === "pass rtg (2025)"
-        ){
-            displayValue = String(c ?? "").trim();
-            if(displayValue === "#DIV/0!"){
-                displayValue = "";
-            }
-        }
-        else{
-            let num = parseFloat(c);
-
-            if(!isNaN(num)){
-                displayValue = (Math.round(num * 1000) / 1000).toFixed(3);
-                displayValue = displayValue.replace(/\.?0+$/, '');
-            }
-        }
-    }
-
-    const compactClass = getCompactTextClass(displayValue);
-    if(compactClass){
-        td.classList.add(compactClass);
-    }
-
-    const playerKey = getPlayerKey(r[nameIndex], r[schoolIndex]);
-    const oldPlayer = oldBigBoardMap[playerKey] || null;
-
-    if(headerClean === "trend (b#)"){
-        td.classList.add("trend-cell");
-        const change = getRankChange(r[bIndex], oldPlayer ? oldPlayer.b : null);
-        td.innerHTML = getRankChangeHTML(change);
-    }
-    else if(headerClean === "trend (c#)"){
-        td.classList.add("trend-cell");
-        const change = getRankChange(r[cIndex], oldPlayer ? oldPlayer.c : null);
-        td.innerHTML = getRankChangeHTML(change);
-    }
-    else{
-        if(String(displayValue).includes("/")){
-            td.innerHTML = formatFractionCell(displayValue);
-        } else{
-            td.textContent = displayValue;
-        }
-    }
-}
-
-if(i === currentSort) td.classList.add("active-col");
-tr.appendChild(td);
-});
-
-fragment.appendChild(tr);
-});
-
-tbody.appendChild(fragment);
+    tbody.addEventListener("mouseleave", function(){
+        const popup = document.getElementById("prospectPopup");
+        popup.style.display = "none";
+        lastHoveredRowIndex = -1;
+    });
 }
 function initializeFilters(){
 
