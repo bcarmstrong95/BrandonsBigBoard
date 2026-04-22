@@ -41,6 +41,26 @@ width:100%;
 box-sizing:border-box;
 overflow:hidden;
 }
+.hero-banner-shell{
+position:relative;
+width:100%;
+overflow:visible;
+}
+
+@media (min-width:900px){
+.hero-banner-shell{
+width:100%;
+display:block;
+position:relative;
+overflow:visible;
+}
+
+.hero-banner{
+margin:0 auto;
+transform-origin:top center;
+will-change:transform;
+}
+}
 
 .banner-img{
 display:block;
@@ -2238,6 +2258,7 @@ cursor:pointer;
 </head>
 <body>
 
+<div class="hero-banner-shell">
 <div class="hero-banner">
 
 <img src="banner18.png" class="banner-img" alt="Banner" id="heroBanner">
@@ -2348,6 +2369,7 @@ cursor:pointer;
     >
   </div>
 
+</div>
 </div>
 <div id="tooltip" class="custom-tooltip"></div>
 
@@ -2607,8 +2629,45 @@ tableWrapper.addEventListener("scroll", updateVThumb, { passive:true });
   syncHThumbSize();
   updateVThumb();
 }
+function syncDesktopBannerScale(){
+  const shell = document.querySelector(".hero-banner-shell");
+  const banner = document.querySelector(".hero-banner");
+  const bannerImg = document.getElementById("heroBanner");
 
-document.addEventListener("DOMContentLoaded", setupDesktopEdgeScrollbars);
+  if(!shell || !banner || !bannerImg) return;
+
+  if(window.innerWidth < 900){
+    shell.style.height = "";
+    banner.style.transform = "";
+    banner.style.width = "";
+    return;
+  }
+
+  const DESIGN_WIDTH = 1365; // desktop design width your banner positions were built around
+
+  banner.style.width = DESIGN_WIDTH + "px";
+  banner.style.transform = "scale(1)";
+
+  const availableWidth = shell.clientWidth || window.innerWidth;
+  const scale = Math.min(1, availableWidth / DESIGN_WIDTH);
+  const unscaledHeight = banner.offsetHeight;
+
+  banner.style.transform = `scale(${scale})`;
+  shell.style.height = (unscaledHeight * scale) + "px";
+}
+document.addEventListener("DOMContentLoaded", function(){
+  setupDesktopEdgeScrollbars();
+  syncDesktopBannerScale();
+
+  const heroBannerImg = document.getElementById("heroBanner");
+  if(heroBannerImg){
+    if(heroBannerImg.complete){
+      syncDesktopBannerScale();
+    } else {
+      heroBannerImg.addEventListener("load", syncDesktopBannerScale);
+    }
+  }
+});
 
 const positionColors={
 "EDGE":"#FF8200",  // Tennessee orange
@@ -4336,7 +4395,7 @@ scoreboardUpdate("seconds",seconds,2);
     updateCountdown();
     setInterval(updateCountdown,1000);
 }
-
+window.addEventListener("resize", syncDesktopBannerScale);
 initializeTableInteractions();
 initializeBannerLogoPopups();
 startDraftCountdown();
