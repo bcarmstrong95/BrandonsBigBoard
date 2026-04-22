@@ -46,6 +46,20 @@ position:relative;
 width:100%;
 overflow:visible;
 }
+@media (max-width:768px){
+.hero-banner-shell{
+display:block;
+position:relative;
+width:100%;
+overflow:visible;
+}
+
+.hero-banner{
+margin:0 auto;
+transform-origin:top center;
+will-change:transform;
+}
+}
 
 @media (min-width:900px){
 .hero-banner-shell{
@@ -2629,21 +2643,16 @@ tableWrapper.addEventListener("scroll", updateVThumb, { passive:true });
   syncHThumbSize();
   updateVThumb();
 }
-function syncDesktopBannerScale(){
+function syncResponsiveBannerScale(){
   const shell = document.querySelector(".hero-banner-shell");
   const banner = document.querySelector(".hero-banner");
   const bannerImg = document.getElementById("heroBanner");
 
   if(!shell || !banner || !bannerImg) return;
 
-  if(window.innerWidth < 900){
-    shell.style.height = "";
-    banner.style.transform = "";
-    banner.style.width = "";
-    return;
-  }
+  const isDesktop = window.innerWidth >= 900;
 
-  const DESIGN_WIDTH = 1365; // desktop design width your banner positions were built around
+  const DESIGN_WIDTH = isDesktop ? 1365 : 393;
 
   banner.style.width = DESIGN_WIDTH + "px";
   banner.style.transform = "scale(1)";
@@ -2655,16 +2664,17 @@ function syncDesktopBannerScale(){
   banner.style.transform = `scale(${scale})`;
   shell.style.height = (unscaledHeight * scale) + "px";
 }
+
 document.addEventListener("DOMContentLoaded", function(){
   setupDesktopEdgeScrollbars();
-  syncDesktopBannerScale();
+  syncResponsiveBannerScale();
 
   const heroBannerImg = document.getElementById("heroBanner");
   if(heroBannerImg){
     if(heroBannerImg.complete){
-      syncDesktopBannerScale();
+      syncResponsiveBannerScale();
     } else {
-      heroBannerImg.addEventListener("load", syncDesktopBannerScale);
+      heroBannerImg.addEventListener("load", syncResponsiveBannerScale);
     }
   }
 });
@@ -4395,7 +4405,7 @@ scoreboardUpdate("seconds",seconds,2);
     updateCountdown();
     setInterval(updateCountdown,1000);
 }
-window.addEventListener("resize", syncDesktopBannerScale);
+window.addEventListener("resize", syncResponsiveBannerScale);
 initializeTableInteractions();
 initializeBannerLogoPopups();
 startDraftCountdown();
