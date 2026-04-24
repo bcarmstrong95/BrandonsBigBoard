@@ -2692,6 +2692,73 @@ const positionColors={
 "LB":"royalblue",
 "QB":"gray"
 };
+const nflTeamLogos = {
+    "Arizona Cardinals": "cardinals.png",
+    "Atlanta Falcons": "atl.png",
+    "Baltimore Ravens": "ravens.png",
+    "Buffalo Bills": "bills.png",
+    "Carolina Panthers": "panthers.png",
+    "Chicago Bears": "bears.png",
+    "Cincinnati Bengals": "bengals.png",
+    "Cleveland Browns": "browns.png",
+    "Dallas Cowboys": "cowboys.png",
+    "Denver Broncos": "broncos.png",
+    "Detroit Lions": "lions.png",
+    "Green Bay Packers": "pack.png",
+    "Houston Texans": "texans.png",
+    "Indianapolis Colts": "colts.png",
+    "Jacksonville Jaguars": "jags.png",
+    "Kansas City Chiefs": "chiefs.png",
+    "Las Vegas Raiders": "raiders.png",
+    "Los Angeles Chargers": "chargers.png",
+    "Los Angeles Rams": "rams.png",
+    "Miami Dolphins": "dolphins.png",
+    "Minnesota Vikings": "vikings.png",
+    "New England Patriots": "patriots.png",
+    "New Orleans Saints": "saints.png",
+    "New York Giants": "giants.png",
+    "New York Jets": "jets2.png",
+    "Philadelphia Eagles": "eagles.png",
+    "Pittsburgh Steelers": "steelers.png",
+    "San Francisco 49ers": "49ers.png",
+    "Seattle Seahawks": "seahawks.png",
+    "Tampa Bay Buccaneers": "bucs.png",
+    "Tennessee Titans": "titans.png",
+    "Washington Commanders": "commanders.png",
+
+    "Cardinals": "cardinals.png",
+    "Falcons": "atl.png",
+    "Ravens": "ravens.png",
+    "Bills": "bills.png",
+    "Panthers": "panthers.png",
+    "Bears": "bears.png",
+    "Bengals": "bengals.png",
+    "Browns": "browns.png",
+    "Cowboys": "cowboys.png",
+    "Broncos": "broncos.png",
+    "Lions": "lions.png",
+    "Packers": "pack.png",
+    "Texans": "texans.png",
+    "Colts": "colts.png",
+    "Jaguars": "jags.png",
+    "Chiefs": "chiefs.png",
+    "Raiders": "raiders.png",
+    "Chargers": "chargers.png",
+    "Rams": "rams.png",
+    "Dolphins": "dolphins.png",
+    "Vikings": "vikings.png",
+    "Patriots": "patriots.png",
+    "Saints": "saints.png",
+    "Giants": "giants.png",
+    "Jets": "jets2.png",
+    "Eagles": "eagles.png",
+    "Steelers": "steelers.png",
+    "49ers": "49ers.png",
+    "Seahawks": "seahawks.png",
+    "Buccaneers": "bucs.png",
+    "Titans": "titans.png",
+    "Commanders": "commanders.png"
+};
 const schoolLogos = {
     "Alabama": "bama.svg",
     "Arizona": "zona.png",
@@ -3524,6 +3591,15 @@ if(headerLower.includes("school")){
         }
 
         td.innerHTML = `<img src="${schoolLogos[cleanSchool]}" class="${extraClass}" title="${cleanSchool}" style="cursor:pointer;" data-school="${cleanSchool}">`;
+    } else {
+        td.textContent = c;
+    }
+}
+else if(headerLower === "selected by:" || headerLower === "selected by"){
+    const cleanTeam = String(c ?? "").trim();
+
+    if(nflTeamLogos[cleanTeam]){
+        td.innerHTML = `<img src="${nflTeamLogos[cleanTeam]}" class="school-logo" title="${cleanTeam}">`;
     } else {
         td.textContent = c;
     }
